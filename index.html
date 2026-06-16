@@ -1391,20 +1391,68 @@ function declineClarification(btn) {
 // ── Handbook answer (slide-based fallback) ───────────────
 const HANDBOOK_NOISE = /ikea\s*store\s*digital|how it works|ikea\s*store digital\s*how it works|\bgeneral\b/gi;
 
+// Translate co-worker/technical jargon into plain customer language
+const JARGON_MAP = [
+  [/onboarding modal/gi,           'a short tip screen'],
+  [/modal/gi,                      'pop-up screen'],
+  [/\bPLP\b/g,                     'product list'],
+  [/\bPIP\b/g,                     'product page'],
+  [/product information page/gi,   'product page'],
+  [/instore web steps?/gi,         'steps on the kiosk'],
+  [/instore web/gi,                'the kiosk'],
+  [/admin panel/gi,                'the store settings panel (for staff)'],
+  [/focus tile/gi,                 'the main shortcut tile on the home screen'],
+  [/contextual home screen/gi,     'home screen'],
+  [/kiosk list/gi,                 'your shopping list'],
+  [/handover/gi,                   'send to your phone'],
+  [/co-?workers?/gi,               'a store coworker'],
+  [/customers? can/gi,             'you can'],
+  [/customers? are/gi,             'you are'],
+  [/the customer/gi,               'you'],
+  [/a customer/gi,                 'you'],
+  [/customers/gi,                  'you'],
+  [/article number/gi,             'product code'],
+  [/\bSLID\b|\bRGID\b/g,          ''],
+  [/barcode/gi,                    'QR code'],
+  [/payment barcode/gi,            'payment QR code'],
+  [/order card/gi,                 'your order summary'],
+  [/estimated collection time/gi,  'your estimated pick-up time'],
+  [/full.serve order/gi,           'your full serve item order'],
+  [/\bDS\b delivery/gi,            'direct delivery'],
+  [/subQuery/gi,                   ''],
+  [/refer to/gi,                   'see'],
+  [/refer\b/gi,                    'check'],
+  [/configured by/gi,              'set up by'],
+  [/it is recommended/gi,          'we recommend'],
+  [/following areas of the store/gi, 'these areas'],
+  [/ e\.g\.? /gi,                  ' — for example, '],
+  [/\*+/g,                         ''],
+];
+
+function humanise(text) {
+  let t = text;
+  JARGON_MAP.forEach(([pat, rep]) => { t = t.replace(pat, rep); });
+  // Clean up double spaces left by empty replacements
+  return t.replace(/\s{2,}/g, ' ').trim();
+}
+
 function slideToPoints(body) {
-  // Strip watermark noise, split into clean bullet points
   const cleaned = body
     .replace(HANDBOOK_NOISE, '')
     .replace(/\s{3,}/g, '\n')
     .trim();
   const lines = cleaned.split(/\n|(?<=\.) (?=[A-Z])/)
-    .map(l => l.trim())
+    .map(l => humanise(l.trim()))
     .filter(l => l.length > 8);
-  return lines.slice(0, 6); // max 6 points
+  return lines.slice(0, 6);
+}
+
+function humaniseTitle(title) {
+  return humanise(title.replace(/\n/g,' ').replace(HANDBOOK_NOISE,'').trim());
 }
 
 function addHandbookAnswer(slide, query) {
-  const title = slide.title.replace(/\n/g,' ').replace(HANDBOOK_NOISE,'').trim();
+  const title = humaniseTitle(slide.title);
   const points = slideToPoints(slide.body);
   const bulletHtml = points.map(p => `
     <div style="display:flex;gap:8px;margin-bottom:7px;align-items:flex-start">
