@@ -819,7 +819,7 @@ function searchHandbook(query) {
 
     if (score > bestScore) { bestScore = score; best = slide; }
   });
-  return bestScore >= 10 ? best : null;  // require strong specific title match
+  return bestScore >= 8 ? best : null;  // require title match on at least one specific word
 }
 
 const QA = [
@@ -1616,7 +1616,7 @@ function askQuestion(q) {
     const hbTitleScore = hbSlide ? handbookTitleScore(q, hbSlide) : 0;
 
     const hasFaq      = faqResult && (faqResult.confidence === 'high' || faqResult.confidence === 'medium' || faqResult.hasExactKwMatch);
-    const hasHandbook = hbSlide && hbTitleScore >= 12;
+    const hasHandbook = hbSlide && hbTitleScore >= 8;
 
     if (hasFaq && hasHandbook) {
       // Both match — let the customer choose
