@@ -1434,6 +1434,18 @@ function addFallback(query) {
 }
 
 // ── Main ask function ────────────────────────────────────
+function handbookTitleScore(query, slide) {
+  const q = query.toLowerCase().replace(/[?!.,]/g,'');
+  const qWords = q.split(/\s+/).filter(w => w.length >= 3 && !STOP.has(w));
+  const titleL = slide.title.toLowerCase();
+  let score = 0;
+  qWords.forEach(w => {
+    if (titleL.includes(w)) score += 8;
+    else { const sw = stem(w); if (sw.length >= 3 && titleL.includes(sw)) score += 6; }
+  });
+  return score;
+}
+
 function askQuestion(q) {
   if (!q.trim()) return;
   addMsg('user', q);
@@ -1445,23 +1457,27 @@ function askQuestion(q) {
 
   setTimeout(() => {
     typing.classList.remove('visible');
-    const result = findAnswer(q);
 
-    if (!result) {
-      // Try handbook full-text search as fallback
-      const hbResult = searchHandbook(q);
-      if (hbResult) addHandbookAnswer(hbResult, q);
+    const faqResult = findAnswer(q);
+    const hbSlide   = searchHandbook(q);
+
+    // If handbook slide title is a very strong match (≥14 = 2+ words match title),
+    // prefer handbook over FAQ — the user is asking about a specific feature
+    const hbTitleScore = hbSlide ? handbookTitleScore(q, hbSlide) : 0;
+    const preferHandbook = hbSlide && hbTitleScore >= 14;
+
+    if (preferHandbook) {
+      addHandbookAnswer(hbSlide, q);
+    } else if (!faqResult) {
+      if (hbSlide) addHandbookAnswer(hbSlide, q);
       else addFallback(q);
-    } else if (result.confidence === 'high' || result.hasExactKwMatch) {
-      // High confidence — answer directly
-      addAnswer(result.item);
-    } else if (result.confidence === 'medium') {
-      // Medium — answer but note the interpretation
-      const note = `<p style="color:var(--mid);font-size:12px;margin-bottom:10px">💡 I interpreted your question as: <em>"${result.item.q}"</em></p>`;
-      addAnswer(result.item, note);
+    } else if (faqResult.confidence === 'high' || faqResult.hasExactKwMatch) {
+      addAnswer(faqResult.item);
+    } else if (faqResult.confidence === 'medium') {
+      const note = `<p style="color:var(--mid);font-size:12px;margin-bottom:10px">💡 I interpreted your question as: <em>"${faqResult.item.q}"</em></p>`;
+      addAnswer(faqResult.item, note);
     } else {
-      // Low confidence — ask for clarification first
-      addClarification(q, result);
+      addClarification(q, faqResult);
     }
 
     chat.scrollTop = chat.scrollHeight;
