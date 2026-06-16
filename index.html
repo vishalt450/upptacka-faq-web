@@ -295,7 +295,7 @@ const QA = [
     id: 'planner-access',
     cat: 'plan',
     q: "How do I start planning my kitchen or wardrobe?",
-    keywords: ['plan','planner','kitchen','wardrobe','sofa','design','pax','metod','room planning','furniture planning'],
+    keywords: ['open planner','start planning','kitchen planning','wardrobe planning','room planning','furniture planning','pax','metod','sofa planner','access planner','kitchen','wardrobe','planner'],
     a: `<p>You can open a planner in several ways:</p>
         <ul>
           <li>Tap the <strong>Focus tile</strong> on the home screen (if a planner is set up there)</li>
@@ -315,7 +315,7 @@ const QA = [
     id: 'save-design',
     cat: 'plan',
     q: "How do I save my planner design?",
-    keywords: ['save design','vpc code','save','planner code','keep design','restore design','save planner'],
+    keywords: ['save design','save my design','vpc code','planner code','save planner','keep design','restore design','save progress','design code'],
     a: `<p>While in the planner, look for the <strong>Save</strong> or <strong>Share</strong> option. This gives you a <strong>VPC code</strong> — a short code that stores your entire design.</p>
         <ul>
           <li>Write down or photograph the code</li>
@@ -577,25 +577,36 @@ const STOP = new Set(['the','can','how','what','why','when','where','who','does'
 
 function findAnswer(query) {
   const q = query.toLowerCase().replace(/[?!.,]/g,'');
-  const words = q.split(/\s+/).filter(w => w.length >= 3 && !STOP.has(w));
+  const qWords = new Set(q.split(/\s+/));
+  const qMeaningful = [...qWords].filter(w => w.length >= 3 && !STOP.has(w));
+
   let best = null, bestScore = 0;
 
   QA.forEach(item => {
     let score = 0;
-    // Exact multi-word keyword phrase in query — highest confidence
+
     item.keywords.forEach(kw => {
-      if (q.includes(kw)) score += 6;
+      const kwParts = kw.trim().split(/\s+/);
+      if (kwParts.length > 1) {
+        // Multi-word phrase: exact substring — highly specific
+        if (q.includes(kw)) score += 9;
+      } else {
+        // Single word: EXACT whole-word match only (prevents 'plan' matching 'planner')
+        if (qWords.has(kw)) score += 5;
+      }
     });
-    // Meaningful query words found in the question title
-    words.forEach(w => {
-      if (item.q.toLowerCase().includes(w)) score += 3;
+
+    // Meaningful query words that appear as exact words in the item's question title
+    const itemQWords = new Set(item.q.toLowerCase().replace(/[?!.,]/g,'').split(/\s+/));
+    qMeaningful.forEach(w => {
+      if (itemQWords.has(w)) score += 3;
     });
-    // Category match boosts slightly
+
     if (currentCat !== 'all' && item.cat === currentCat) score += 1;
     if (score > bestScore) { bestScore = score; best = item; }
   });
 
-  return bestScore >= 3 ? best : null;
+  return bestScore >= 4 ? best : null;
 }
 
 // ── Add message ──────────────────────────────────────────
