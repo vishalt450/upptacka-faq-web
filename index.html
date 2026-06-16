@@ -720,12 +720,6 @@ function addMsg(role, content) {
 
 // ── Add full answer ──────────────────────────────────────
 function addAnswer(item, prefixHtml = '') {
-  const nextHtml = item.next ? `
-    <div class="next-steps">
-      <div class="next-steps-title">✅ What to do next</div>
-      <ol>${item.next.map(s => `<li>${s}</li>`).join('')}</ol>
-    </div>` : '';
-
   const relatedItems = (item.related || []).map(id => QA.find(q => q.id === id)).filter(Boolean);
   const relatedHtml = relatedItems.length ? `
     <div class="related">
@@ -744,7 +738,6 @@ function addAnswer(item, prefixHtml = '') {
       <div class="bubble">
         ${prefixHtml}
         ${item.a}
-        ${nextHtml}
       </div>
       ${relatedHtml}
     </div>`;
