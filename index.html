@@ -568,45 +568,139 @@ document.getElementById('cat-row').addEventListener('click', e => {
   renderSuggestions(currentCat);
 });
 
-// ── Find best answer ─────────────────────────────────────
+// ── NLP Helpers ──────────────────────────────────────────
+
 const STOP = new Set(['the','can','how','what','why','when','where','who','does','did',
   'are','was','were','will','have','has','had','not','but','for','with','this','that',
   'from','they','also','get','do','my','is','in','a','i','and','or','to','of','it',
   'me','we','you','he','she','an','be','by','at','on','up','if','so','no','yes','its',
   'use','via','too','all','any','one','two','see','let','now','new','old','big','same']);
 
+// Strip common suffixes so plan/planning/planner all reduce to the same root
+function stem(w) {
+  return w
+    .replace(/ners?$/, 'n')      // planner → plan
+    .replace(/nings?$/, '')       // planning → plan
+    .replace(/tions?$/, '')       // navigation → navigat
+    .replace(/ings?$/, '')        // searching → search
+    .replace(/ers?$/, '')         // coworkers → cowork
+    .replace(/ness$/, '')
+    .replace(/ed$/, '')
+    .replace(/ly$/, '')
+    .replace(/es$/, '')
+    .replace(/s$/, '');           // offers → offer
+}
+
+// Levenshtein edit distance (for typo detection)
+function editDist(a, b) {
+  if (Math.abs(a.length - b.length) > 3) return 99;
+  const m = a.length, n = b.length;
+  const dp = Array.from({length: m + 1}, (_, i) => Array.from({length: n + 1}, (_, j) => i || j));
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+// Synonyms — expand query words with common alternatives
+const SYNONYMS = {
+  planner:  ['plan','planning','design','designer','configure','layout','arrange'],
+  save:     ['keep','store','preserve','retain','remember','backup','hold'],
+  search:   ['find','look','browse','discover','locate','explore'],
+  offer:    ['deal','discount','sale','promotion','cheap','bargain','saving'],
+  delivery: ['deliver','ship','shipping','order','home','purchase','buy'],
+  leave:    ['exit','away','step','pause','break','go','walk'],
+  help:     ['assist','support','staff','coworker','worker','employee','person'],
+  phone:    ['mobile','transfer','send','handover','scan','qr'],
+  freeze:   ['lock','hold','pause','stop'],
+  wardrobe: ['closet','cabinet','storage','clothes'],
+  kitchen:  ['cooking','cook','metod','cabinet','cupboard'],
+  stock:    ['available','availability','sold','unavailable','out'],
+};
+
+// Expand a word with its synonyms
+function expandWord(w) {
+  const base = stem(w);
+  const result = new Set([w, base]);
+  Object.entries(SYNONYMS).forEach(([key, syns]) => {
+    if (key === w || key === base || syns.includes(w) || syns.includes(base)) {
+      result.add(key);
+      syns.forEach(s => result.add(s));
+    }
+  });
+  return result;
+}
+
+// Score a single query against a QA item. Returns { score, matchedKw }
+function scoreItem(q, qWords, qMeaningful, item) {
+  let score = 0;
+  let matchedKw = null;
+
+  item.keywords.forEach(kw => {
+    const kwParts = kw.trim().split(/\s+/);
+    if (kwParts.length > 1) {
+      // Multi-word phrase — exact match
+      if (q.includes(kw)) { score += 10; if (!matchedKw) matchedKw = kw; }
+    } else {
+      // Single word — try exact, stemmed, synonym, fuzzy
+      for (const qw of qMeaningful) {
+        const expanded = expandWord(qw);
+        if (qw === kw)                    { score += 6; if (!matchedKw) matchedKw = kw; break; }
+        if (expanded.has(kw))             { score += 4; if (!matchedKw) matchedKw = kw; break; }
+        if (stem(qw) === stem(kw))        { score += 4; if (!matchedKw) matchedKw = kw; break; }
+        // Fuzzy: allow 1 typo for words ≥ 5 chars, 2 typos for ≥ 7 chars
+        const dist = editDist(qw, kw);
+        const maxDist = qw.length >= 7 ? 2 : qw.length >= 5 ? 1 : 0;
+        if (dist > 0 && dist <= maxDist) { score += 2; if (!matchedKw) matchedKw = kw; break; }
+      }
+    }
+  });
+
+  // Meaningful words found in the item's question title (word-level)
+  const itemQWords = new Set(item.q.toLowerCase().replace(/[?!.,]/g,'').split(/\s+/));
+  qMeaningful.forEach(w => {
+    const exp = expandWord(w);
+    if (itemQWords.has(w)) score += 3;
+    else if ([...exp].some(e => itemQWords.has(e))) score += 2;
+  });
+
+  if (currentCat !== 'all' && item.cat === currentCat) score += 1;
+  return { score, matchedKw };
+}
+
+// ── Find best answer — returns { item, score, isFuzzy, suggestedWord } ──
 function findAnswer(query) {
   const q = query.toLowerCase().replace(/[?!.,]/g,'');
   const qWords = new Set(q.split(/\s+/));
   const qMeaningful = [...qWords].filter(w => w.length >= 3 && !STOP.has(w));
 
-  let best = null, bestScore = 0;
+  let best = null, bestScore = 0, bestKw = null;
+  let second = null, secondScore = 0;
 
   QA.forEach(item => {
-    let score = 0;
-
-    item.keywords.forEach(kw => {
-      const kwParts = kw.trim().split(/\s+/);
-      if (kwParts.length > 1) {
-        // Multi-word phrase: exact substring — highly specific
-        if (q.includes(kw)) score += 9;
-      } else {
-        // Single word: EXACT whole-word match only (prevents 'plan' matching 'planner')
-        if (qWords.has(kw)) score += 5;
-      }
-    });
-
-    // Meaningful query words that appear as exact words in the item's question title
-    const itemQWords = new Set(item.q.toLowerCase().replace(/[?!.,]/g,'').split(/\s+/));
-    qMeaningful.forEach(w => {
-      if (itemQWords.has(w)) score += 3;
-    });
-
-    if (currentCat !== 'all' && item.cat === currentCat) score += 1;
-    if (score > bestScore) { bestScore = score; best = item; }
+    const { score, matchedKw } = scoreItem(q, qWords, qMeaningful, item);
+    if (score > bestScore) {
+      second = best; secondScore = bestScore;
+      best = item; bestScore = score; bestKw = matchedKw;
+    } else if (score > secondScore) {
+      second = item; secondScore = score;
+    }
   });
 
-  return bestScore >= 4 ? best : null;
+  if (bestScore === 0) return null;
+
+  // Detect if the match was fuzzy (possible typo/synonym)
+  const exactWords = [...qWords];
+  const hasExactKwMatch = best && best.keywords.some(kw =>
+    kw.split(' ').length > 1 ? q.includes(kw) : exactWords.includes(kw)
+  );
+
+  const confidence = bestScore >= 10 ? 'high'
+                   : bestScore >= 6  ? 'medium'
+                   : bestScore >= 3  ? 'low'
+                   : 'none';
+
+  return { item: best, score: bestScore, confidence, hasExactKwMatch, bestKw };
 }
 
 // ── Add message ──────────────────────────────────────────
@@ -625,7 +719,7 @@ function addMsg(role, content) {
 }
 
 // ── Add full answer ──────────────────────────────────────
-function addAnswer(item) {
+function addAnswer(item, prefixHtml = '') {
   const nextHtml = item.next ? `
     <div class="next-steps">
       <div class="next-steps-title">✅ What to do next</div>
@@ -648,6 +742,7 @@ function addAnswer(item) {
     <div class="msg-body">
       <div class="msg-sender">Uppa</div>
       <div class="bubble">
+        ${prefixHtml}
         ${item.a}
         ${nextHtml}
       </div>
@@ -657,9 +752,59 @@ function addAnswer(item) {
   chat.scrollTop = chat.scrollHeight;
 }
 
+// ── Clarification — "Did you mean X?" ───────────────────
+function addClarification(originalQuery, result) {
+  const safeQ = result.item.q.replace(/'/g, "\\'");
+  const div = document.createElement('div');
+  div.className = 'msg uppa';
+  div.innerHTML = `
+    <div class="msg-avatar">🛋️</div>
+    <div class="msg-body">
+      <div class="msg-sender">Uppa</div>
+      <div class="bubble">
+        <p>I want to make sure I help you correctly 🙂</p>
+        <p>Are you asking about: <strong>"${result.item.q}"</strong>?</p>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+          <button onclick="confirmAnswer('${safeQ}', this)" style="background:var(--blue);color:white;border:none;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer">
+            👍 Yes, that's it!
+          </button>
+          <button onclick="declineClarification(this)" style="background:var(--grey);color:var(--dark);border:1.5px solid var(--border);padding:9px 18px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer">
+            ❌ No, something else
+          </button>
+        </div>
+      </div>
+    </div>`;
+  chat.insertBefore(div, typing);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function confirmAnswer(questionText, btn) {
+  // Disable buttons in the clarification bubble
+  btn.closest('.bubble').querySelectorAll('button').forEach(b => b.disabled = true);
+  addMsg('user', 'Yes, that\'s it!');
+  typing.classList.add('visible');
+  setTimeout(() => {
+    typing.classList.remove('visible');
+    const item = QA.find(q => q.q === questionText);
+    if (item) addAnswer(item, '<p style="color:var(--blue);font-size:12px;margin-bottom:8px">✓ Got it — here\'s your answer:</p>');
+    chat.scrollTop = chat.scrollHeight;
+  }, 500);
+}
+
+function declineClarification(btn) {
+  btn.closest('.bubble').querySelectorAll('button').forEach(b => b.disabled = true);
+  addMsg('user', 'No, something else');
+  typing.classList.add('visible');
+  setTimeout(() => {
+    typing.classList.remove('visible');
+    addFallback('');
+    chat.scrollTop = chat.scrollHeight;
+  }, 500);
+}
+
 // ── No answer fallback ───────────────────────────────────
 function addFallback(query) {
-  const suggestions = CAT_SUGGESTIONS.all.slice(0,3).map(id => {
+  const suggestions = CAT_SUGGESTIONS.all.slice(0,4).map(id => {
     const item = QA.find(q => q.id === id);
     return item ? `<button class="related-chip" onclick="askQuestion('${item.q.replace(/'/g,"\\'")}')">💬 ${item.q}</button>` : '';
   }).join('');
@@ -670,15 +815,15 @@ function addFallback(query) {
     <div class="msg-body">
       <div class="msg-sender">Uppa</div>
       <div class="bubble">
-        <p>I'm not sure about <em>"${query}"</em> — I'm still learning! 😊</p>
-        <p>Here are some things I can help with:</p>
+        <p>Hmm, I couldn't find a match${query ? ` for <em>"${query}"</em>` : ''} 🤔</p>
+        <p>Here are some popular questions to get you started:</p>
         <div class="related-chips" style="margin-top:10px">${suggestions}</div>
         <div class="next-steps" style="margin-top:12px">
           <div class="next-steps-title">✅ What to do next</div>
           <ol>
-            <li>Try rephrasing your question</li>
-            <li>Tap one of the <strong>topic buttons</strong> above to browse by category</li>
-            <li>Tap <strong>Request help</strong> on the kiosk to speak with a coworker</li>
+            <li>Try different words — e.g. <em>"wardrobe"</em> instead of <em>"closet"</em></li>
+            <li>Tap a <strong>topic category</strong> above to browse by subject</li>
+            <li>Ask a coworker in the store for personal help</li>
           </ol>
         </div>
       </div>
@@ -694,17 +839,29 @@ function askQuestion(q) {
   input.value = '';
   input.style.height = 'auto';
 
-  // Show typing
   typing.classList.add('visible');
   chat.scrollTop = chat.scrollHeight;
 
   setTimeout(() => {
     typing.classList.remove('visible');
-    const answer = findAnswer(q);
-    if (answer) addAnswer(answer);
-    else addFallback(q);
+    const result = findAnswer(q);
+
+    if (!result) {
+      addFallback(q);
+    } else if (result.confidence === 'high' || result.hasExactKwMatch) {
+      // High confidence — answer directly
+      addAnswer(result.item);
+    } else if (result.confidence === 'medium') {
+      // Medium — answer but note the interpretation
+      const note = `<p style="color:var(--mid);font-size:12px;margin-bottom:10px">💡 I interpreted your question as: <em>"${result.item.q}"</em></p>`;
+      addAnswer(result.item, note);
+    } else {
+      // Low confidence — ask for clarification first
+      addClarification(q, result);
+    }
+
     chat.scrollTop = chat.scrollHeight;
-  }, 700 + Math.random() * 400);
+  }, 600 + Math.random() * 400);
 }
 
 // ── Send button & enter key ──────────────────────────────
