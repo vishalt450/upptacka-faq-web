@@ -1446,6 +1446,55 @@ function handbookTitleScore(query, slide) {
   return score;
 }
 
+// ── Multiple matches — let customer choose ────────────────
+function addChoices(options) {
+  const div = document.createElement('div');
+  div.className = 'msg uppa';
+  const buttonsHtml = options.map((opt, i) => `
+    <button onclick="resolveChoice(${i})" style="
+      display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;
+      background:white;border:1.5px solid var(--border);border-radius:12px;
+      padding:11px 14px;margin-bottom:8px;cursor:pointer;font-size:13px;
+      transition:border-color .15s,box-shadow .15s" 
+      onmouseover="this.style.borderColor='var(--blue)';this.style.boxShadow='0 0 0 2px rgba(0,48,142,.12)'"
+      onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+      <span style="font-size:18px;line-height:1.2">${opt.icon}</span>
+      <span>
+        <strong style="color:var(--dark);display:block;margin-bottom:2px">${opt.label}</strong>
+        <span style="color:var(--mid);font-size:12px">${opt.sub}</span>
+      </span>
+    </button>`).join('');
+
+  div.innerHTML = `
+    <div class="msg-avatar">🛋️</div>
+    <div class="msg-body">
+      <div class="msg-sender">Uppa</div>
+      <div class="bubble">
+        <p style="margin-bottom:12px">I found a few things that could help — which one are you looking for? 👇</p>
+        <div id="choice-buttons">${buttonsHtml}</div>
+      </div>
+    </div>`;
+  chat.insertBefore(div, typing);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// Stored pending choices so resolveChoice can access them
+let _pendingChoices = [];
+function resolveChoice(i) {
+  // Disable all choice buttons
+  document.querySelectorAll('#choice-buttons button').forEach(b => b.disabled = true);
+  const opt = _pendingChoices[i];
+  if (!opt) return;
+  addMsg('user', opt.label);
+  typing.classList.add('visible');
+  setTimeout(() => {
+    typing.classList.remove('visible');
+    if (opt.type === 'faq')      addAnswer(opt.data);
+    if (opt.type === 'handbook') addHandbookAnswer(opt.data, opt.label);
+    chat.scrollTop = chat.scrollHeight;
+  }, 500);
+}
+
 function askQuestion(q) {
   if (!q.trim()) return;
   addMsg('user', q);
@@ -1460,24 +1509,40 @@ function askQuestion(q) {
 
     const faqResult = findAnswer(q);
     const hbSlide   = searchHandbook(q);
-
-    // If handbook slide title is a very strong match (≥14 = 2+ words match title),
-    // prefer handbook over FAQ — the user is asking about a specific feature
     const hbTitleScore = hbSlide ? handbookTitleScore(q, hbSlide) : 0;
-    const preferHandbook = hbSlide && hbTitleScore >= 14;
 
-    if (preferHandbook) {
+    const hasFaq      = faqResult && (faqResult.confidence === 'high' || faqResult.confidence === 'medium' || faqResult.hasExactKwMatch);
+    const hasHandbook = hbSlide && hbTitleScore >= 8;
+
+    if (hasFaq && hasHandbook) {
+      // Both match — let the customer choose
+      const hbTitle = hbSlide.title.replace(/\n/g,' ').trim();
+      _pendingChoices = [
+        { type: 'faq',      data: faqResult.item, icon: '💬',
+          label: faqResult.item.q,
+          sub: 'Quick answer from Uppa' },
+        { type: 'handbook', data: hbSlide, icon: '📖',
+          label: hbTitle.length > 60 ? hbTitle.substring(0,57)+'…' : hbTitle,
+          sub: `Slide ${hbSlide.slide} · Detailed feature guide` }
+      ];
+      addChoices(_pendingChoices);
+
+    } else if (hasFaq) {
+      if (faqResult.confidence === 'medium' && !faqResult.hasExactKwMatch) {
+        const note = `<p style="color:var(--mid);font-size:12px;margin-bottom:10px">💡 I interpreted your question as: <em>"${faqResult.item.q}"</em></p>`;
+        addAnswer(faqResult.item, note);
+      } else {
+        addAnswer(faqResult.item);
+      }
+
+    } else if (hasHandbook) {
       addHandbookAnswer(hbSlide, q);
-    } else if (!faqResult) {
-      if (hbSlide) addHandbookAnswer(hbSlide, q);
-      else addFallback(q);
-    } else if (faqResult.confidence === 'high' || faqResult.hasExactKwMatch) {
-      addAnswer(faqResult.item);
-    } else if (faqResult.confidence === 'medium') {
-      const note = `<p style="color:var(--mid);font-size:12px;margin-bottom:10px">💡 I interpreted your question as: <em>"${faqResult.item.q}"</em></p>`;
-      addAnswer(faqResult.item, note);
-    } else {
+
+    } else if (faqResult && faqResult.confidence === 'low') {
       addClarification(q, faqResult);
+
+    } else {
+      addFallback(q);
     }
 
     chat.scrollTop = chat.scrollHeight;
