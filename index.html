@@ -789,6 +789,9 @@ const HANDBOOK = [
 ];
 
 // Search handbook for relevant slides
+// Skip-list: index/title/divider slides that list many topics and pollute scores
+const HANDBOOK_SKIP = new Set([1, 2, 3, 19, 27, 111]);
+
 function searchHandbook(query) {
   const q = query.toLowerCase().replace(/[?!.,]/g,'');
   const qWords = q.split(/\s+/).filter(w => w.length >= 3 && !STOP.has(w));
@@ -796,17 +799,25 @@ function searchHandbook(query) {
 
   let best = null, bestScore = 0;
   HANDBOOK.forEach(slide => {
-    const haystack = (slide.title + ' ' + slide.body).toLowerCase();
+    if (HANDBOOK_SKIP.has(slide.slide)) return;  // skip index/divider slides
+
+    const titleL = slide.title.toLowerCase();
+    const bodyL  = slide.body.toLowerCase();
     let score = 0;
+
     qWords.forEach(w => {
-      if (haystack.includes(w)) score += 3;
-      // stemmed
       const sw = stem(w);
-      if (sw.length >= 3 && haystack.includes(sw)) score += 2;
+      // Title match scores much higher than body match
+      if (titleL.includes(w))                          score += 8;
+      else if (sw.length >= 3 && titleL.includes(sw)) score += 6;
+      // Body match
+      if (bodyL.includes(w))                           score += 3;
+      else if (sw.length >= 3 && bodyL.includes(sw))  score += 2;
     });
+
     if (score > bestScore) { bestScore = score; best = slide; }
   });
-  return bestScore >= 3 ? best : null;
+  return bestScore >= 6 ? best : null;  // require at least one strong title signal
 }
 
 const QA = [
