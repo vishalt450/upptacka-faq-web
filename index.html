@@ -3,955 +3,699 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Upptäcka FAQ — IKEA Store Digital</title>
+  <title>Uppa — Upptäcka AI Assistant</title>
   <style>
-    /* ── IKEA Design Tokens ──────────────────────────── */
     :root {
-      --ikea-yellow: #FFDB00;
-      --ikea-blue:   #0058A3;
-      --ikea-dark:   #111111;
-      --ikea-grey:   #F5F5F5;
-      --ikea-mid:    #767676;
-      --ikea-border: #DFDFDF;
-      --ikea-white:  #FFFFFF;
-      --ikea-red:    #CC0008;
-      --radius:      4px;
-      --shadow:      0 2px 8px rgba(0,0,0,.10);
+      --yellow: #FFDB00;
+      --blue:   #0058A3;
+      --dark:   #111111;
+      --grey:   #F5F5F5;
+      --mid:    #767676;
+      --border: #E0E0E0;
+      --white:  #FFFFFF;
+      --green:  #168740;
+      --bubble-user: #E8F1FB;
+      --bubble-uppa: #FFFFFF;
+      --radius: 18px;
+      --shadow: 0 2px 12px rgba(0,0,0,.10);
     }
-
-    /* ── Reset ───────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: "Noto Sans", Arial, sans-serif;
-      color: var(--ikea-dark);
-      background: var(--ikea-grey);
-      line-height: 1.6;
-    }
+    html, body { height: 100%; font-family: "Noto Sans", Arial, sans-serif; background: var(--grey); color: var(--dark); }
+
+    /* ── Layout ─────────────────────────────────────── */
+    .app { display: flex; flex-direction: column; height: 100vh; max-width: 780px; margin: 0 auto; background: var(--white); box-shadow: var(--shadow); }
 
     /* ── Header ─────────────────────────────────────── */
-    header {
-      background: var(--ikea-blue);
-      color: var(--ikea-white);
-      padding: 0 24px;
-      position: sticky; top: 0; z-index: 100;
-      box-shadow: var(--shadow);
-    }
-    .header-inner {
-      max-width: 960px; margin: 0 auto;
-      display: flex; align-items: center; gap: 16px;
-      height: 64px;
-    }
-    .logo {
-      background: var(--ikea-yellow);
-      color: var(--ikea-blue);
-      font-weight: 900; font-size: 18px;
-      padding: 4px 10px; border-radius: 2px;
-      letter-spacing: .5px;
+    .header {
+      background: var(--blue); color: var(--white);
+      padding: 14px 20px; display: flex; align-items: center; gap: 14px;
       flex-shrink: 0;
     }
-    .header-title {
-      font-size: 18px; font-weight: 700;
-      flex: 1;
+    .avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--yellow); display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
     }
-    .header-subtitle {
-      font-size: 12px; opacity: .75;
-      display: none;
-    }
-    @media(min-width:480px){ .header-subtitle { display: block; } }
+    .header-info { flex: 1; }
+    .header-name { font-size: 18px; font-weight: 800; letter-spacing: .3px; }
+    .header-sub  { font-size: 12px; opacity: .8; display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+    .online-dot  { width: 8px; height: 8px; border-radius: 50%; background: #4CAF50; display: inline-block; }
+    .ikea-badge  { background: var(--yellow); color: var(--blue); font-size: 11px; font-weight: 900; padding: 2px 7px; border-radius: 10px; }
 
-    /* ── Hero ────────────────────────────────────────── */
-    .hero {
-      background: var(--ikea-blue);
-      color: var(--ikea-white);
-      padding: 32px 24px 48px;
-      text-align: center;
-    }
-    .hero h1 { font-size: clamp(22px,4vw,34px); font-weight: 900; margin-bottom: 8px; }
-    .hero p  { font-size: 15px; opacity: .85; max-width: 540px; margin: 0 auto 24px; }
+    /* ── Chat area ───────────────────────────────────── */
+    .chat { flex: 1; overflow-y: auto; padding: 20px 16px 12px; display: flex; flex-direction: column; gap: 16px; }
 
-    /* ── Search ──────────────────────────────────────── */
-    .search-wrap {
-      max-width: 560px; margin: 0 auto;
-      position: relative;
+    /* ── Welcome card ────────────────────────────────── */
+    .welcome-card {
+      background: linear-gradient(135deg, var(--blue) 0%, #003D7A 100%);
+      color: var(--white); border-radius: 16px; padding: 22px 20px; text-align: center;
     }
-    .search-wrap input {
-      width: 100%; padding: 14px 48px 14px 16px;
-      border: none; border-radius: var(--radius);
-      font-size: 16px;
-      box-shadow: var(--shadow);
-    }
-    .search-wrap input:focus { outline: 3px solid var(--ikea-yellow); }
-    .search-icon {
-      position: absolute; right: 14px; top: 50%;
-      transform: translateY(-50%);
-      color: var(--ikea-mid); font-size: 18px; pointer-events: none;
-    }
+    .welcome-card .wave { font-size: 32px; margin-bottom: 8px; }
+    .welcome-card h2 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+    .welcome-card p  { font-size: 14px; opacity: .85; line-height: 1.6; }
 
-    /* ── Category pills ──────────────────────────────── */
-    .categories {
-      background: var(--ikea-white);
-      border-bottom: 1px solid var(--ikea-border);
-      padding: 12px 24px;
-      overflow-x: auto; white-space: nowrap;
-    }
-    .categories-inner {
-      max-width: 960px; margin: 0 auto;
-      display: flex; gap: 8px; align-items: center;
-    }
-    .pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 6px 14px; border-radius: 20px;
-      border: 1.5px solid var(--ikea-border);
-      background: var(--ikea-white);
+    /* ── Suggested questions ─────────────────────────── */
+    .suggestions-label { font-size: 12px; color: var(--mid); font-weight: 600; padding: 0 2px; }
+    .suggestions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .suggestion-chip {
+      background: var(--white); border: 1.5px solid var(--blue);
+      color: var(--blue); padding: 8px 14px; border-radius: 20px;
       font-size: 13px; font-weight: 600; cursor: pointer;
       transition: all .15s;
-      white-space: nowrap;
     }
-    .pill:hover { border-color: var(--ikea-blue); color: var(--ikea-blue); }
-    .pill.active {
-      background: var(--ikea-blue); color: var(--ikea-white);
-      border-color: var(--ikea-blue);
-    }
-    .pill-emoji { font-size: 14px; }
+    .suggestion-chip:hover { background: var(--blue); color: var(--white); }
 
-    /* ── Main content ────────────────────────────────── */
-    main {
-      max-width: 960px; margin: 0 auto;
-      padding: 32px 24px 64px;
-    }
+    /* ── Message bubbles ─────────────────────────────── */
+    .msg { display: flex; gap: 10px; align-items: flex-start; }
+    .msg.user { flex-direction: row-reverse; }
 
-    /* ── No-results ──────────────────────────────────── */
-    #no-results {
-      display: none; text-align: center;
-      padding: 48px 0; color: var(--ikea-mid);
+    .msg-avatar {
+      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 16px;
     }
-    #no-results .big { font-size: 40px; margin-bottom: 8px; }
-    #no-results p { font-size: 15px; }
+    .msg.uppa .msg-avatar { background: var(--yellow); }
+    .msg.user .msg-avatar { background: var(--blue); color: var(--white); font-size: 13px; font-weight: 700; }
 
-    /* ── Section ─────────────────────────────────────── */
-    .faq-section { margin-bottom: 36px; }
-    .section-header {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 12px;
-    }
-    .section-emoji { font-size: 22px; }
-    .section-title { font-size: 18px; font-weight: 800; }
+    .msg-body { max-width: 82%; }
+    .msg-sender { font-size: 11px; color: var(--mid); margin-bottom: 4px; font-weight: 600; }
+    .msg.user .msg-sender { text-align: right; }
 
-    /* ── FAQ Card ────────────────────────────────────── */
-    .faq-card {
-      background: var(--ikea-white);
-      border: 1px solid var(--ikea-border);
-      border-radius: var(--radius);
-      margin-bottom: 8px;
-      overflow: hidden;
-      transition: box-shadow .15s;
+    .bubble {
+      padding: 12px 16px; border-radius: var(--radius); line-height: 1.65; font-size: 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
     }
-    .faq-card:hover { box-shadow: var(--shadow); }
+    .msg.uppa .bubble { background: var(--bubble-uppa); border: 1px solid var(--border); border-top-left-radius: 4px; }
+    .msg.user .bubble { background: var(--bubble-user); border-top-right-radius: 4px; }
 
-    .faq-question {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      gap: 12px;
-      padding: 16px 20px;
-      cursor: pointer;
-      font-weight: 600; font-size: 15px;
-      user-select: none;
-      border: none; background: none; width: 100%; text-align: left;
-    }
-    .faq-question:focus { outline: 2px solid var(--ikea-yellow); }
-    .faq-chevron {
-      font-size: 18px; color: var(--ikea-mid);
-      transition: transform .2s; flex-shrink: 0; margin-top: 2px;
-    }
-    .faq-card.open .faq-chevron { transform: rotate(180deg); }
+    .bubble ul { margin: 8px 0 4px 18px; }
+    .bubble li { margin-bottom: 5px; }
+    .bubble strong { color: var(--blue); }
+    .bubble p + p { margin-top: 8px; }
 
-    .faq-answer {
-      display: none;
-      padding: 0 20px 16px;
-      font-size: 14px; color: #333;
-      border-top: 1px solid var(--ikea-border);
+    /* ── Next steps box ──────────────────────────────── */
+    .next-steps {
+      margin-top: 10px; background: #F0FFF6;
+      border: 1.5px solid #A8D5B5; border-radius: 12px; padding: 12px 14px;
     }
-    .faq-card.open .faq-answer { display: block; }
-    .faq-answer p   { margin-top: 12px; }
-    .faq-answer ul  { margin: 12px 0 0 20px; }
-    .faq-answer li  { margin-bottom: 6px; }
-    .faq-answer strong { color: var(--ikea-blue); }
-    .faq-answer .tip {
-      background: #FFF9E6; border-left: 4px solid var(--ikea-yellow);
-      padding: 10px 14px; margin-top: 12px; border-radius: 0 var(--radius) var(--radius) 0;
-      font-size: 13px;
-    }
-    .faq-answer .note {
-      background: #E8F1FB; border-left: 4px solid var(--ikea-blue);
-      padding: 10px 14px; margin-top: 12px; border-radius: 0 var(--radius) var(--radius) 0;
-      font-size: 13px;
-    }
-    .faq-answer .warning {
-      background: #FFF0F0; border-left: 4px solid var(--ikea-red);
-      padding: 10px 14px; margin-top: 12px; border-radius: 0 var(--radius) var(--radius) 0;
-      font-size: 13px;
-    }
-    .tag {
-      display: inline-block; padding: 2px 8px;
-      border-radius: 10px; font-size: 11px; font-weight: 700;
-      margin-right: 4px; vertical-align: middle;
-    }
-    .tag-coworker { background: #E8F1FB; color: var(--ikea-blue); }
-    .tag-customer { background: #FFF3CD; color: #856404; }
-    .tag-new      { background: #D4EDDA; color: #155724; }
+    .next-steps-title { font-size: 12px; font-weight: 800; color: var(--green); margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+    .next-steps ol { margin-left: 16px; font-size: 13px; color: #1a5c2e; }
+    .next-steps li { margin-bottom: 4px; }
 
-    /* ── Footer ──────────────────────────────────────── */
-    footer {
-      background: var(--ikea-dark); color: #aaa;
-      text-align: center; padding: 24px;
-      font-size: 13px;
+    /* ── Related questions ───────────────────────────── */
+    .related { margin-top: 8px; }
+    .related-label { font-size: 11px; color: var(--mid); font-weight: 600; margin-bottom: 6px; }
+    .related-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .related-chip {
+      background: var(--grey); border: 1px solid var(--border);
+      color: var(--dark); padding: 5px 12px; border-radius: 14px;
+      font-size: 12px; cursor: pointer; transition: all .12s;
     }
-    footer a { color: var(--ikea-yellow); text-decoration: none; }
+    .related-chip:hover { background: var(--blue); color: var(--white); border-color: var(--blue); }
 
-    /* ── Result count ────────────────────────────────── */
-    .result-count {
-      font-size: 13px; color: var(--ikea-mid);
-      margin-bottom: 16px;
+    /* ── Typing indicator ────────────────────────────── */
+    .typing { display: none; }
+    .typing.visible { display: flex; }
+    .typing-dots { display: flex; gap: 4px; padding: 14px 18px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); border-top-left-radius: 4px; }
+    .typing-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mid); animation: bounce .9s infinite; }
+    .typing-dot:nth-child(2) { animation-delay: .15s; }
+    .typing-dot:nth-child(3) { animation-delay: .3s; }
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+    /* ── Input area ──────────────────────────────────── */
+    .input-area {
+      padding: 12px 16px 16px; border-top: 1px solid var(--border);
+      background: var(--white); flex-shrink: 0;
     }
+    .input-row { display: flex; gap: 10px; align-items: flex-end; }
+    .input-wrap { flex: 1; position: relative; }
+    .chat-input {
+      width: 100%; padding: 12px 44px 12px 16px;
+      border: 2px solid var(--border); border-radius: 24px;
+      font-size: 14px; resize: none; outline: none;
+      font-family: inherit; line-height: 1.5; max-height: 100px; overflow-y: auto;
+      transition: border-color .15s;
+    }
+    .chat-input:focus { border-color: var(--blue); }
+    .send-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--blue); color: var(--white);
+      border: none; cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background .15s;
+    }
+    .send-btn:hover { background: #003D7A; }
+    .send-btn:disabled { background: var(--border); cursor: default; }
+    .input-hint { font-size: 11px; color: var(--mid); margin-top: 6px; text-align: center; }
+
+    /* ── Category pills ──────────────────────────────── */
+    .cat-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 10px; }
+    .cat-row::-webkit-scrollbar { display: none; }
+    .cat-pill {
+      flex-shrink: 0; padding: 5px 12px; border-radius: 14px;
+      border: 1.5px solid var(--border); background: var(--white);
+      font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;
+      transition: all .12s;
+    }
+    .cat-pill:hover, .cat-pill.active { background: var(--blue); color: var(--white); border-color: var(--blue); }
+
+    /* ── Scrollbar ───────────────────────────────────── */
+    .chat::-webkit-scrollbar { width: 4px; }
+    .chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
   </style>
 </head>
 <body>
+<div class="app">
 
-<!-- ═══ HEADER ═══════════════════════════════════════ -->
-<header>
-  <div class="header-inner">
-    <div class="logo">IKEA</div>
+  <!-- HEADER -->
+  <div class="header">
+    <div class="avatar">🛋️</div>
+    <div class="header-info">
+      <div class="header-name">Uppa <span class="ikea-badge">IKEA</span></div>
+      <div class="header-sub"><span class="online-dot"></span> Upptäcka AI Assistant · Always here to help</div>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="chat" id="chat">
+
+    <!-- Welcome -->
+    <div class="welcome-card">
+      <div class="wave">👋</div>
+      <h2>Hi, I'm Uppa!</h2>
+      <p>I'm your Upptäcka assistant. Ask me anything about the kiosk — finding products, planning your kitchen or wardrobe, offers, getting help in store, and much more.</p>
+    </div>
+
+    <!-- Category pills -->
     <div>
-      <div class="header-title">Upptäcka FAQ</div>
-      <div class="header-subtitle">Frequently Asked Questions · Store Digital</div>
-    </div>
-  </div>
-</header>
+      <div class="cat-row" id="cat-row">
+        <button class="cat-pill active" data-cat="all">✨ All topics</button>
+        <button class="cat-pill" data-cat="find">🔎 Find products</button>
+        <button class="cat-pill" data-cat="plan">📐 Plan my room</button>
+        <button class="cat-pill" data-cat="offers">🏷️ Offers & Family</button>
+        <button class="cat-pill" data-cat="session">🔒 Save my work</button>
+        <button class="cat-pill" data-cat="help">🙋 Get help</button>
+        <button class="cat-pill" data-cat="buy">🛒 Buy & collect</button>
+        <button class="cat-pill" data-cat="trouble">🛠️ Something's wrong</button>
+      </div>
 
-<!-- ═══ HERO ══════════════════════════════════════════ -->
-<div class="hero">
-  <h1>How can we help?</h1>
-  <p>Find answers to the most common questions about the Upptäcka kiosk — for coworkers and customers.</p>
-  <div class="search-wrap">
-    <input type="text" id="search-input" placeholder="Search questions…" autocomplete="off" />
-    <span class="search-icon">🔍</span>
+      <div class="suggestions-label">💬 Tap a question to get started</div>
+      <div class="suggestions" id="suggestions"></div>
+    </div>
+
+    <!-- Typing indicator -->
+    <div class="msg uppa typing" id="typing">
+      <div class="msg-avatar">🛋️</div>
+      <div class="typing-dots">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    </div>
+
   </div>
+
+  <!-- INPUT -->
+  <div class="input-area">
+    <div class="input-row">
+      <div class="input-wrap">
+        <textarea class="chat-input" id="chat-input" rows="1" placeholder="Ask Uppa anything about Upptäcka…"></textarea>
+      </div>
+      <button class="send-btn" id="send-btn">➤</button>
+    </div>
+    <div class="input-hint">Powered by Upptäcka Features Handbook · IKEA Store Digital</div>
+  </div>
+
 </div>
 
-<!-- ═══ CATEGORY PILLS ════════════════════════════════ -->
-<div class="categories">
-  <div class="categories-inner">
-    <button class="pill active" data-cat="all"><span class="pill-emoji">📋</span> All</button>
-    <button class="pill" data-cat="home"><span class="pill-emoji">🏠</span> Home Screen</button>
-    <button class="pill" data-cat="search"><span class="pill-emoji">🔎</span> Search & Browse</button>
-    <button class="pill" data-cat="planner"><span class="pill-emoji">📐</span> Planners</button>
-    <button class="pill" data-cat="offers"><span class="pill-emoji">🏷️</span> Offers & Family</button>
-    <button class="pill" data-cat="session"><span class="pill-emoji">🔒</span> Leave & Continue</button>
-    <button class="pill" data-cat="help"><span class="pill-emoji">🙋</span> Request Help</button>
-    <button class="pill" data-cat="shopgo"><span class="pill-emoji">📱</span> Shop & Go</button>
-    <button class="pill" data-cat="ptag"><span class="pill-emoji">🏪</span> Price Tags</button>
-    <button class="pill" data-cat="trouble"><span class="pill-emoji">🛠️</span> Troubleshooting</button>
-  </div>
-</div>
-
-<!-- ═══ MAIN ══════════════════════════════════════════ -->
-<main>
-  <p class="result-count" id="result-count"></p>
-
-  <div id="no-results">
-    <div class="big">🤷</div>
-    <p>No questions match your search. Try different keywords.</p>
-  </div>
-
-  <!-- ──── HOME SCREEN ──────────────────────────────── -->
-  <div class="faq-section" data-cat="home">
-    <div class="section-header">
-      <span class="section-emoji">🏠</span>
-      <h2 class="section-title">Home Screen & Navigation</h2>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        What options are on the Upptäcka home screen?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>The home screen gives you four primary options:</p>
-        <ul>
-          <li><strong>Store page</strong> — opening hours, map, facilities, and store services</li>
-          <li><strong>Language toggle</strong> — switch languages if your market has multiple options</li>
-          <li><strong>Find products</strong> — opens the search and browse experience</li>
-          <li><strong>Focus tile</strong> — a contextual tile configured per kiosk location (e.g. IKEA Family, planners, specific category, promotions)</li>
-        </ul>
-        <div class="tip">💡 The focus tile can be changed in the Kiosk Admin Panel. Ask your store manager or digital champion for access.</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        What is the Store Page and when should customers use it?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>The Store Page is a dedicated screen with store-specific information including:</p>
-        <ul>
-          <li>Opening hours (synced automatically from Navigera)</li>
-          <li>Store map</li>
-          <li>IKEA Family information</li>
-          <li>'How to shop' with Shop&Go guide</li>
-          <li>Feedback (Pulse CX module where available)</li>
-          <li>Second-hand corner info, Full serve order instructions</li>
-        </ul>
-        <p>It can be accessed via the store name on the home screen, or via the Recommended tab in certain store locations.</p>
-        <div class="note">📍 The Store Page entry point appears in: Store entrance, Showroom entrance, Market Hall entrance, Atrium, Planning area, Exit, Customer Services, and Pick-up point.</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        How do I change the language on the kiosk?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>Tap the <strong>Language</strong> option on the home screen. This is only visible if your market has multiple languages configured in the system.</p>
-        <div class="note">📋 If the language option is missing, it means only one language is set up for your store. Contact your digital champion to request additional languages.</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        What is the Focus Tile and how is it configured?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>The <strong>Focus Tile</strong> is a contextual entry point on the home screen configured per kiosk. Options include:</p>
-        <ul>
-          <li>Product categories (e.g. wardrobes, kitchens)</li>
-          <li>Inspirational content</li>
-          <li>Store events</li>
-          <li>IKEA Family offers</li>
-          <li>IKEA for Business</li>
-          <li>Specific planners (IPEX, REX planners)</li>
-          <li>Promotions (NLP, undersold products)</li>
-        </ul>
-        <p>To change it, go to the <strong>Kiosk Admin Panel</strong> — only coworkers with admin access can make changes.</p>
-        <div class="tag tag-coworker">Coworker</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ──── SEARCH & BROWSE ──────────────────────────── -->
-  <div class="faq-section" data-cat="search">
-    <div class="section-header">
-      <span class="section-emoji">🔎</span>
-      <h2 class="section-title">Search & Browse</h2>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        How does search work on the Upptäcka kiosk?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>Tap <strong>Find products</strong> on the home screen, then tap the search button. The search bar features:</p>
-        <ul>
-          <li>Keyboard opens automatically</li>
-          <li>Autocomplete suggestions appear as you type (words, products, categories)</li>
-          <li>Natural Language Processing (NLP) — type naturally, e.g. "blue sofa" or "small kitchen table"</li>
-          <li>Clear button to erase text</li>
-          <li>Enter to submit search</li>
-        </ul>
-        <div class="tip">💡 Customers can also search for their planner using a VPC code (Planner code) in the search bar on any kiosk in the store.</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        How do I browse by category without searching?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>From the <strong>Find products</strong> screen you can:</p>
-        <ul>
-          <li>Use the <strong>Products, Rooms, Planners</strong> tabs/filters at the top</li>
-          <li>Swipe the horizontal scroll bar left to see more options</li>
-          <li>Tap a category to open subcategories</li>
-          <li>Tap a subcategory to see the product listing page (PLP)</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        What tabs are available in the Search & Browse page?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>The search and browse page includes a dedicated <strong>Offers</strong> tab with:</p>
-        <ul>
-          <li>NLP (New Lower Price)</li>
-          <li>News</li>
-          <li>IKEA Family Offers</li>
-          <li>Last Chance products</li>
-          <li>Undersold products</li>
-          <li>As-is products</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        What is on the Product Information Page (PIP)?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>The Product Information Page shows:</p>
-        <ul>
-          <li>Product variants (colours, sizes)</li>
-          <li>Product tabs with detailed information</li>
-          <li>Assembly instructions</li>
-          <li>Complementary products</li>
-          <li>Order products with delivery (ikea.com)</li>
-          <li>Entry point to planners (if product has a planner)</li>
-          <li>IKEA Family offers related to the product</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- ──── PLANNERS ─────────────────────────────────── -->
-  <div class="faq-section" data-cat="planner">
-    <div class="section-header">
-      <span class="section-emoji">📐</span>
-      <h2 class="section-title">Planners (Kitchen, Wardrobe & More)</h2>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        How can a customer access a planner on Upptäcka?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>Customers can access a planner through multiple entry points:</p>
-        <ul>
-          <li><strong>Focus tile</strong> on the home screen (if configured for planner)</li>
-          <li><strong>Planner link</strong> on the left panel when a planner is selected on focus tile</li>
-          <li><strong>Planner code (VPC code)</strong> typed in the search bar on any kiosk</li>
-          <li><strong>Search</strong> for the planner product name</li>
-          <li><strong>Planners tab</strong> in Search and browse</li>
-          <li><strong>Product Listing Page (PLP)</strong> for products with a planner</li>
-          <li><strong>Product Information Page (PIP)</strong> for products with a planner</li>
-        </ul>
-        <div class="tip">💡 This works the same way for all IPEX/REX planners — for example, the Sofa planner, Kitchen planner, or Wardrobe planner.</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        A customer started a plan and wants to continue it later — is this possible?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>Yes! There are two options:</p>
-        <ul>
-          <li><strong>Screen Lock (Leave & Continue)</strong> — the coworker can lock the screen so the session is preserved. When the customer returns, they unlock and continue where they left off. See the "Leave & Continue" section for full details.</li>
-          <li><strong>Planner code (VPC code)</strong> — customers can save their planner design and get a code to re-open it on any kiosk at any time.</li>
-        </ul>
-        <div class="note">📋 Without locking or saving, the session will be lost if the kiosk times out.</div>
-        <div class="tag tag-coworker">Coworker</div>
-        <div class="tag tag-customer">Customer</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        How do I configure which planner appears on the focus tile?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>Go to the <strong>Kiosk Admin Panel</strong> → Focus tile settings → Select the planner (e.g. Kitchen, PAX, Sofa) for the relevant kiosk location.</p>
-        <p>This is useful to set up kiosks in planning areas with the relevant planner pre-loaded as the focus tile.</p>
-        <div class="tag tag-coworker">Coworker · Admin access required</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ──── OFFERS & IKEA FAMILY ──────────────────────── -->
-  <div class="faq-section" data-cat="offers">
-    <div class="section-header">
-      <span class="section-emoji">🏷️</span>
-      <h2 class="section-title">Offers & IKEA Family</h2>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        Where can customers find offers and discounts on the kiosk?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>Offers are available in several places:</p>
-        <ul>
-          <li><strong>Focus tile</strong> on the home screen (if configured for offers)</li>
-          <li><strong>Offers tab</strong> in the Search and browse page</li>
-          <li>Directly in search results and category pages</li>
-        </ul>
-        <p>Types of offers available:</p>
-        <ul>
-          <li>NLP (New Lower Price)</li>
-          <li>News / New arrivals</li>
-          <li>IKEA Family exclusive offers</li>
-          <li>Last chance products</li>
-          <li>Undersold products (slow-moving stock promoted on the focus tile)</li>
-          <li>As-is products</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        How does IKEA Family work on the Upptäcka kiosk?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>From the home screen (or via focus tile), customers can access the <strong>IKEA Family view</strong>:</p>
-        <ul>
-          <li>QR code to sign up on IKEA website</li>
-          <li>QR code for member benefits information</li>
-          <li>QR code to sign in to IKEA Family</li>
-          <li>Browse IKEA Family exclusive offers on the Product Information Page (PIP)</li>
-        </ul>
-        <p>To configure IKEA Family on the focus tile, go to the Admin Panel → Focus tile → IKEA Family.</p>
-        <div class="tag tag-customer">Customer</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        How does IKEA for Business work on Upptäcka?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>IKEA for Business is accessible via the focus tile or the Recommended tab. It includes:</p>
-        <ul>
-          <li>QR code to join the IKEA Business network</li>
-          <li>QR code for member benefits</li>
-          <li>QR code to book an appointment with a specialist</li>
-          <li>QR code to access IKEA web by sector</li>
-        </ul>
-        <p>Enable/disable this via Admin Panel → Settings → IKEA for Business.</p>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        What is the "All Offers" focus tile?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>The <strong>All Price Offers focus tile</strong> is set as the default focus tile in the Self-Serve area. It gives customers quick access to all available offers in one place. It can also be set on other kiosk locations via the Admin Panel.</p>
-        <div class="tag tag-new">New in FY25</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ──── LEAVE & CONTINUE ──────────────────────────── -->
-  <div class="faq-section" data-cat="session">
-    <div class="section-header">
-      <span class="section-emoji">🔒</span>
-      <h2 class="section-title">Leave & Continue (Screen Lock)</h2>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        What is the Screen Lock feature and why does it exist?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>When co-workers and customers plan together (one-to-many planning), they often need to <strong>leave the kiosk to explore the physical showroom or market hall</strong> — for example to look at an actual sofa, wardrobe, or kitchen. Without the lock, the session would time out and all planning work would be lost.</p>
-        <p>The <strong>Screen Lock</strong> lets a coworker freeze the kiosk screen so the design is preserved. When the customer (and coworker) return, they unlock and continue exactly where they left off — no need to restart.</p>
-        <div class="tip">💡 This feature reduces frustration and makes the one-to-many planning process (kitchen, wardrobe, etc.) much more efficient.</div>
-        <div class="tag tag-coworker">Coworker feature</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        How does a coworker activate the Screen Lock?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>The Screen Lock is a <strong>hidden feature for coworkers only</strong>:</p>
-        <ul>
-          <li>While on the active session/planner, <strong>long press the top-right corner</strong> of the screen (hold for a few seconds)</li>
-          <li>The screen will lock and display a lock screen</li>
-          <li>The session is preserved in the background</li>
-        </ul>
-        <p>To unlock: tap the screen and enter the unlock action (PIN or coworker gesture — depends on your store setup).</p>
-        <div class="warning">⚠️ This is a coworker-only feature. Customers should not activate the lock themselves. Always ensure a coworker is present to unlock when returning.</div>
-        <div class="tag tag-coworker">Coworker</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        How long does the screen stay locked before the session expires?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>The session is preserved while the screen is locked. However, <strong>if the customer and coworker take too long to return</strong> and the lock times out, the session will end and the design will need to be restarted.</p>
-        <p><strong>Best practice:</strong> Save the planner design with a VPC code before leaving, so even if the lock expires, the customer can return the design by entering the code.</p>
-        <div class="tip">💡 Tip: The planner VPC code is the fail-safe. Always save before exploring the store.</div>
-        <div class="tag tag-coworker">Coworker</div>
-        <div class="tag tag-customer">Customer</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        How many times is the Screen Lock actually used in stores?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>Usage data is tracked in the <strong>Upptäcka Dashboard</strong>. To see how often the lock is used and how many sessions are resumed vs. restarted:</p>
-        <ul>
-          <li>Access the Upptäcka Dashboard (ask your market digital champion for link)</li>
-          <li>Go to <strong>Items of interest</strong> or <strong>Store overview</strong> for usage KPIs</li>
-          <li>Contact Vasiliki (data analyst) or your market analytics team for a specific report</li>
-        </ul>
-        <div class="note">📊 Tracking this data helps us understand if the feature is being adopted and if coworkers need more training on when/how to use it.</div>
-        <div class="tag tag-coworker">Coworker · Analytics</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ──── REQUEST HELP ──────────────────────────────── -->
-  <div class="faq-section" data-cat="help">
-    <div class="section-header">
-      <span class="section-emoji">🙋</span>
-      <h2 class="section-title">Requesting Help at the Kiosk</h2>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        Can customers request help from the Upptäcka kiosk?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>Yes. The <strong>Request for Help</strong> feature allows customers to call a coworker directly from the kiosk. This is particularly useful during one-to-many planning sessions when a customer needs expert guidance on planning their wardrobe, kitchen, or other large solutions.</p>
-        <p>The feature is accessible directly from the kiosk interface — the customer or coworker can trigger a request for assistance.</p>
-        <div class="tip">💡 This feature is especially valuable in planning areas where customers are working on complex designs and need a coworker's help.</div>
-        <div class="tag tag-customer">Customer</div>
-        <div class="tag tag-coworker">Coworker</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        How does the help request get routed to the right coworker?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>The routing depends on your store's setup. Typically:</p>
-        <ul>
-          <li>A notification is sent to the coworker on duty in that department/area</li>
-          <li>The request may appear on a coworker's device or a central display</li>
-          <li>The kiosk location is included so the coworker knows where to go</li>
-        </ul>
-        <p>Contact your store's digital champion for specifics on how the help request is configured for your location.</p>
-        <div class="tag tag-coworker">Coworker · Store setup</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ──── SHOP & GO ─────────────────────────────────── -->
-  <div class="faq-section" data-cat="shopgo">
-    <div class="section-header">
-      <span class="section-emoji">📱</span>
-      <h2 class="section-title">Shop & Go Handover</h2>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        How does the Shop & Go handover work from Upptäcka?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>After a customer selects products or completes a planner session, they can transfer their list to their mobile device via <strong>Shop & Go handover</strong>. Methods supported include:</p>
-        <ul>
-          <li><strong>QR code</strong> — customer scans with their phone</li>
-          <li><strong>SMS</strong> — link sent to phone number</li>
-          <li><strong>Email</strong> — list sent to email address</li>
-          <li><strong>Scan & Go</strong> — direct integration with IKEA Scan & Go app</li>
-        </ul>
-        <p>Which methods are available depends on your market's settings in the Admin Panel.</p>
-        <div class="note">📋 Enable/disable handover methods: Admin Panel → Settings → Handover options.</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        Where can I access the 'How to shop with Shop&Go' instructions for customers?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>Customers can find Shop & Go instructions on the <strong>Store Page</strong>. There is a dedicated card called <strong>'How to shop with Shop&Go'</strong> that explains the process step by step.</p>
-        <p>Access: Home Screen → Store name (e.g. IKEA Malmö) → Store Page → Shop&Go card.</p>
-        <div class="tag tag-customer">Customer</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        What are the different article types customers can order via Upptäcka?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>Upptäcka supports all main IKEA article fulfillment types:</p>
-        <ul>
-          <li><strong>Market hall article</strong> — products available to pick up directly in the market hall</li>
-          <li><strong>Self serve article</strong> — customer collects from the self-serve area</li>
-          <li><strong>Full serve article</strong> — coworker assistance required for pick-up</li>
-          <li><strong>Direct delivery article</strong> — ordered for home delivery via ikea.com</li>
-          <li><strong>Combinations</strong> — e.g. market hall + self serve, self serve combinations</li>
-        </ul>
-        <div class="tip">💡 Full serve orders: Admin Panel → Settings → Buying options → enable home delivery and full serve options.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ──── PRICE TAGS ────────────────────────────────── -->
-  <div class="faq-section" data-cat="ptag">
-    <div class="section-header">
-      <span class="section-emoji">🏪</span>
-      <h2 class="section-title">Price Tags & In-Store Web</h2>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        What is the relationship between Price Tags (Ptag) and Upptäcka?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>Price Tags in IKEA stores display product information including price, article number, and features. The in-store web and Upptäcka kiosk complement the price tag experience:</p>
-        <ul>
-          <li>Customers can scan QR codes on price tags to access the product page on Upptäcka or the IKEA website</li>
-          <li>Discovered product information flows between price tags and the Upptäcka PIP (Product Information Page)</li>
-          <li>Article types (market hall, self serve, full serve, direct delivery) shown on Ptags align with Upptäcka's buying options</li>
-        </ul>
-        <div class="note">📋 The Ptag use case connects physical discovery (price tags in the store) with digital planning (Upptäcka kiosk or in-store web).</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        What is Local Ptag (SPR) on Upptäcka?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p><strong>Local PTags (SPRs)</strong> allow individual stores to create customized price tag content for specific articles. This enables market- or store-specific pricing and promotions to be displayed on the Upptäcka kiosk and in-store web.</p>
-        <div class="tag tag-coworker">Coworker · Store admin</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        What is Instore Web and how does it differ from the kiosk?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p><strong>In-Store Web</strong> is a web-based version of Upptäcka accessible from mobile browsers in the store. It offers a similar experience to the kiosk but on the customer's own device.</p>
-        <ul>
-          <li>Customers can access it by scanning a QR code in the store</li>
-          <li>The feedback module was introduced on Instore Web before the kiosk version</li>
-          <li>Useful for stores with fewer kiosks or for customers who prefer their own device</li>
-        </ul>
-        <div class="tag tag-customer">Customer</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ──── TROUBLESHOOTING ───────────────────────────── -->
-  <div class="faq-section" data-cat="trouble">
-    <div class="section-header">
-      <span class="section-emoji">🛠️</span>
-      <h2 class="section-title">Troubleshooting & Support</h2>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        The kiosk is not working / showing an error. What should I do?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>If a kiosk has an issue:</p>
-        <ul>
-          <li>Log in to the <strong>Service Portal (Now IT)</strong></li>
-          <li>Search for <strong>"Upptäcka"</strong></li>
-          <li>Fill in the issue template provided</li>
-        </ul>
-        <p>You can also check the overall kiosk status via the <strong>Upptäcka Console</strong> → Status page (shows outages and incidents with resolution status).</p>
-        <div class="warning">⚠️ Do not try to fix hardware issues yourself. Always log a ticket in Now IT first.</div>
-        <div class="tag tag-coworker">Coworker</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        Opening hours are wrong on the kiosk. How do I fix them?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>Kiosk opening hours are <strong>automatically synced from Navigera</strong>. To fix them:</p>
-        <ul>
-          <li>Log in to <strong>Navigera</strong></li>
-          <li>Update the opening hours there</li>
-          <li>Changes will be automatically reflected in Upptäcka</li>
-        </ul>
-        <div class="warning">⚠️ Do NOT try to change the hours directly in Upptäcka — they will be overwritten by Navigera's data.</div>
-        <div class="tag tag-coworker">Coworker · Navigera access needed</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        How do I check the status of all kiosks in my store/market?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>Use the <strong>Upptäcka Console</strong>:</p>
-        <ul>
-          <li><strong>Welcome page</strong> — overview of all kiosks, operational vs. unconfigured count, graph of operational status</li>
-          <li><strong>Status page</strong> — overall operational status, outages, and incidents with resolution status</li>
-          <li><strong>Market view</strong> — kiosk list, store formats, add-ons enabled per market</li>
-          <li><strong>Store view</strong> — move or delete kiosks, store-level summary</li>
-          <li><strong>Settings</strong> — view all integrations and add-ons enabled per market</li>
-        </ul>
-        <div class="tag tag-coworker">Coworker · Console access needed</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        How do I access the Upptäcka test/demo environment?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>You can test and explore Upptäcka features via the demo environment:</p>
-        <p><strong>URL:</strong> <a href="https://demo.store-kiosk.ingkadt.com/" target="_blank">https://demo.store-kiosk.ingkadt.com/</a></p>
-        <p>Available test stores: La Madeleine, Kållered, Tettenham, Malmö, Helsingborg, Grand Parilly.</p>
-        <div class="note">📋 This is only for testing and training. Changes made here do not affect live stores.</div>
-        <div class="tag tag-coworker">Coworker</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        How do I suggest a new feature or provide feedback on Upptäcka?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p>Your market nominates one person responsible for providing feedback to the Upptäcka Product Owner. The process is:</p>
-        <ul>
-          <li>Contact the Upptäcka team via <strong>RFC (Request For Change)</strong>: <a href="#">UPPTÄCKA Request For Change</a></li>
-          <li>RFCs land in the Upptäcka backlog and are reviewed biweekly</li>
-          <li>Or contact the Senior Product Owner directly: <strong>stojanka.karlsson@ingka.ikea.com</strong></li>
-        </ul>
-        <div class="tip">💡 Customers can also leave feedback directly on the kiosk via the Feedback module (Pulse CX where available) on the Store Page.</div>
-      </div>
-    </div>
-
-    <div class="faq-card">
-      <button class="faq-question">
-        What hardware does Upptäcka run on?
-        <span class="faq-chevron">▾</span>
-      </button>
-      <div class="faq-answer">
-        <p><strong>Hardware:</strong> HP Engage One screen (white) — landscape orientation, 1920×1080 resolution. Requires power and internet (cable or WiFi).</p>
-        <p><strong>Software:</strong> Upptäcka is a ReactJS web application hosted on Google Cloud, with a NodeJS back-end. It runs on Microsoft Edge (Chromium), and updates automatically.</p>
-        <p><strong>Recommended display setup:</strong></p>
-        <ul>
-          <li>Double-sided birch free-standing wall with lightbox (preferred)</li>
-          <li>Single-sided birch wall (against a wall)</li>
-          <li>Toblerone column (3-screen stand) for the Self-Service area</li>
-        </ul>
-        <div class="tag tag-coworker">Coworker · Hardware setup</div>
-      </div>
-    </div>
-  </div>
-
-</main>
-
-<!-- ═══ FOOTER ════════════════════════════════════════ -->
-<footer>
-  <p>Upptäcka FAQ · IKEA Store Digital · Based on <em>Features Handbook April 2026</em></p>
-  <p style="margin-top:6px">Questions? Contact the Upptäcka team: <a href="mailto:stojanka.karlsson@ingka.ikea.com">stojanka.karlsson@ingka.ikea.com</a></p>
-</footer>
-
-<!-- ═══ JAVASCRIPT ════════════════════════════════════ -->
 <script>
-  // ── FAQ accordion ────────────────────────────────────
-  document.querySelectorAll('.faq-question').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const card = btn.closest('.faq-card');
-      const wasOpen = card.classList.contains('open');
-      // close all in same section (optional: remove this block for multi-open)
-      // card.closest('.faq-section').querySelectorAll('.faq-card').forEach(c => c.classList.remove('open'));
-      card.classList.toggle('open', !wasOpen);
-    });
-  });
-
-  // ── Category filter ──────────────────────────────────
-  const pills = document.querySelectorAll('.pill');
-  pills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      pills.forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-      const cat = pill.dataset.cat;
-      filterContent(cat, document.getElementById('search-input').value);
-    });
-  });
-
-  // ── Search ───────────────────────────────────────────
-  document.getElementById('search-input').addEventListener('input', e => {
-    const activeCat = document.querySelector('.pill.active').dataset.cat;
-    filterContent(activeCat, e.target.value);
-  });
-
-  function normalize(str) {
-    return str.toLowerCase().replace(/[åä]/g,'a').replace(/[ö]/g,'o');
+// ── Knowledge base ──────────────────────────────────────
+const QA = [
+  {
+    id: 'home',
+    cat: 'find',
+    q: "What can I do on the Upptäcka kiosk?",
+    keywords: ['do','start','home','screen','options','use','kiosk','what'],
+    a: `<p>The Upptäcka kiosk is your in-store digital guide. From the home screen you can:</p>
+        <ul>
+          <li><strong>Find products</strong> — search or browse the full IKEA range</li>
+          <li><strong>Plan your room</strong> — open kitchen, wardrobe or sofa planners</li>
+          <li><strong>Discover offers</strong> — see IKEA Family deals, new lower prices, last chance items</li>
+          <li><strong>Get store info</strong> — opening hours, store map, services</li>
+          <li><strong>Hand over to your phone</strong> — send your list via QR, SMS or email</li>
+        </ul>`,
+    next: [
+      "Tap <strong>Find products</strong> on the home screen to start browsing",
+      "Or tap the <strong>Focus tile</strong> (the big banner) to jump straight to today's highlights",
+      "Use the <strong>search bar</strong> to type what you're looking for"
+    ],
+    related: ['search','planner-access','shopgo']
+  },
+  {
+    id: 'search',
+    cat: 'find',
+    q: "How do I search for a product?",
+    keywords: ['search','find','product','type','look','browse','item'],
+    a: `<p>Tap <strong>Find products</strong> on the home screen, then tap the search icon. The keyboard opens automatically.</p>
+        <ul>
+          <li>Type naturally — e.g. <em>"small blue sofa"</em> or <em>"kitchen shelf"</em></li>
+          <li>Suggestions appear as you type</li>
+          <li>Tap a suggestion or press Enter to see results</li>
+          <li>Use the <strong>Products / Rooms / Planners</strong> tabs to filter results</li>
+        </ul>`,
+    next: [
+      "Tap on any product to see full details, price, and availability",
+      "Tap <strong>Add to list</strong> to save it for when you shop",
+      "Use the <strong>Offers tab</strong> in search to find discounted items"
+    ],
+    related: ['offers','pip','shopgo']
+  },
+  {
+    id: 'pip',
+    cat: 'find',
+    q: "What information can I see about a product?",
+    keywords: ['product','detail','info','price','size','colour','variant','assembly','page'],
+    a: `<p>Tap any product to open the <strong>Product Information Page</strong>. You'll find:</p>
+        <ul>
+          <li>Price, colours and size variants</li>
+          <li>Product description and dimensions</li>
+          <li>Assembly instructions</li>
+          <li>Complementary products (matching items)</li>
+          <li>IKEA Family offer (if applicable)</li>
+          <li>How to order for home delivery</li>
+          <li>Link to the planner (for furniture with a planning tool)</li>
+        </ul>`,
+    next: [
+      "Tap <strong>Add to list</strong> to save the product",
+      "Tap <strong>Open planner</strong> if you want to design with this product",
+      "Tap <strong>Order with delivery</strong> to arrange home delivery via IKEA.com"
+    ],
+    related: ['planner-access','shopgo','buy-options']
+  },
+  {
+    id: 'planner-access',
+    cat: 'plan',
+    q: "How do I start planning my kitchen or wardrobe?",
+    keywords: ['plan','planner','kitchen','wardrobe','sofa','design','pax','metod','start'],
+    a: `<p>You can open a planner in several ways:</p>
+        <ul>
+          <li>Tap the <strong>Focus tile</strong> on the home screen (if a planner is set up there)</li>
+          <li>Search for the product range e.g. <em>"PAX"</em> or <em>"METOD kitchen"</em></li>
+          <li>Browse to a product and tap <strong>Open planner</strong></li>
+          <li>Tap <strong>Planners</strong> tab in the search screen</li>
+          <li>Enter your <strong>planner code (VPC)</strong> in the search bar to continue a saved design</li>
+        </ul>`,
+    next: [
+      "A coworker can guide you through the planner — tap <strong>Request help</strong> if you need support",
+      "<strong>Save your design</strong> with a VPC code before you leave the kiosk",
+      "Lock the screen if you need to step away and explore the showroom"
+    ],
+    related: ['screen-lock','save-design','coworker-help']
+  },
+  {
+    id: 'save-design',
+    cat: 'plan',
+    q: "How do I save my planner design?",
+    keywords: ['save','code','vpc','design','keep','return','continue','planner'],
+    a: `<p>While in the planner, look for the <strong>Save</strong> or <strong>Share</strong> option. This gives you a <strong>VPC code</strong> — a short code that stores your entire design.</p>
+        <ul>
+          <li>Write down or photograph the code</li>
+          <li>Enter the code in the search bar on <em>any</em> Upptäcka kiosk to reload your design</li>
+          <li>Works even after the kiosk session ends</li>
+        </ul>`,
+    next: [
+      "Take a photo of the VPC code with your phone — safest way to keep it",
+      "You can also send your list to your phone via <strong>Shop & Go</strong> before leaving",
+      "Come back anytime and enter the code to continue designing"
+    ],
+    related: ['screen-lock','shopgo','planner-access']
+  },
+  {
+    id: 'screen-lock',
+    cat: 'session',
+    q: "Can I leave the kiosk and come back to my design?",
+    keywords: ['leave','come back','lock','screen','session','lose','gone','away','continue','save','timeout'],
+    a: `<p>Yes! The <strong>Screen Lock</strong> feature lets you freeze your session while you explore the store.</p>
+        <ul>
+          <li>Ask a <strong>coworker to lock the screen</strong> before you leave (they hold the top-right corner of the screen for a few seconds)</li>
+          <li>Your design is saved exactly as it is</li>
+          <li>When you return, the coworker unlocks it and you continue right where you left off</li>
+        </ul>
+        <p>⚠️ If you take too long, the session may time out. Always <strong>save your VPC code</strong> as a backup.</p>`,
+    next: [
+      "Ask the coworker nearby: <em>\"Can you lock the screen while I look around?\"</em>",
+      "Save your <strong>VPC code</strong> first — this is your safety net if the lock expires",
+      "When you return, find the same coworker to unlock and continue"
+    ],
+    related: ['save-design','coworker-help','planner-access']
+  },
+  {
+    id: 'offers',
+    cat: 'offers',
+    q: "Where can I find offers and discounts?",
+    keywords: ['offer','discount','sale','cheap','deal','price','family','nlp','lower','last chance','promotion'],
+    a: `<p>Offers are available in several places on the kiosk:</p>
+        <ul>
+          <li><strong>Focus tile</strong> on the home screen (if your store has set this up)</li>
+          <li><strong>Offers tab</strong> in the search and browse screen</li>
+          <li>Inside product pages — IKEA Family price shown if you're a member</li>
+        </ul>
+        <p>Types of offers you can find:</p>
+        <ul>
+          <li>🏷️ <strong>New Lower Price (NLP)</strong> — permanently reduced</li>
+          <li>⭐ <strong>IKEA Family offers</strong> — exclusive member prices</li>
+          <li>⏰ <strong>Last Chance</strong> — limited stock, about to sell out</li>
+          <li>🆕 <strong>News</strong> — new arrivals</li>
+          <li>📦 <strong>As-is</strong> — display items at reduced price</li>
+        </ul>`,
+    next: [
+      "Tap the <strong>Offers tab</strong> in search to browse all current deals",
+      "Not an IKEA Family member? Scan the QR code on the kiosk to sign up — it's free!",
+      "Ask a coworker about <strong>As-is items</strong> — these are often great value"
+    ],
+    related: ['ikea-family','search','pip']
+  },
+  {
+    id: 'ikea-family',
+    cat: 'offers',
+    q: "How does IKEA Family work on the kiosk?",
+    keywords: ['family','member','ikea family','join','sign up','discount','club','qr'],
+    a: `<p>IKEA Family is IKEA's free loyalty programme. On the kiosk you can:</p>
+        <ul>
+          <li>Scan the <strong>QR code to sign up</strong> for free — done in minutes on your phone</li>
+          <li>Scan to <strong>sign in</strong> and unlock your member prices</li>
+          <li>Browse <strong>IKEA Family exclusive offers</strong> directly on the kiosk</li>
+          <li>See your member price on product pages</li>
+        </ul>`,
+    next: [
+      "Scan the QR code on the kiosk home screen to join IKEA Family — it's free",
+      "Once signed up, come back to the kiosk and sign in to see your member prices",
+      "Look for the <strong>IKEA Family icon</strong> on product pages for exclusive deals"
+    ],
+    related: ['offers','search']
+  },
+  {
+    id: 'coworker-help',
+    cat: 'help',
+    q: "How do I get help from a coworker at the kiosk?",
+    keywords: ['help','coworker','staff','assist','support','request','call','ask'],
+    a: `<p>You can request a coworker directly from the kiosk:</p>
+        <ul>
+          <li>Look for the <strong>Request help</strong> button on the screen</li>
+          <li>Tap it and a coworker nearby will be notified to come to you</li>
+          <li>The kiosk sends your location so they know exactly where to find you</li>
+        </ul>
+        <p>Coworkers are especially helpful for <strong>planning sessions</strong> — they can guide you through kitchen, wardrobe or living room planning step by step.</p>`,
+    next: [
+      "Tap <strong>Request help</strong> on the kiosk and wait — a coworker will come to you",
+      "Tell the coworker what you're planning: kitchen, wardrobe, living room etc.",
+      "You can also just approach any IKEA coworker in a yellow/blue top"
+    ],
+    related: ['screen-lock','planner-access','save-design']
+  },
+  {
+    id: 'shopgo',
+    cat: 'buy',
+    q: "How do I send my product list to my phone?",
+    keywords: ['phone','send','list','qr','sms','email','handover','shop go','mobile','transfer'],
+    a: `<p>Use the <strong>Shop & Go handover</strong> to transfer your list to your phone:</p>
+        <ul>
+          <li>📱 <strong>QR code</strong> — scan with your phone camera, instant transfer</li>
+          <li>📩 <strong>SMS</strong> — enter your phone number, get a link by text</li>
+          <li>📧 <strong>Email</strong> — get your list sent to your inbox</li>
+          <li>🛒 <strong>Scan & Go app</strong> — direct integration if you use IKEA's app</li>
+        </ul>
+        <p>Once on your phone, your list guides you through the store to pick up everything.</p>`,
+    next: [
+      "Tap <strong>Send to phone</strong> or the handover icon at the top of your list",
+      "Choose your preferred method — QR is quickest",
+      "Follow the route in the IKEA app or your list to collect all items"
+    ],
+    related: ['buy-options','search','pip']
+  },
+  {
+    id: 'buy-options',
+    cat: 'buy',
+    q: "Can I order products for home delivery from the kiosk?",
+    keywords: ['delivery','order','home','buy','purchase','collect','self serve','full serve','market hall'],
+    a: `<p>Yes! From the Product Information Page you can choose how to get your items:</p>
+        <ul>
+          <li>🛍️ <strong>Market hall</strong> — pick up yourself in the store today</li>
+          <li>📦 <strong>Self serve</strong> — collect flat-pack from the warehouse area</li>
+          <li>🤝 <strong>Full serve</strong> — coworker retrieves large/heavy items for you</li>
+          <li>🚚 <strong>Home delivery</strong> — order via IKEA.com for delivery to your door</li>
+        </ul>`,
+    next: [
+      "Tap <strong>Order with delivery</strong> on the product page to arrange home delivery",
+      "For <strong>Full serve</strong> items, note the article number and go to the customer service area",
+      "Use <strong>Shop & Go</strong> to get your self-serve list with bin and aisle locations"
+    ],
+    related: ['shopgo','pip','coworker-help']
+  },
+  {
+    id: 'opening-hours',
+    cat: 'find',
+    q: "How do I find store opening hours?",
+    keywords: ['opening','hours','open','close','time','store','today'],
+    a: `<p>Tap the <strong>store name</strong> at the top of the home screen (e.g. "IKEA Malmö") to open the <strong>Store Page</strong>. You'll find:</p>
+        <ul>
+          <li>Today's opening hours</li>
+          <li>Store map</li>
+          <li>Restaurant times</li>
+          <li>Services available (car park, childcare, etc.)</li>
+        </ul>`,
+    next: [
+      "The Store Page also shows <strong>special holiday hours</strong> when applicable",
+      "Tap <strong>Store map</strong> to find your way around the store",
+      "Look for the <strong>How to shop</strong> card if it's your first visit"
+    ],
+    related: ['home','coworker-help']
+  },
+  {
+    id: 'language',
+    cat: 'find',
+    q: "Can I change the language on the kiosk?",
+    keywords: ['language','change','swedish','english','translate','tongue','speak'],
+    a: `<p>Yes — tap the <strong>Language</strong> option on the home screen to switch between available languages.</p>
+        <p>Available languages depend on your store's configuration. If you don't see the language you need, ask a coworker for assistance.</p>`,
+    next: [
+      "Tap the language flag or name on the home screen",
+      "If your language isn't available, a coworker can assist you personally"
+    ],
+    related: ['home','coworker-help']
+  },
+  {
+    id: 'trouble-restart',
+    cat: 'trouble',
+    q: "The kiosk is frozen or not responding. What do I do?",
+    keywords: ['frozen','stuck','crash','not working','broken','restart','error','slow','unresponsive'],
+    a: `<p>If the kiosk is not responding:</p>
+        <ul>
+          <li>Wait 30 seconds — it may be loading</li>
+          <li>Try tapping the home button or the IKEA logo to return to the start</li>
+          <li>If still stuck, <strong>find a coworker</strong> — they can restart the kiosk</li>
+        </ul>
+        <p>Your session data may be lost if the kiosk needs a restart — always save your VPC code first!</p>`,
+    next: [
+      "Ask a nearby coworker: <em>\"The kiosk isn't responding, can you help?\"</em>",
+      "Try a different kiosk in the store — there are usually several available",
+      "If you had a planner open, re-enter your <strong>VPC code</strong> on another kiosk to restore your design"
+    ],
+    related: ['save-design','coworker-help','screen-lock']
+  },
+  {
+    id: 'no-stock',
+    cat: 'buy',
+    q: "A product shows out of stock. What can I do?",
+    keywords: ['stock','out of stock','available','not available','sold out','when','restock'],
+    a: `<p>If a product is out of stock in your store:</p>
+        <ul>
+          <li>Tap <strong>Order with delivery</strong> to get it delivered to your home</li>
+          <li>Check the <strong>As-is section</strong> — a display model may be available at a discount</li>
+          <li>Ask a coworker — they can check nearby store availability</li>
+          <li>Use IKEA.com to check stock at other locations</li>
+        </ul>`,
+    next: [
+      "Tap <strong>Order with delivery</strong> on the product page — delivery is often within a few days",
+      "Ask a coworker to check if it's available in a nearby store",
+      "Add it to your IKEA wishlist online so you're notified when it's back"
+    ],
+    related: ['pip','buy-options','coworker-help']
   }
+];
 
-  function filterContent(cat, query) {
-    const sections = document.querySelectorAll('.faq-section');
-    const q = normalize(query.trim());
-    let totalVisible = 0;
+// ── Suggestion sets by category ─────────────────────────
+const CAT_SUGGESTIONS = {
+  all:     ['home','search','planner-access','offers','screen-lock','shopgo','coworker-help','trouble-restart'],
+  find:    ['search','home','pip','opening-hours','language'],
+  plan:    ['planner-access','save-design','screen-lock','coworker-help'],
+  offers:  ['offers','ikea-family','pip'],
+  session: ['screen-lock','save-design','planner-access'],
+  help:    ['coworker-help','trouble-restart','screen-lock'],
+  buy:     ['buy-options','shopgo','no-stock','pip'],
+  trouble: ['trouble-restart','no-stock','coworker-help','save-design']
+};
 
-    sections.forEach(section => {
-      const sectionCat = section.dataset.cat;
-      const matchesCat = cat === 'all' || sectionCat === cat;
+// ── State ────────────────────────────────────────────────
+let currentCat = 'all';
+const chat    = document.getElementById('chat');
+const input   = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-btn');
+const typing  = document.getElementById('typing');
 
-      let sectionHasVisible = false;
-      section.querySelectorAll('.faq-card').forEach(card => {
-        const qText = normalize(card.querySelector('.faq-question').textContent);
-        const aText = normalize(card.querySelector('.faq-answer').textContent);
-        const matchesQuery = !q || qText.includes(q) || aText.includes(q);
-        const visible = matchesCat && matchesQuery;
-        card.style.display = visible ? '' : 'none';
-        if (visible) { sectionHasVisible = true; totalVisible++; }
-      });
+// ── Render suggestions ───────────────────────────────────
+function renderSuggestions(cat) {
+  const ids = CAT_SUGGESTIONS[cat] || CAT_SUGGESTIONS.all;
+  const container = document.getElementById('suggestions');
+  container.innerHTML = '';
+  ids.slice(0,6).forEach(id => {
+    const item = QA.find(q => q.id === id);
+    if (!item) return;
+    const chip = document.createElement('button');
+    chip.className = 'suggestion-chip';
+    chip.textContent = item.q;
+    chip.onclick = () => askQuestion(item.q);
+    container.appendChild(chip);
+  });
+}
 
-      section.style.display = sectionHasVisible ? '' : 'none';
+// ── Category pills ───────────────────────────────────────
+document.getElementById('cat-row').addEventListener('click', e => {
+  const pill = e.target.closest('.cat-pill');
+  if (!pill) return;
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+  currentCat = pill.dataset.cat;
+  renderSuggestions(currentCat);
+});
+
+// ── Find best answer ─────────────────────────────────────
+function findAnswer(query) {
+  const q = query.toLowerCase().replace(/[?!.,]/g,'');
+  const words = q.split(/\s+/);
+  let best = null, bestScore = 0;
+  QA.forEach(item => {
+    let score = 0;
+    if (q.includes(item.q.toLowerCase())) score += 20;
+    item.keywords.forEach(kw => {
+      if (q.includes(kw)) score += 3;
+      words.forEach(w => { if (w.length > 2 && kw.includes(w)) score += 1; });
     });
+    if (currentCat !== 'all' && item.cat === currentCat) score += 2;
+    if (score > bestScore) { bestScore = score; best = item; }
+  });
+  return bestScore > 1 ? best : null;
+}
 
-    const countEl = document.getElementById('result-count');
-    const noResults = document.getElementById('no-results');
-    if (q || cat !== 'all') {
-      countEl.textContent = `${totalVisible} question${totalVisible !== 1 ? 's' : ''} found`;
-    } else {
-      countEl.textContent = '';
-    }
-    noResults.style.display = totalVisible === 0 ? 'block' : 'none';
-  }
+// ── Add message ──────────────────────────────────────────
+function addMsg(role, content) {
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  const isUppa = role === 'uppa';
+  div.innerHTML = `
+    <div class="msg-avatar">${isUppa ? '🛋️' : 'VT'}</div>
+    <div class="msg-body">
+      <div class="msg-sender">${isUppa ? 'Uppa' : 'You'}</div>
+      <div class="bubble">${content}</div>
+    </div>`;
+  chat.insertBefore(div, typing);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// ── Add full answer ──────────────────────────────────────
+function addAnswer(item) {
+  const nextHtml = item.next ? `
+    <div class="next-steps">
+      <div class="next-steps-title">✅ What to do next</div>
+      <ol>${item.next.map(s => `<li>${s}</li>`).join('')}</ol>
+    </div>` : '';
+
+  const relatedItems = (item.related || []).map(id => QA.find(q => q.id === id)).filter(Boolean);
+  const relatedHtml = relatedItems.length ? `
+    <div class="related">
+      <div class="related-label">People also ask</div>
+      <div class="related-chips">${relatedItems.map(r =>
+        `<button class="related-chip" onclick="askQuestion('${r.q.replace(/'/g,"\\'")}')">💬 ${r.q}</button>`
+      ).join('')}</div>
+    </div>` : '';
+
+  const div = document.createElement('div');
+  div.className = 'msg uppa';
+  div.innerHTML = `
+    <div class="msg-avatar">🛋️</div>
+    <div class="msg-body">
+      <div class="msg-sender">Uppa</div>
+      <div class="bubble">
+        ${item.a}
+        ${nextHtml}
+      </div>
+      ${relatedHtml}
+    </div>`;
+  chat.insertBefore(div, typing);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// ── No answer fallback ───────────────────────────────────
+function addFallback(query) {
+  const suggestions = CAT_SUGGESTIONS.all.slice(0,3).map(id => {
+    const item = QA.find(q => q.id === id);
+    return item ? `<button class="related-chip" onclick="askQuestion('${item.q.replace(/'/g,"\\'")}')">💬 ${item.q}</button>` : '';
+  }).join('');
+  const div = document.createElement('div');
+  div.className = 'msg uppa';
+  div.innerHTML = `
+    <div class="msg-avatar">🛋️</div>
+    <div class="msg-body">
+      <div class="msg-sender">Uppa</div>
+      <div class="bubble">
+        <p>I'm not sure about <em>"${query}"</em> — I'm still learning! 😊</p>
+        <p>Here are some things I can help with:</p>
+        <div class="related-chips" style="margin-top:10px">${suggestions}</div>
+        <div class="next-steps" style="margin-top:12px">
+          <div class="next-steps-title">✅ What to do next</div>
+          <ol>
+            <li>Try rephrasing your question</li>
+            <li>Tap one of the <strong>topic buttons</strong> above to browse by category</li>
+            <li>Tap <strong>Request help</strong> on the kiosk to speak with a coworker</li>
+          </ol>
+        </div>
+      </div>
+    </div>`;
+  chat.insertBefore(div, typing);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// ── Main ask function ────────────────────────────────────
+function askQuestion(q) {
+  if (!q.trim()) return;
+  addMsg('user', q);
+  input.value = '';
+  input.style.height = 'auto';
+
+  // Show typing
+  typing.classList.add('visible');
+  chat.scrollTop = chat.scrollHeight;
+
+  setTimeout(() => {
+    typing.classList.remove('visible');
+    const answer = findAnswer(q);
+    if (answer) addAnswer(answer);
+    else addFallback(q);
+    chat.scrollTop = chat.scrollHeight;
+  }, 700 + Math.random() * 400);
+}
+
+// ── Send button & enter key ──────────────────────────────
+sendBtn.addEventListener('click', () => askQuestion(input.value.trim()));
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askQuestion(input.value.trim()); }
+});
+input.addEventListener('input', () => {
+  input.style.height = 'auto';
+  input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+});
+
+// ── Init ─────────────────────────────────────────────────
+renderSuggestions('all');
 </script>
 </body>
 </html>
