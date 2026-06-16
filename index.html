@@ -792,7 +792,7 @@ const HANDBOOK = [
 
 // Search handbook for relevant slides
 // Skip-list: index/title/divider slides that list many topics and pollute scores
-const HANDBOOK_SKIP = new Set([1, 2, 3, 19, 27, 111]);
+const HANDBOOK_SKIP = new Set([1, 2, 3, 19, 111]);
 
 function searchHandbook(query) {
   const q = query.toLowerCase().replace(/[?!.,]/g,'');
@@ -1441,10 +1441,25 @@ function slideToPoints(body) {
     .replace(HANDBOOK_NOISE, '')
     .replace(/\s{3,}/g, '\n')
     .trim();
-  const lines = cleaned.split(/\n|(?<=\.) (?=[A-Z])/)
+
+  // Split only on full sentence boundaries, not mid-sentence line breaks
+  const raw = cleaned.split(/\n/)
     .map(l => humanise(l.trim()))
     .filter(l => l.length > 8);
-  return lines.slice(0, 6);
+
+  // Join fragments: if a line doesn't start with capital or is very short, merge with previous
+  const merged = [];
+  raw.forEach(line => {
+    const prev = merged[merged.length - 1];
+    const isFragment = prev && (line[0] === line[0].toLowerCase() || line.length < 20);
+    if (isFragment) {
+      merged[merged.length - 1] = prev.replace(/[,\s]+$/, '') + ' ' + line;
+    } else {
+      merged.push(line);
+    }
+  });
+
+  return merged.slice(0, 5);
 }
 
 function humaniseTitle(title) {
@@ -1481,13 +1496,9 @@ function addHandbookAnswer(slide, query) {
           ${bulletHtml || '<p style="font-size:13px;color:var(--mid)">See the full handbook for details on this topic.</p>'}
         </div>
 
-        <!-- Footer link -->
-        <div style="border-top:1px solid var(--border);padding:9px 16px;display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:11px;color:var(--mid)">📖 Upptäcka Features Handbook · April 2026</span>
-          <a href="https://confluence.build.ingka.ikea.com/pages/viewpage.action?pageId=1329284875"
-             target="_blank" style="font-size:11px;color:var(--blue);font-weight:600;text-decoration:none">
-            Full handbook →
-          </a>
+        <!-- Footer -->
+        <div style="border-top:1px solid var(--border);padding:9px 16px">
+          <span style="font-size:11px;color:var(--mid)">📖 Upptäcka Features Handbook · Slide ${slide.slide}</span>
         </div>
 
       </div>
