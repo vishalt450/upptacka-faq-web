@@ -819,7 +819,7 @@ function searchHandbook(query) {
 
     if (score > bestScore) { bestScore = score; best = slide; }
   });
-  return bestScore >= 6 ? best : null;  // require at least one strong title signal
+  return bestScore >= 10 ? best : null;  // require strong specific title match
 }
 
 const QA = [
@@ -1167,7 +1167,9 @@ const STOP = new Set(['the','can','how','what','why','when','where','who','does'
   'are','was','were','will','have','has','had','not','but','for','with','this','that',
   'from','they','also','get','do','my','is','in','a','i','and','or','to','of','it',
   'me','we','you','he','she','an','be','by','at','on','up','if','so','no','yes','its',
-  'use','via','too','all','any','one','two','see','let','now','new','old','big','same']);
+  'use','via','too','all','any','one','two','see','let','now','new','old','big','same',
+  'ikea','store','kiosk','screen','page','view','item','product','tap','click','open',
+  'show','shows','display','find']);
 
 // Strip common suffixes so plan/planning/planner all reduce to the same root
 function stem(w) {
@@ -1513,6 +1515,9 @@ function addFallback(query) {
     const item = QA.find(q => q.id === id);
     return item ? `<button class="related-chip" onclick="askQuestion('${item.q.replace(/'/g,"\\'")}')">💬 ${item.q}</button>` : '';
   }).join('');
+  const notFoundMsg = query
+    ? `I don't have information about <em>"${query}"</em> right now. 😔`
+    : `I'm not sure what you're looking for. 😔`;
   const div = document.createElement('div');
   div.className = 'msg uppa';
   div.innerHTML = `
@@ -1520,17 +1525,12 @@ function addFallback(query) {
     <div class="msg-body">
       <div class="msg-sender">Uppa</div>
       <div class="bubble">
-        <p>Hmm, I couldn't find a match${query ? ` for <em>"${query}"</em>` : ''} 🤔</p>
-        <p>Here are some popular questions to get you started:</p>
+        <p>${notFoundMsg}</p>
+        <p style="margin-top:8px">Here are some things I <strong>can</strong> help with — tap to ask:</p>
         <div class="related-chips" style="margin-top:10px">${suggestions}</div>
-        <div class="next-steps" style="margin-top:12px">
-          <div class="next-steps-title">✅ What to do next</div>
-          <ol>
-            <li>Try different words — e.g. <em>"wardrobe"</em> instead of <em>"closet"</em></li>
-            <li>Tap a <strong>topic category</strong> above to browse by subject</li>
-            <li>Ask a coworker in the store for personal help</li>
-          </ol>
-        </div>
+        <p style="margin-top:12px;font-size:12px;color:var(--mid)">
+          Still need help? Ask a store coworker — they're happy to assist! 🙂
+        </p>
       </div>
     </div>`;
   chat.insertBefore(div, typing);
@@ -1616,7 +1616,7 @@ function askQuestion(q) {
     const hbTitleScore = hbSlide ? handbookTitleScore(q, hbSlide) : 0;
 
     const hasFaq      = faqResult && (faqResult.confidence === 'high' || faqResult.confidence === 'medium' || faqResult.hasExactKwMatch);
-    const hasHandbook = hbSlide && hbTitleScore >= 8;
+    const hasHandbook = hbSlide && hbTitleScore >= 12;
 
     if (hasFaq && hasHandbook) {
       // Both match — let the customer choose
