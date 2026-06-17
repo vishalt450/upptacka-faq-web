@@ -218,11 +218,17 @@
 
   <!-- INPUT -->
   <div class="input-area">
-    <div class="input-row">
+    <div class="input-row" style="position:relative">
       <div class="input-wrap">
-        <textarea class="chat-input" id="chat-input" rows="1" placeholder="Ask Uppa anything about Upptäcka…"></textarea>
+        <textarea class="chat-input" id="chat-input" rows="1" placeholder="Ask Uppa anything about Upptäcka…" autocomplete="off"></textarea>
       </div>
       <button class="send-btn" id="send-btn">➤</button>
+      <!-- Autocomplete dropdown -->
+      <div id="autocomplete" style="
+        display:none; position:absolute; bottom:calc(100% + 6px); left:0; right:48px;
+        background:#fff; border:1px solid #e0e0e0; border-radius:14px;
+        box-shadow:0 4px 20px rgba(0,0,0,0.12); overflow:hidden; z-index:100;
+      "></div>
     </div>
     <div class="input-hint">Powered by Upptäcka Features Handbook · IKEA Store Digital</div>
   </div>
@@ -1750,14 +1756,104 @@ function askQuestion(q) {
 }
 
 // ── Send button & enter key ──────────────────────────────
-sendBtn.addEventListener('click', () => askQuestion(input.value.trim()));
+sendBtn.addEventListener('click', () => { hideAC(); askQuestion(input.value.trim()); });
 input.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askQuestion(input.value.trim()); }
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); hideAC(); askQuestion(input.value.trim()); }
+  if (e.key === 'Escape') hideAC();
 });
 input.addEventListener('input', () => {
   input.style.height = 'auto';
   input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+  showAC(input.value.trim());
 });
+input.addEventListener('blur', () => setTimeout(hideAC, 150));
+
+// ── Autocomplete ─────────────────────────────────────────
+const acBox = document.getElementById('autocomplete');
+
+function getSuggestions(q) {
+  if (q.length < 2) return [];
+  const ql = q.toLowerCase();
+  const qw = ql.split(/\s+/).filter(w => w.length >= 2);
+  const results = [];
+  const seen = new Set();
+
+  const score = (text) => {
+    const tl = text.toLowerCase();
+    let s = 0;
+    if (tl.startsWith(ql)) s += 20;
+    else if (tl.includes(ql)) s += 12;
+    qw.forEach(w => { if (tl.includes(w)) s += 4; });
+    return s;
+  };
+
+  // FAQ questions
+  QA.forEach(item => {
+    const s = score(item.q);
+    if (s > 0 && !seen.has(item.q)) {
+      seen.add(item.q);
+      results.push({ label: item.q, icon: '💬', sub: 'Quick answer', s, action: () => askQuestion(item.q) });
+    }
+  });
+
+  // Handbook slide titles
+  HANDBOOK.forEach(slide => {
+    if (HANDBOOK_SKIP.has(slide.slide)) return;
+    const title = humaniseTitle(slide.title);
+    const s = score(title);
+    if (s > 0 && !seen.has(title)) {
+      seen.add(title);
+      results.push({ label: title, icon: '📖', sub: `Slide ${slide.slide}`, s, action: () => askQuestion(title) });
+    }
+  });
+
+  // Jira features
+  FEATURES.forEach(f => {
+    const s = score(f.title);
+    if (s > 0 && !seen.has(f.title)) {
+      seen.add(f.title);
+      results.push({ label: f.title, icon: '✅', sub: f.key, s, action: () => askQuestion(f.title) });
+    }
+  });
+
+  return results.sort((a,b) => b.s - a.s).slice(0, 7);
+}
+
+function showAC(q) {
+  const suggestions = getSuggestions(q);
+  if (!suggestions.length) { hideAC(); return; }
+
+  acBox.innerHTML = suggestions.map((s, i) => `
+    <div class="ac-item" data-i="${i}" style="
+      display:flex; align-items:center; gap:10px; padding:10px 14px;
+      cursor:pointer; border-bottom:1px solid #f5f5f5; transition:background .1s;
+    ">
+      <span style="font-size:16px">${s.icon}</span>
+      <div style="flex:1; min-width:0">
+        <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+          ${s.label.length > 60 ? s.label.substring(0,57)+'…' : s.label}
+        </div>
+        <div style="font-size:11px;color:#999">${s.sub}</div>
+      </div>
+      <span style="color:#ccc;font-size:12px">↵</span>
+    </div>`).join('');
+
+  // Click handlers
+  acBox.querySelectorAll('.ac-item').forEach((el, i) => {
+    el.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      input.value = suggestions[i].label;
+      hideAC();
+      suggestions[i].action();
+    });
+    el.addEventListener('mouseover', () => el.style.background = '#f7f7f7');
+    el.addEventListener('mouseout',  () => el.style.background = '');
+  });
+
+  acBox.style.display = 'block';
+}
+
+function hideAC() { acBox.style.display = 'none'; }
 
 // ── Init ─────────────────────────────────────────────────
 renderSuggestions('all');
