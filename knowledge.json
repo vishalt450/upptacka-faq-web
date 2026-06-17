@@ -1,17 +1,17 @@
 [
   {
+    "key": "INTERACT-10652",
+    "type": "Epic",
+    "title": "MOQ and Minimum Order — how it works on Upptäcka",
+    "body": "MOQ (Minimum Order Quantity) and 'Sets of multiples' limit when delivery or Click&Collect is available. If a product has an MOQ, you must buy a minimum number of items to enable delivery. 'Sets of multiples' means you can only buy in sets (e.g. 2, 4, 6). MOV (Minimum Order Value) sets a minimum total order value for delivery services. On Upptäcka, when delivery is not available due to MOQ or MOV, the kiosk explains why and shows you how to make it available — e.g. add more items to reach the minimum quantity or value. Products are shown as available for delivery once you meet the limit. This was implemented in the kiosk buying flow and in-store web (INTERACT-10735, INTERACT-10786).",
+    "updated": "2026-06-17"
+  },
+  {
     "key": "INTERACT-9481",
     "type": "Epic",
     "title": "FY26-T1: Data: Instore web dashboard connected with store visitors and more entry point information",
     "body": "Data: Instore web dashboard connected with store visitors and more entry point information How we work with epic: In-Store Web Dashboard - Miro ----------------------------------------------------------- What's the problem we want to solve? Elaborate on real-time insights and visualizations. It tracks key performance indicators, and identifies trends. Quickly access to data, improving efficiency a",
     "updated": "2026-05-29"
-  },
-  {
-    "key": "INTERACT-10655",
-    "type": "Story",
-    "title": "Final design: MOQ and 'Sets of...' For upptäcka kiosk & in-store web",
-    "body": "What: Minimum order Quantity (MOQ) and \"Sets of...\" set limits for delivery orders. These limitations impact how we must communicate delivery service availability to customers using Kiosk and In-store web. We handover to IKEA.com cart for completion of Delivery and Collect orders. The content we hand over to the web cart should be within the MOQ and 'Sets of...\" limitations. WHY? Customers need to",
-    "updated": "2026-05-25"
   },
   {
     "key": "INTERACT-8858",
@@ -61,13 +61,6 @@
     "title": "FY26-T2:  Make Upselling products more prominent on Upptäcka",
     "body": "What's the problem we want to solve? Complimentary products are shown first after an item is added to the list, however we know that not all users add to list on Upptäcka, so many will miss important products to get the full functionality or other recommended complimentary items. There is currently no description what the recommendations are, and coworkers have infromed us that customers don't und",
     "updated": "2026-04-30"
-  },
-  {
-    "key": "INTERACT-10181",
-    "type": "Epic",
-    "title": "FY26- T2: Plan for move of Landa to Upptäcka",
-    "body": "What is the problem we want to solve? Clarify responsibilities Increase cooperation Reduce duplication Improve and develop Improve how we support customers and countries How is it today? (highlight the current situation and the problem) Today our planning solutions are available for all IKEA retailers and customers and present a significant selling opportunity. Around a quarter of our turnover is ",
-    "updated": "2026-04-29"
   },
   {
     "key": "INTERACT-9958",
@@ -273,20 +266,6 @@
     "updated": "2026-03-17"
   },
   {
-    "key": "INTERACT-10101",
-    "type": "Epic",
-    "title": "FY26-T2 (Tech): Remove Splunk and replace with Context",
-    "body": "WHY: We use Splunk for logging and monitoring in Alicloud / CN market. We need to move away from this as Splunk will be shut down. WHAT: We should use the preferred tech stack Context for all api:s (both global and CN) so we can then close down Splunk usage,.",
-    "updated": "2026-03-16"
-  },
-  {
-    "key": "INTERACT-10102",
-    "type": "Story",
-    "title": "Update Upptäcka recommended tech repo - remove splunk and add Context",
-    "body": "Update Upptäcka recommended tech repo - remove splunk and add Context. See example [https://github.com/ingka-group-digital/omp-recommended-tech-padu/pull/361]",
-    "updated": "2026-03-16"
-  },
-  {
     "key": "INTERACT-10399",
     "type": "Epic",
     "title": "FY26-T2 Space platform with Bathroom and Outdoor planner on Upptäcka",
@@ -315,24 +294,10 @@
     "updated": "2026-03-02"
   },
   {
-    "key": "INTERACT-4915",
-    "type": "Story",
-    "title": "(Blocked until OK from US) US Market: Remove Full serve block - step 2",
-    "body": "User story AS A customer in US I WANT to be able to use Upptäcka to place FS orders with safer home flag SO THAT I can have a smooth shopping experience and not need to wait for coworkers Why? US market now have checks in place at POS for customers to sign/agree to the safer home documents, so we can now enable full serve orders. What? Step 1: Remove FS block for US - only 1 store, all kiosks: Sto",
-    "updated": "2026-03-02"
-  },
-  {
     "key": "INTERACT-4774",
     "type": "Story",
     "title": "China-RFC (MUST): (Blocked until deployed) Turn off email and sms handover option",
     "body": "What? * Turn off email and sms handover option for CN market # Priority Changes Responsible org comment Actions 3 Medium Remove email as an option when sending the product list to mystorevisit Upptäcka team just disable",
-    "updated": "2026-03-02"
-  },
-  {
-    "key": "INTERACT-4807",
-    "type": "Story",
-    "title": "China-RFC: If zipin off - remove message to scan qr",
-    "body": "AS A user I WANT TO understand how I can see regional availability when not shown in Upptäcka SO THAT I can see if the item is available for me Why? CIA regional availability (zipin) not available in T1 in China. This will be available in T2. What? See req below 10 Medium if we don’t have zip-code change then we would like to change the wording to \"Scan to check availability\" Upptäcka team only ne",
     "updated": "2026-03-02"
   },
   {
@@ -658,13 +623,6 @@
     "updated": "2026-01-13"
   },
   {
-    "key": "INTERACT-9652",
-    "type": "Story",
-    "title": "China: Enable CN to move Upptäcka kiosks to SDF kiosks",
-    "body": "Migrate the kiosks running Upptäcka in China to run SDF in China instead.",
-    "updated": "2026-01-12"
-  },
-  {
     "key": "INTERACT-8653",
     "type": "Story",
     "title": "Explore the performance Issues of Planner loading",
@@ -781,13 +739,6 @@
     "type": "Epic",
     "title": "FY25-T3: 'Store Demo' environment without specific hardware for testing and presentation",
     "body": "What's the problem we want to solve? For stakeholders it can be tricky to demo and try out features when they don't have the necessary hardware at hand. E.g. if you want to try out Reside with a kiosk and a TV, or IRD with a kiosk and three projectors. We want to make it easy to try out the different solutions. How it is today? (highlight the current situation and the problem) Today you're require",
-    "updated": "2025-12-12"
-  },
-  {
-    "key": "INTERACT-9113",
-    "type": "Epic",
-    "title": "FY25-T3: Removal of low stock limitation",
-    "body": "What's the problem we want to solve? Co-workers fed back that customers were unnecessarily contacting them due to message, as the products were nearly always available Low stock methodology is based on Click & collect (Collect 24 hour later) How it is today? (highlight the current situation and the problem) Today Full serve orders in Upptäcka show a message to contact a sales coworker when there i",
     "updated": "2025-12-12"
   },
   {
@@ -1022,13 +973,6 @@
     "updated": "2025-10-01"
   },
   {
-    "key": "INTERACT-9357",
-    "type": "Story",
-    "title": "(PRIO) Performance: Remove old PLP with its dependencies",
-    "body": "The old PLP is no longer in use, and has a lot of dead code just lying around in the Upptäcka code base. It's a good time to clean that up, as well as removing the `react-virtualized` dependency which takes up a large chunk of our bundle size",
-    "updated": "2025-10-01"
-  },
-  {
     "key": "INTERACT-8545",
     "type": "Story",
     "title": "DESIGN: SDM offers in list + full serve flow",
@@ -1040,27 +984,6 @@
     "type": "Story",
     "title": "Accessibility scans in Upptäcka pr",
     "body": "Do the same as for Instore in Upptäcka, so that the accessibility tests are run on pr.",
-    "updated": "2025-09-25"
-  },
-  {
-    "key": "INTERACT-9495",
-    "type": "Story",
-    "title": "Cloudflare Platform account: Add team members and remove any other expect",
-    "body": "# These must be present !image-2025-09-16-15-43-38-578.png width=667,height=205! # Add all engineers in sub team team as Administrators These changes must be done via terraform and applied, then verified on the account by logging in. }",
-    "updated": "2025-09-25"
-  },
-  {
-    "key": "INTERACT-9494",
-    "type": "Story",
-    "title": "Cloudflare Upptäcka account: Add team members and remove any other expect",
-    "body": "# These must be present !image-2025-09-16-15-42-36-253.png width=728,height=212! # Add all engineers in sub team team as Administrators These changes must be done via terraform and applied, then verified on the account by logging in.",
-    "updated": "2025-09-25"
-  },
-  {
-    "key": "INTERACT-9493",
-    "type": "Story",
-    "title": "Cloudflare Instore account: Add team members and remove any other expect",
-    "body": "# These must be present !image-2025-09-16-15-34-26-418.png width=331,height=119! # Add all engineers in sub team team as Administrators These changes must be done via terraform and applied, then verified on the account by logging in.",
     "updated": "2025-09-25"
   },
   {
@@ -1250,13 +1173,6 @@
     "type": "Epic",
     "title": "FY25-T3:  Build your own for desks",
     "body": "start - end date to be defined. Customers should be able to access Build your Own when available for the location. Also available through search bar and entry points (TBD). FLOW DESIGNS Upptäcka specific] [DRAFT] [BYO Design Exploration – Figma Generic] [BYO Design Exploration – Figma INSIGHTS TBD HYPOTHESIS Description of the insights that led to this experiment idea. TBD CHANGE Brief description",
-    "updated": "2025-07-31"
-  },
-  {
-    "key": "INTERACT-8053",
-    "type": "Epic",
-    "title": "FY25-T3: Move Upptäcka to SDF (excl. China)",
-    "body": "What's the problem we want to solve? Reduce duplication of code. Improve maintainability. How it is today? (highlight the current situation and the problem) Upptäcka runs on its own domain. What we want to change? Move Upptäcka to run in the SIDP platform. What impact we expect on (Customer) experience? No impact What is the phase of development ( Exploration/ Experiments/ Release ): Release Succe",
     "updated": "2025-07-31"
   },
   {
