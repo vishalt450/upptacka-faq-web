@@ -1632,18 +1632,68 @@ function resolveChoice(i) {
 }
 
 // ── Feature (Jira) answer card ───────────────────────────
+// Parse messy Jira body into clean readable bullets
+function parseFeatureBody(body) {
+  if (!body) return [];
+  const points = [];
+
+  // Extract structured fields from common Jira epic templates
+  const patterns = [
+    [/what(?:'s| is) the problem[^?]*\??[:\s]+([^|]{20,200})/i, '🔍 Problem'],
+    [/what(?:'s| is) (?:the )?(?:feature|outcome|goal|we want)[^?]*\??[:\s]+([^|]{20,200})/i, '🎯 What it does'],
+    [/what we want to change\??\s*([^|]{20,200})/i, '🎯 Goal'],
+    [/for:?\s*who is[^:]*:\s*([^|]{10,200})/i, '👤 For'],
+    [/who:\s*what problem[^:]*:\s*([^|]{20,300})/i, '💡 Why it matters'],
+    [/how(?:'s| it is) today[^?]*\??[:\s]+([^|]{20,200})/i, '📍 Before'],
+    [/what we want[^?]*\??[:\s]+([^|]{20,200})/i, '✅ After'],
+    [/customers? (?:can|will|are able)[^.|]{10,200}/i, null],
+  ];
+
+  patterns.forEach(([re, label]) => {
+    const m = body.match(re);
+    if (m) {
+      const val = m[1].trim().replace(/\s+/g,' ').split('|')[0].trim();
+      if (val.length > 15) {
+        points.push(label ? `<strong>${label}:</strong> ${val}` : val);
+      }
+    }
+  });
+
+  // Fallback: if no structured content found, split into readable sentences
+  if (points.length === 0) {
+    const clean = body
+      .replace(/For:.*?target user.*?:/gi, '')
+      .replace(/Who:.*?solve.*?:/gi, '')
+      .replace(/\|/g, ' ')
+      .replace(/\s+/g, ' ').trim();
+    // Take first 2 sentences
+    const sentences = clean.match(/[^.!?]+[.!?]+/g) || [clean];
+    sentences.slice(0, 2).forEach(s => { if(s.trim().length > 20) points.push(s.trim()); });
+  }
+
+  return points.slice(0, 4);
+}
+
 function addFeatureAnswer(feature) {
+  const points = parseFeatureBody(feature.body);
+  const title  = humanise(feature.title.replace(/^FY\d+[-T\d]*:\s*/i,'').replace(/^\[.*?\]\s*/,''));
+
   const div = document.createElement('div');
   div.className = 'msg bot';
   div.innerHTML = `
     <div class="avatar">🛋️</div>
     <div class="bubble">
-      <p style="font-size:11px;color:var(--mid);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">
-        ✅ Live Upptäcka feature · ${feature.key}
+      <p style="font-size:11px;color:var(--mid);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">
+        ✅ Done feature · ${feature.key}
       </p>
-      <p style="font-weight:600;font-size:15px;margin-bottom:10px">${humanise(feature.title)}</p>
-      <p style="font-size:14px;line-height:1.55;color:#333">${humanise(feature.body)}</p>
-      <p style="font-size:11px;color:var(--mid);margin-top:10px">Updated ${feature.updated || ''}</p>
+      <p style="font-weight:600;font-size:15px;margin-bottom:12px;line-height:1.35">${title}</p>
+      ${points.length
+        ? `<ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.7;color:#333">
+             ${points.map(p => `<li style="margin-bottom:4px">${p}</li>`).join('')}
+           </ul>`
+        : `<p style="font-size:14px;color:#333;line-height:1.6">${humanise(feature.body.substring(0,280))}…</p>`
+      }
+      <p style="font-size:11px;color:var(--mid);margin-top:10px">Last updated ${feature.updated || ''}</p>
     </div>`;
   chat.appendChild(div);
 }
