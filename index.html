@@ -794,32 +794,52 @@ const HANDBOOK = [
 // Skip-list: index/title/divider slides that list many topics and pollute scores
 const HANDBOOK_SKIP = new Set([1, 2, 3, 19, 111]);
 
-function searchHandbook(query) {
+function searchHandbook(query, topN = 1) {
   const q = query.toLowerCase().replace(/[?!.,]/g,'');
   const qWords = q.split(/\s+/).filter(w => w.length >= 3 && !STOP.has(w));
-  if (qWords.length === 0) return null;
+  if (qWords.length === 0) return topN === 1 ? null : [];
 
-  let best = null, bestScore = 0;
+  const scored = [];
   HANDBOOK.forEach(slide => {
-    if (HANDBOOK_SKIP.has(slide.slide)) return;  // skip index/divider slides
-
+    if (HANDBOOK_SKIP.has(slide.slide)) return;
     const titleL = slide.title.toLowerCase();
     const bodyL  = slide.body.toLowerCase();
     let score = 0;
-
     qWords.forEach(w => {
       const sw = stem(w);
-      // Title match scores much higher than body match
       if (titleL.includes(w))                          score += 8;
       else if (sw.length >= 3 && titleL.includes(sw)) score += 6;
-      // Body match
       if (bodyL.includes(w))                           score += 3;
       else if (sw.length >= 3 && bodyL.includes(sw))  score += 2;
     });
-
-    if (score > bestScore) { bestScore = score; best = slide; }
+    if (score >= 8) scored.push({ ...slide, score });
   });
-  return bestScore >= 8 ? best : null;  // require title match on at least one specific word
+  scored.sort((a, b) => b.score - a.score);
+  if (topN === 1) return scored[0] || null;
+  return scored.slice(0, topN);
+}
+
+
+// ── Discovered features from Jira (Done tickets) ─────────
+const FEATURES = [{"title": "Growth Plan Fy27 (Storage & Organize )", "body": "New rooms page experience.- Add home page /landing page to the Categories on Upptäcka as an entry point for Kitchen / Living room/storage.. to help customer navigate easier in explorative phase User case e.g. Customers wants to see options for kitchens styles in small store formats where not all kitchens are shown. Where to start from/decide on what kitchen family fits customers needs etc Price & "}, {"title": "as standard environment for stand alone solutions", "body": "as standard environment for stand alone solutions"}, {"title": "Communicate Click&Collect and Delivery options", "body": "Communicate Click&Collect and Delivery options"}, {"title": "Payment available via Hosted Payment Page or PayOrderLink", "body": "Payment available via Hosted Payment Page or PayOrderLink"}, {"title": "Show services on Upptäcka to support the purchase", "body": "Show services on Upptäcka to support the purchase"}, {"title": "Enhance SDF horizontal capabilities", "body": "Enhance SDF horizontal capabilities"}, {"title": "Enhance self service experience for customers via one entry point through Upptäcka", "body": "Enhance self service experience for customers via one entry point through Upptäcka"}, {"title": "IKEA Foundation on Upptäcka - scale Pilot architecture", "body": "IKEA Foundation on Upptäcka - scale Pilot architecture"}, {"title": "Addon sales (Present Complementary products to increase AOV)", "body": "Addon sales (Present Complementary products to increase AOV)"}, {"title": "Support Small Format growth by meeting their basic self serve needs", "body": "Support Small Format growth by meeting their basic self serve needs"}, {"title": "New planners and guides accessible from Upptäcka (BYO, Appliances)", "body": "New planners and guides accessible from Upptäcka (BYO, Appliances)"}, {"title": "Meaningful & contextualized Integrations into Upptäcka experience", "body": "Meaningful & contextualized Integrations into Upptäcka experience"}, {"title": "Seamless planning experience through Upptäcka", "body": "Seamless planning experience through Upptäcka"}, {"title": "New Zealand Expansion Delivery Upptäcka", "body": "New Zealand Expansion Delivery Upptäcka"}, {"title": "Enable consistent & optimised stand alone solutions (Food, Vantar, Smalland)", "body": "Enable consistent & optimised stand alone solutions (Food, Vantar, Smalland)"}, {"title": "Include delivery and click&collect services in our In Store tools for self-service", "body": "Include delivery and click&collect services in our In Store tools for self-service"}, {"title": "Upptäcka as Assisted selling tool", "body": "Upptäcka as Assisted selling tool"}, {"title": "Optimised DSPA: Insights and Improvements from Pilot Learnings", "body": "Optimised DSPA: Insights and Improvements from Pilot Learnings"}, {"title": "Increase contexualization & relevance in Upptäcka experience (Focus tile, Search, Explore)", "body": "Increase contexualization & relevance in Upptäcka experience (Focus tile, Search, Explore)"}, {"title": "Scaling Kiosk admin and Console to support solutions on Display Platform and provide seamless experience to coworkers", "body": "Scaling Kiosk admin and Console to support solutions on Display Platform and provide seamless experience to coworkers"}, {"title": "Selling fundamentals with special focus on EOF Cooking & Eating", "body": "Selling fundamentals with special focus on EOF Cooking & Eating"}, {"title": "Evolve Upptäcka platform to Store Display Foundation to support the integrations in the store", "body": "Evolve Upptäcka platform to Store Display Foundation to support the integrations in the store"}, {"title": "Increase commercialisation in our store channels, connected to EO Growth", "body": "Increase commercialisation in our store channels, connected to EO Growth"}, {"title": "Enhance the In Store buying journey with special focus in Soroksar", "body": "Enhance the In Store buying journey with special focus in Soroksar"}, {"title": "Upptäcka kiosks as single entry point for self service in stores", "body": "Upptäcka kiosks as single entry point for self service in stores"}, {"title": "PulseCX Revamp", "body": "PulseCX Revamp"}, {"title": "Decrease #steps in FS order flow on Upptäcka", "body": "Decrease #steps in FS order flow on Upptäcka"}, {"title": "Connect the in store self-serve digital tools and explore connections with Sälja", "body": "Connect the in store self-serve digital tools and explore connections with Sälja"}, {"title": "Support small stores with initial research", "body": "Support small stores with initial research"}, {"title": "IKEA Foundation in Upptäcka and the App", "body": "IKEA Foundation in Upptäcka and the App"}, {"title": "Evolve the Store navigation", "body": "Evolve the Store navigation"}, {"title": "Ensure proper self-service with focus on fulfilment store", "body": "Ensure proper self-service with focus on fulfilment store"}, {"title": "[Upptäcka] Self-serve: Learn if customers would like to add Services on Upptäcka", "body": "[Upptäcka] Self-serve: Learn if customers would like to add Services on Upptäcka"}, {"title": "Complete sleep in the in-store digital channels", "body": "Complete sleep in the in-store digital channels"}, {"title": "Deliver a connected shopping experience in Fullfilment store (Soroksar)", "body": "Deliver a connected shopping experience in Fullfilment store (Soroksar)"}, {"title": "[Upptäcka] IPEX Planner Integration - Get rid of standalone kiosks", "body": "[Upptäcka] IPEX Planner Integration - Get rid of standalone kiosks"}, {"title": "Explore customer guidance and product location", "body": "Explore customer guidance and product location"}, {"title": "Scale Store Navigation (Kompass)", "body": "Scale Store Navigation (Kompass)"}, {"title": "RESIDE - Develop an scalable solution for 12 Showroom  categories for Soroksar", "body": "RESIDE - Develop an scalable solution for 12 Showroom  categories for Soroksar"}, {"title": "[Range Exploration] Digital Range Exploration Solution (Rugs) in 2 stores + testing new categories", "body": "[Range Exploration] Digital Range Exploration Solution (Rugs) in 2 stores + testing new categories"}, {"title": "Upptäcka:Enhance Full serve order flow with Services and Checkout (Discovery)", "body": "Upptäcka:Enhance Full serve order flow with Services and Checkout (Discovery)"}, {"title": "(exploration/deployment) Upptäcka: Enable more customers to Buy without dependancy on coworkers in PMPs", "body": "(exploration/deployment) Upptäcka: Enable more customers to Buy without dependancy on coworkers in PMPs"}, {"title": "(exploration/deployment) Upptäcka: Upptäcka modernisation & team efficiency", "body": "(exploration/deployment) Upptäcka: Upptäcka modernisation & team efficiency"}, {"title": "Enhance the in-store omnichannel shoppability for Fulfilment Store (+ others)", "body": "Enhance the in-store omnichannel shoppability for Fulfilment Store (+ others)"}, {"title": "Contextualise the use of Upptäcka in the store and create a platform strategy", "body": "Contextualise the use of Upptäcka in the store and create a platform strategy"}, {"title": "Kompass (Metro) pilot in 4 markets and plan for rollout", "body": "Kompass (Metro) pilot in 4 markets and plan for rollout"}, {"title": "Upptäcka: Enable Upptäcka reach more customers globally by completing the rollout", "body": "Epic includes two main topics: Rollout Upptäcka in China and India"}, {"title": "Upptäcka: Enable customers to plan and buy on Upptäcka without dependancies on coworkers (add entry points to additional 2 IPEX) (Delivery)", "body": "Upptäcka: Enable customers to plan and buy on Upptäcka without dependancies on coworkers (add entry points to additional 2 IPEX) (Delivery)"}, {"title": "Upptäcka: Enable tailoring of Upptäcka experience to meet best customers needs", "body": "Upptäcka: Enable tailoring of Upptäcka experience to meet best customers needs"}, {"title": "Upptäcka: Enable customer to do more tasks via one single point on Upptäcka to descrease the number of stand alone kiosks and offer seemless CX", "body": "Upptäcka: Enable customer to do more tasks via one single point on Upptäcka to descrease the number of stand alone kiosks and offer seemless CX"}, {"title": "Upptäcka: Upptäcka  will provide customers alternatives to purchase  even if the product is not available", "body": "Upptäcka: Upptäcka  will provide customers alternatives to purchase  even if the product is not available"}, {"title": "Upptäcka: Enable customer to plan their own combination  to avoid dependency on coworkers", "body": "Upptäcka: Enable customer to plan their own combination  to avoid dependency on coworkers"}, {"title": "Upptäcka:Enhance Instore list (MSV) to enable many customers to buy full local range via Upptäcka kiosks and enable seamless handover from one channel to another (e.g. APP)", "body": "Upptäcka:Enhance Instore list (MSV) to enable many customers to buy full local range via Upptäcka kiosks and enable seamless handover from one channel to another (e.g. APP)"}, {"title": "Upptäcka:Improve Product Find-ability on Upptäcka to enable customers to quicker find what they need", "body": "Upptäcka:Improve Product Find-ability on Upptäcka to enable customers to quicker find what they need"}, {"title": "Omnichanel list : Enable customers to move their lists from one channel to another", "body": "Omnichanel list : Enable customers to move their lists from one channel to another"}, {"title": "Upptäcka: Empower more customers to self serve", "body": "Upptäcka: Empower more customers to self serve"}, {"title": "Upptäcka: Roll out Upptäcka in 12 new markets, including US (27 markets in total by the end of T1)", "body": "Due to delays of hardware delivery few markets will be delayed . At the end of T1 we are live in 23 markets."}, {"title": "Upptäcka:  Kiosks will be contextual based on their location to strengthen the connection between physical and digital (store and the kiosk) and provide seamless UX", "body": "Upptäcka:  Kiosks will be contextual based on their location to strengthen the connection between physical and digital (store and the kiosk) and provide seamless UX"}, {"title": "Upptäcka: Empower more customer to self serve for simple tasks tasks to save time -place (FS) order and pick up", "body": "Enhanced FS flow (Information on where and when can customers collect items) Customization on PIP (access on products variations on PIP)"}, {"title": "Upptäcka:  Upptäcka is rolled out in 12 markets by the end of T3", "body": "Upptäcka:  Upptäcka is rolled out in 12 markets by the end of T3"}];
+
+function searchFeatures(query) {
+  const q = query.toLowerCase().replace(/[?!.,]/g,'');
+  const qWords = q.split(/\s+/).filter(w => w.length >= 3 && !STOP.has(w));
+  if (qWords.length === 0) return [];
+  const scored = FEATURES.map(f => {
+    const hay = (f.title + ' ' + f.body).toLowerCase();
+    let score = 0;
+    qWords.forEach(w => {
+      const sw = stem(w);
+      if (f.title.toLowerCase().includes(w)) score += 8;
+      else if (f.title.toLowerCase().includes(sw)) score += 6;
+      if (hay.includes(w)) score += 3;
+      else if (hay.includes(sw)) score += 2;
+    });
+    return { ...f, score };
+  }).filter(f => f.score >= 8).sort((a,b) => b.score - a.score);
+  return scored.slice(0, 3);
 }
 
 const QA = [
@@ -1464,7 +1484,7 @@ function humaniseTitle(title) {
   return humanise(title.replace(/\n/g,' ').replace(HANDBOOK_NOISE,'').trim());
 }
 
-function addHandbookAnswer(slide, query) {
+function addHandbookAnswer(slide, query, prefixHtml = '') {
   const title = humaniseTitle(slide.title);
   const points = slideToPoints(slide.body);
   const bulletHtml = points.map(p => `
@@ -1481,6 +1501,7 @@ function addHandbookAnswer(slide, query) {
       <div class="msg-sender">Uppa</div>
       <div class="bubble" style="padding:0;overflow:hidden">
 
+        ${prefixHtml}
         <!-- Slide header -->
         <div style="background:var(--blue);padding:12px 16px;display:flex;align-items:center;gap:10px">
           <div style="background:rgba(255,255,255,.18);border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700;color:white;white-space:nowrap">
@@ -1607,42 +1628,76 @@ function askQuestion(q) {
   setTimeout(() => {
     typing.classList.remove('visible');
 
-    const faqResult = findAnswer(q);
-    const hbSlide   = searchHandbook(q);
+    const faqResult   = findAnswer(q);
+    const hbSlides    = searchHandbook(q, 3);   // top 3 handbook matches
+    const hbSlide     = Array.isArray(hbSlides) ? hbSlides[0] : hbSlides;
     const hbTitleScore = hbSlide ? handbookTitleScore(q, hbSlide) : 0;
+    const featureHits  = searchFeatures(q);     // Jira done-ticket knowledge
 
-    const hasFaq      = faqResult && (faqResult.confidence === 'high' || faqResult.confidence === 'medium' || faqResult.hasExactKwMatch);
-    const hasHandbook = hbSlide && hbTitleScore >= 8;
+    const hasFaq       = faqResult && (faqResult.confidence === 'high' || faqResult.confidence === 'medium' || faqResult.hasExactKwMatch);
+    const hasHandbook  = hbSlide && hbTitleScore >= 8;
+    // Multiple handbook slides? Show as choices if ≥2 with good scores
+    const multiHandbook = Array.isArray(hbSlides) && hbSlides.length > 1 && hbSlides[1].score >= 8;
 
-    if (hasFaq && hasHandbook) {
-      // Both match — let the customer choose
-      const hbTitle = hbSlide.title.replace(/\n/g,' ').trim();
+    // Feature knowledge hit (from Done Jira tickets) — enrich answer prefix
+    const featureNote = featureHits.length > 0
+      ? `<p style="background:#f0fbf5;border-left:3px solid var(--green);padding:8px 10px;border-radius:6px;font-size:12px;color:#1a5c2e;margin-bottom:10px">
+           ✅ <strong>This is a live feature on Upptäcka</strong> — ${featureHits[0].title}
+         </p>` : '';
+
+    if (hasFaq && multiHandbook) {
+      // FAQ + multiple handbook slides — show all as choices
+      const choices = [
+        { type: 'faq', data: faqResult.item, icon: '💬',
+          label: faqResult.item.q, sub: 'Quick answer from Uppa' },
+        ...hbSlides.map(s => ({
+          type: 'handbook', data: s, icon: '📖',
+          label: humaniseTitle(s.title).substring(0, 77) + (s.title.length > 77 ? '…' : ''),
+          sub: `Slide ${s.slide} · Feature guide`
+        }))
+      ];
+      _pendingChoices = choices;
+      addChoices(choices);
+
+    } else if (hasFaq && hasHandbook) {
+      const hbTitle = humaniseTitle(hbSlide.title);
       _pendingChoices = [
         { type: 'faq',      data: faqResult.item, icon: '💬',
-          label: faqResult.item.q,
-          sub: 'Quick answer from Uppa' },
+          label: faqResult.item.q, sub: 'Quick answer from Uppa' },
         { type: 'handbook', data: hbSlide, icon: '📖',
           label: hbTitle.length > 80 ? hbTitle.substring(0,77)+'…' : hbTitle,
-          sub: `Slide ${hbSlide.slide} · Detailed feature guide` }
+          sub: `Slide ${hbSlide.slide} · Feature guide` }
       ];
       addChoices(_pendingChoices);
 
+    } else if (!hasFaq && multiHandbook) {
+      // Multiple handbook matches, no FAQ — show slide choices
+      _pendingChoices = hbSlides.map(s => ({
+        type: 'handbook', data: s, icon: '📖',
+        label: humaniseTitle(s.title).substring(0, 80),
+        sub: `Slide ${s.slide} · Feature guide`
+      }));
+      addChoices(_pendingChoices);
+
     } else if (hasFaq) {
-      if (faqResult.confidence === 'medium' && !faqResult.hasExactKwMatch) {
-        const note = `<p style="color:var(--mid);font-size:12px;margin-bottom:10px">💡 I interpreted your question as: <em>"${faqResult.item.q}"</em></p>`;
-        addAnswer(faqResult.item, note);
-      } else {
-        addAnswer(faqResult.item);
-      }
+      const note = (faqResult.confidence === 'medium' && !faqResult.hasExactKwMatch)
+        ? `<p style="color:var(--mid);font-size:12px;margin-bottom:10px">💡 I interpreted your question as: <em>"${faqResult.item.q}"</em></p>`
+        : featureNote;
+      addAnswer(faqResult.item, note);
 
     } else if (hasHandbook) {
-      addHandbookAnswer(hbSlide, q);
+      addHandbookAnswer(hbSlide, q, featureNote);
 
     } else if (faqResult && faqResult.confidence === 'low') {
       addClarification(q, faqResult);
 
     } else {
       addFallback(q);
+    }
+
+    chat.scrollTop = chat.scrollHeight;
+  }, 600 + Math.random() * 400);
+}
     }
 
     chat.scrollTop = chat.scrollHeight;
