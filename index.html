@@ -1620,8 +1620,26 @@ function resolveChoice(i) {
     typing.classList.remove('visible');
     if (opt.type === 'faq')      addAnswer(opt.data);
     if (opt.type === 'handbook') addHandbookAnswer(opt.data, opt.label);
+    if (opt.type === 'feature')  addFeatureAnswer(opt.data);
     chat.scrollTop = chat.scrollHeight;
   }, 500);
+}
+
+// ── Feature (Jira) answer card ───────────────────────────
+function addFeatureAnswer(feature) {
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.innerHTML = `
+    <div class="avatar">🛋️</div>
+    <div class="bubble">
+      <p style="font-size:11px;color:var(--mid);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">
+        ✅ Live Upptäcka feature · ${feature.key}
+      </p>
+      <p style="font-weight:600;font-size:15px;margin-bottom:10px">${humanise(feature.title)}</p>
+      <p style="font-size:14px;line-height:1.55;color:#333">${humanise(feature.body)}</p>
+      <p style="font-size:11px;color:var(--mid);margin-top:10px">Updated ${feature.updated || ''}</p>
+    </div>`;
+  chat.appendChild(div);
 }
 
 function askQuestion(q) {
@@ -1636,26 +1654,35 @@ function askQuestion(q) {
   setTimeout(() => {
     typing.classList.remove('visible');
 
-    const faqResult   = findAnswer(q);
-    const hbSlides    = searchHandbook(q, 3);   // top 3 handbook matches
-    const hbSlide     = Array.isArray(hbSlides) ? hbSlides[0] : hbSlides;
+    const faqResult    = findAnswer(q);
+    const hbSlides     = searchHandbook(q, 3);
+    const hbSlide      = Array.isArray(hbSlides) ? hbSlides[0] : hbSlides;
     const hbTitleScore = hbSlide ? handbookTitleScore(q, hbSlide) : 0;
-    const featureHits  = searchFeatures(q);     // Jira done-ticket knowledge
+    const featureHits  = searchFeatures(q);
 
     const hasFaq       = faqResult && (faqResult.confidence === 'high' || faqResult.confidence === 'medium' || faqResult.hasExactKwMatch);
     const hasHandbook  = hbSlide && hbTitleScore >= 8;
-    // Multiple handbook slides? Show as choices if ≥2 with good scores
     const multiHandbook = Array.isArray(hbSlides) && hbSlides.length > 1 && hbSlides[1].score >= 8;
+    const hasFeature   = featureHits.length > 0;
 
-    // Feature knowledge hit (from Done Jira tickets) — enrich answer prefix
-    const featureNote = featureHits.length > 0
-      ? `<p style="background:#f0fbf5;border-left:3px solid var(--green);padding:8px 10px;border-radius:6px;font-size:12px;color:#1a5c2e;margin-bottom:10px">
-           ✅ <strong>This is a live feature on Upptäcka</strong> — ${featureHits[0].title}
-         </p>` : '';
+    // Build a unified choice list — Jira features always included when they match
+    const buildChoices = (base) => {
+      const choices = [...base];
+      if (hasFeature) {
+        featureHits.slice(0,2).forEach(f => {
+          const alreadyIn = choices.some(c => c.type === 'feature' && c.data.key === f.key);
+          if (!alreadyIn) choices.push({
+            type: 'feature', data: f, icon: '✅',
+            label: f.title.length > 77 ? f.title.substring(0,74)+'…' : f.title,
+            sub: `${f.key} · Done feature`
+          });
+        });
+      }
+      return choices;
+    };
 
     if (hasFaq && multiHandbook) {
-      // FAQ + multiple handbook slides — show all as choices
-      const choices = [
+      const choices = buildChoices([
         { type: 'faq', data: faqResult.item, icon: '💬',
           label: faqResult.item.q, sub: 'Quick answer from Uppa' },
         ...hbSlides.map(s => ({
@@ -1663,37 +1690,52 @@ function askQuestion(q) {
           label: humaniseTitle(s.title).substring(0, 77) + (s.title.length > 77 ? '…' : ''),
           sub: `Slide ${s.slide} · Feature guide`
         }))
-      ];
+      ]);
       _pendingChoices = choices;
       addChoices(choices);
 
     } else if (hasFaq && hasHandbook) {
       const hbTitle = humaniseTitle(hbSlide.title);
-      _pendingChoices = [
-        { type: 'faq',      data: faqResult.item, icon: '💬',
+      const choices = buildChoices([
+        { type: 'faq', data: faqResult.item, icon: '💬',
           label: faqResult.item.q, sub: 'Quick answer from Uppa' },
         { type: 'handbook', data: hbSlide, icon: '📖',
           label: hbTitle.length > 80 ? hbTitle.substring(0,77)+'…' : hbTitle,
           sub: `Slide ${hbSlide.slide} · Feature guide` }
-      ];
-      addChoices(_pendingChoices);
+      ]);
+      _pendingChoices = choices;
+      addChoices(choices);
 
     } else if (!hasFaq && multiHandbook) {
-      // Multiple handbook matches, no FAQ — show slide choices
-      _pendingChoices = hbSlides.map(s => ({
+      const choices = buildChoices(hbSlides.map(s => ({
         type: 'handbook', data: s, icon: '📖',
         label: humaniseTitle(s.title).substring(0, 80),
         sub: `Slide ${s.slide} · Feature guide`
+      })));
+      _pendingChoices = choices;
+      addChoices(choices);
+
+    } else if (!hasFaq && !hasHandbook && hasFeature) {
+      // Only Jira matches — show as cards
+      const choices = featureHits.map(f => ({
+        type: 'feature', data: f, icon: '✅',
+        label: f.title.length > 77 ? f.title.substring(0,74)+'…' : f.title,
+        sub: `${f.key} · Done feature`
       }));
-      addChoices(_pendingChoices);
+      _pendingChoices = choices;
+      addChoices(choices);
 
     } else if (hasFaq) {
       const note = (faqResult.confidence === 'medium' && !faqResult.hasExactKwMatch)
         ? `<p style="color:var(--mid);font-size:12px;margin-bottom:10px">💡 I interpreted your question as: <em>"${faqResult.item.q}"</em></p>`
-        : featureNote;
+        : '';
       addAnswer(faqResult.item, note);
 
     } else if (hasHandbook) {
+      const featureNote = hasFeature
+        ? `<p style="background:#f0fbf5;border-left:3px solid var(--green);padding:8px 10px;border-radius:6px;font-size:12px;color:#1a5c2e;margin-bottom:10px">
+             ✅ <strong>Live on Upptäcka</strong> — ${featureHits[0].title}
+           </p>` : '';
       addHandbookAnswer(hbSlide, q, featureNote);
 
     } else if (faqResult && faqResult.confidence === 'low') {
