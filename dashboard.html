@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Upptäcka Dashboard</title>
+<style>
+  :root {
+    --blue:#0058A3; --yellow:#FFDA1A; --green:#00843D; --red:#E00751;
+    --orange:#F26522; --bg:#F5F5F0; --card:#fff; --mid:#767676; --dark:#111;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg); color:var(--dark); }
+
+  /* Header */
+  .header { background:var(--blue); color:#fff; padding:20px 28px; display:flex; align-items:center; justify-content:space-between; }
+  .header h1 { font-size:22px; font-weight:700; letter-spacing:-.3px; }
+  .header .sub { font-size:13px; opacity:.75; margin-top:2px; }
+  .header .ts { font-size:12px; opacity:.6; }
+
+  /* Grid */
+  .grid { display:grid; gap:16px; padding:20px; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); }
+  .grid-wide { grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+
+  /* Stat card */
+  .stat { background:var(--card); border-radius:14px; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,.07); }
+  .stat .num { font-size:42px; font-weight:800; line-height:1; }
+  .stat .lbl { font-size:13px; color:var(--mid); margin-top:6px; }
+  .stat.blue .num  { color:var(--blue); }
+  .stat.green .num { color:var(--green); }
+  .stat.red .num   { color:var(--red); }
+  .stat.orange .num{ color:var(--orange); }
+
+  /* Section */
+  .section { padding:0 20px 20px; }
+  .section h2 { font-size:15px; font-weight:700; margin-bottom:12px; color:var(--mid); text-transform:uppercase; letter-spacing:.5px; }
+
+  /* Cards row */
+  .cards { display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+
+  /* Issue row */
+  .issue { background:var(--card); border-radius:10px; padding:12px 14px; box-shadow:0 1px 3px rgba(0,0,0,.06); display:flex; align-items:center; gap:10px; }
+  .issue .key { font-size:11px; color:var(--blue); font-weight:600; white-space:nowrap; }
+  .issue .sum { font-size:13px; flex:1; line-height:1.35; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:600; }
+  .badge-done     { background:#e6f4ed; color:var(--green); }
+  .badge-progress { background:#fff3e0; color:var(--orange); }
+  .badge-review   { background:#e8f0fe; color:var(--blue); }
+  .badge-backlog  { background:#f5f5f5; color:var(--mid); }
+  .badge-critical { background:#fde8ef; color:var(--red); }
+  .badge-high     { background:#fff3e0; color:var(--orange); }
+
+  /* Epic progress */
+  .epic { background:var(--card); border-radius:12px; padding:14px 16px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+  .epic .title { font-size:13px; font-weight:600; margin-bottom:8px; line-height:1.35; }
+  .epic .meta { font-size:11px; color:var(--mid); margin-bottom:8px; display:flex; justify-content:space-between; }
+  .bar-bg { background:#f0f0f0; border-radius:99px; height:8px; overflow:hidden; }
+  .bar-fill { height:100%; border-radius:99px; transition:width .4s; }
+
+  /* Velocity chart */
+  .velocity { background:var(--card); border-radius:14px; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,.07); }
+  .velocity h3 { font-size:13px; color:var(--mid); margin-bottom:16px; font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+  .bars { display:flex; align-items:flex-end; gap:10px; height:100px; }
+  .bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .bar-col .bar { width:100%; border-radius:6px 6px 0 0; background:var(--blue); min-height:4px; transition:height .4s; }
+  .bar-col .cnt { font-size:12px; font-weight:700; color:var(--blue); }
+  .bar-col .wk  { font-size:10px; color:var(--mid); }
+
+  /* Refresh btn */
+  .refresh { display:inline-flex; align-items:center; gap:6px; background:var(--yellow); color:var(--dark); border:none; border-radius:99px; padding:8px 16px; font-size:13px; font-weight:700; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header h1">🛒 Upptäcka Dashboard</div>
+    <div class="sub">INTERACT project · Jira live data</div>
+  </div>
+  <div style="text-align:right">
+    <div class="ts" id="ts">—</div>
+    <div style="margin-top:6px">
+      <a href="https://vishalt450.github.io/upptacka-faq-web/" target="_blank"
+         style="color:#fff;opacity:.8;font-size:12px;text-decoration:none">⬡ Open Uppa chatbot →</a>
+    </div>
+  </div>
+</div>
+
+<!-- KPI stats -->
+<div class="grid" id="kpi-grid"></div>
+
+<!-- Sprint board + velocity -->
+<div class="section">
+  <h2>Current Sprint</h2>
+  <div class="cards" id="sprint-cards"></div>
+</div>
+
+<div style="padding:0 20px 20px; display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+  <!-- Velocity -->
+  <div class="velocity">
+    <h3>Stories Done — Last 4 Weeks</h3>
+    <div class="bars" id="velocity-bars"></div>
+  </div>
+  <!-- Bugs -->
+  <div class="velocity">
+    <h3>Open Bugs (Upptäcka)</h3>
+    <div id="bug-list"></div>
+  </div>
+</div>
+
+<!-- Epics -->
+<div class="section">
+  <h2>Active Epics — Progress</h2>
+  <div class="cards" id="epic-cards"></div>
+</div>
+
+<!-- Recent Done -->
+<div class="section">
+  <h2>Recently Done (last 14 days)</h2>
+  <div class="cards" id="done-cards"></div>
+</div>
+
+<div style="padding:10px 20px 30px; font-size:12px; color:var(--mid)">
+  Data from Jira INTERACT project · Refresh to get latest
+</div>
+
+<script>
+
+const DATA = {"sprint_issues": [{"key": "INTERACT-10656", "summary": "Implement MOV in Upptäcka kiosk buying flow", "status": "In Progress", "type": "Story", "priority": "Low", "assignee": "Unassigned"}, {"key": "INTERACT-10774", "summary": "Dependabot: Create workflow for automatic task in JIRA", "status": "In Progress", "type": "Story", "priority": "Low", "assignee": "Oscar Andersson"}, {"key": "INTERACT-10735", "summary": "Implement MOQ and sets of multiples in Kiosk buying flow", "status": "In Progress", "type": "Story", "priority": "Low", "assignee": "Unassigned"}, {"key": "INTERACT-10820", "summary": "Implement MOV in Upptäcka kiosk buying flow", "status": "In Review", "type": "Sub-task", "priority": "Low", "assignee": "Rickard Hinsell"}, {"key": "INTERACT-10843", "summary": "Use workflow in Upptäcka", "status": "In Review", "type": "Sub-task", "priority": "Low", "assignee": "Oscar Andersson"}, {"key": "INTERACT-10382", "summary": "Update mf-library with new Upptäcka API", "status": "Done", "type": "Sub-task", "priority": "Low", "assignee": "Rickard Hinsell"}, {"key": "INTERACT-10383", "summary": "Create function in Upptäcka and pass down to Upptäcka APIs", "status": "Done", "type": "Sub-task", "priority": "Low", "assignee": "Rickard Hinsell"}], "sprint_stats": {"In Progress": 3, "In Review": 2, "Done": 2}, "bugs": [{"key": "INTERACT-8662", "summary": "Fullstop (Show&Sales stopped) items are searchable in Upptäcka", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-9095", "summary": "SDF: Application selection sometimes not showing Upptäcka/other apps", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-8994", "summary": "Gävle store does not show hard coded message as it should do", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-8229", "summary": "Shoppable image not working with visual message", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-7700", "summary": "Show the \"Best seller\" and \"Limited edition\" commercial messages in Up", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-7250", "summary": "Bug from iSell: IllegalArgument Exception while registering the paymen", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-7795", "summary": "Extended p-tag page loads before loading in-store when scanning a p-ta", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-7778", "summary": "NOWIT: INC1003044313 QR code from Upptäcka doesn't work in sälja", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-7126", "summary": "Listig: Shop'n'Go cant retrieve list", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-7326", "summary": "Add planners", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-5362", "summary": "[Upptäcka CN] Missing pictures in IKEA family", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-5344", "summary": "No errors in Sentry", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-9084", "summary": "SDF kiosk in FR trying to run IRD - no applications to select from", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-9050", "summary": "PIP crashing when reviews not working", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-9425", "summary": "Variant test is flaky in Upptäcka ", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-4671", "summary": "Run Upptäcka if Optimizely fails", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-2742", "summary": "\"In store\" filter does not filter out all products that are not availa", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-9979", "summary": "Legal text is not correct in Get notified email input view", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-10643", "summary": "Denmark: Stopped Campaign still in Upptäcka, IKEA Family Kitchen and O", "status": "Invalid", "priority": "Low"}, {"key": "INTERACT-10345", "summary": "Click & Collect in this store is not showing up in Chester STO1202 in ", "status": "Invalid", "priority": "Medium"}], "recent_done": [{"key": "INTERACT-10763", "summary": "Enable a kiosk for iSOM flow in Croatia (8/6)", "type": "Story", "updated": "2026-06-08"}, {"key": "INTERACT-10816", "summary": "Instore web Checkout QR code - only appearing for DPTAG", "type": "Bug", "updated": "2026-06-16"}], "epics": [{"key": "INTERACT-7777", "summary": "FY26-Tx: Enable Upptäcka Console in XDK", "status": "Backlog", "total": 0, "done": 0, "pct": 0}, {"key": "INTERACT-10035", "summary": "FY26-T3: Support DISEPO integration in Upptäcka", "status": "Backlog", "total": 4, "done": 0, "pct": 0}, {"key": "INTERACT-10833", "summary": "FY26-T3: Explore migration of Landa for NIF to Upptäcka", "status": "Backlog", "total": 0, "done": 0, "pct": 0}, {"key": "INTERACT-9957", "summary": "FY26-T2: Define Planner Success in Upptäcka", "status": "Backlog", "total": 0, "done": 0, "pct": 0}, {"key": "INTERACT-10695", "summary": "FY26-T3 BOKA on Upptäcka for drop in", "status": "Backlog", "total": 0, "done": 0, "pct": 0}, {"key": "INTERACT-10466", "summary": "FY26-T2: Show Services Information on Upptäcka", "status": "In Progress", "total": 6, "done": 1, "pct": 17}, {"key": "INTERACT-9945", "summary": "FY26-T2: SDM offers on Upptäcka and Instore web- rollout glo", "status": "In Progress", "total": 2, "done": 1, "pct": 50}, {"key": "INTERACT-10678", "summary": "FY26-T3: Migrate Landa with mouse and keyboard to Upptäcka", "status": "In Progress", "total": 11, "done": 1, "pct": 9}], "velocity": [{"label": "Week -4", "count": 2}, {"label": "Week -3", "count": 4}, {"label": "Week -2", "count": 1}, {"label": "Week -1", "count": 0}], "generated_at": "2026-06-18 09:28"};
+
+// Timestamp
+document.getElementById('ts').textContent = 'Updated ' + DATA.generated_at;
+
+// KPI cards
+const ss = DATA.sprint_stats;
+const inProg = (ss['In Progress']||0) + (ss['In Review']||0);
+const done   = ss['Done']||0;
+const todo   = (ss['To Do']||0) + (ss['Backlog']||0);
+const kpiGrid = document.getElementById('kpi-grid');
+[
+  { num: inProg,          lbl: 'In Progress',      cls: 'orange' },
+  { num: done,            lbl: 'Done This Sprint',  cls: 'green'  },
+  { num: DATA.bugs.length,lbl: 'Open Bugs',         cls: 'red'    },
+  { num: DATA.recent_done.length, lbl: 'Done (14d)',cls: 'blue'   },
+  { num: DATA.epics.filter(e=>e.status==='In Progress').length, lbl:'Active Epics', cls:'blue' },
+].forEach(k => {
+  kpiGrid.innerHTML += `<div class="stat ${k.cls}"><div class="num">${k.num}</div><div class="lbl">${k.lbl}</div></div>`;
+});
+
+// Sprint cards
+function statusBadge(s) {
+  if (s==='Done')         return 'badge-done';
+  if (s==='In Progress')  return 'badge-progress';
+  if (s==='In Review')    return 'badge-review';
+  return 'badge-backlog';
+}
+const sprintCards = document.getElementById('sprint-cards');
+DATA.sprint_issues.forEach(i => {
+  sprintCards.innerHTML += `
+    <div class="issue">
+      <a href="https://jira.digital.ingka.com/browse/${i.key}" target="_blank" class="key">${i.key}</a>
+      <div class="sum">${i.summary}</div>
+      <span class="badge ${statusBadge(i.status)}">${i.status}</span>
+    </div>`;
+});
+if(!DATA.sprint_issues.length) sprintCards.innerHTML = '<p style="color:#999;font-size:13px">No sprint issues found for Upptäcka</p>';
+
+// Velocity bars
+const maxV = Math.max(...DATA.velocity.map(v=>v.count), 1);
+const velBars = document.getElementById('velocity-bars');
+DATA.velocity.forEach(v => {
+  const h = Math.round((v.count / maxV) * 90);
+  velBars.innerHTML += `
+    <div class="bar-col">
+      <div class="cnt">${v.count}</div>
+      <div class="bar" style="height:${h}px"></div>
+      <div class="wk">${v.label}</div>
+    </div>`;
+});
+
+// Bug list
+const bugList = document.getElementById('bug-list');
+function priorityBadge(p) {
+  if(p==='Critical'||p==='Highest') return 'badge-critical';
+  if(p==='High')    return 'badge-high';
+  return 'badge-backlog';
+}
+DATA.bugs.slice(0,6).forEach(b => {
+  bugList.innerHTML += `
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f5f5f5">
+      <a href="https://jira.digital.ingka.com/browse/${b.key}" target="_blank" style="font-size:11px;color:var(--blue);font-weight:600;white-space:nowrap">${b.key}</a>
+      <span style="font-size:12px;flex:1;line-height:1.3">${b.summary}</span>
+      <span class="badge ${priorityBadge(b.priority)}">${b.priority}</span>
+    </div>`;
+});
+if(DATA.bugs.length>6) bugList.innerHTML += `<p style="font-size:11px;color:var(--mid);margin-top:6px">+${DATA.bugs.length-6} more open bugs</p>`;
+
+// Epics
+const epicCards = document.getElementById('epic-cards');
+DATA.epics.filter(e=>e.total>0).forEach(e => {
+  const color = e.pct===100 ? 'var(--green)' : e.pct>50 ? 'var(--blue)' : 'var(--orange)';
+  epicCards.innerHTML += `
+    <div class="epic">
+      <div class="title"><a href="https://jira.digital.ingka.com/browse/${e.key}" target="_blank" style="color:inherit;text-decoration:none">${e.summary}</a></div>
+      <div class="meta"><span>${e.done}/${e.total} stories done</span><span>${e.pct}%</span></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${e.pct}%;background:${color}"></div></div>
+    </div>`;
+});
+if(!DATA.epics.filter(e=>e.total>0).length) epicCards.innerHTML = '<p style="color:#999;font-size:13px">No epics with stories found</p>';
+
+// Recent done
+const doneCards = document.getElementById('done-cards');
+DATA.recent_done.forEach(i => {
+  doneCards.innerHTML += `
+    <div class="issue">
+      <a href="https://jira.digital.ingka.com/browse/${i.key}" target="_blank" class="key">${i.key}</a>
+      <div class="sum">${i.summary}</div>
+      <span class="badge badge-done">${i.type}</span>
+      <span style="font-size:11px;color:var(--mid)">${i.updated}</span>
+    </div>`;
+});
+if(!DATA.recent_done.length) doneCards.innerHTML = '<p style="color:#999;font-size:13px">Nothing done in the last 14 days</p>';
+
+</script>
+</body>
+</html>
