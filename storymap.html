@@ -596,6 +596,10 @@ function addActivity(){
   openModal('New Activity','','',false,1,(title)=>{
     STATE.activities.push({id:uid(),title,tasks:[]});
     saveState(); renderBoard();
+    // Scroll board right so new activity is visible
+    const wrap = document.getElementById('board-wrap');
+    if(wrap) setTimeout(()=>{ wrap.scrollLeft = wrap.scrollWidth; }, 50);
+    showToast('✅ Activity "' + title + '" added!');
   });
 }
 function editActivity(id){
@@ -661,7 +665,7 @@ function clearMap(){
 function loadExample(){
   if(!confirm('Load the \uD83C\uDF82 Cake Ordering demo? This will replace the current map.')) return;
   STATE = {
-    visibleReleases:[1,2,3], aiSuggestions:[], clusters:{},
+    visibleReleases:[1,2,3], releases: RELEASES, aiSuggestions:[], clusters:{},
     context:'Customer journey: Ordering a cake online — from discovery to post-delivery review.',
     activities:[
       {id:'axaji0y',title:'Discover & Browse',tasks:[
