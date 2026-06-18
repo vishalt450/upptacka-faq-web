@@ -3,608 +3,1196 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Upptäcka T3 Dashboard</title>
+<title>Upptäcka T3 · Team Dashboard</title>
 <style>
-:root {
-  --blue:#0058A3;--yellow:#FFDA1A;--green:#00843D;--red:#E00751;
-  --orange:#F26522;--bg:#F4F4EF;--card:#fff;--mid:#767676;--dark:#111;
-}
+:root{--blue:#0058A3;--yellow:#FFDA1A;--green:#00843D;--red:#E00751;--orange:#F26522;--bg:#F0F0EB;--card:#fff;--mid:#767676;--dark:#111}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--dark)}
-a{color:inherit;text-decoration:none}
-/* Header */
-.hdr{background:var(--blue);color:#fff;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
-.hdr h1{font-size:20px;font-weight:800}
-.hdr .sub{font-size:12px;opacity:.7;margin-top:3px}
-.hdr .right{text-align:right;font-size:12px;opacity:.7}
-/* KPIs */
-.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;padding:16px}
-.kpi{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
-.kpi .n{font-size:38px;font-weight:800;line-height:1}
-.kpi .l{font-size:12px;color:var(--mid);margin-top:4px}
-/* Section */
-.sec{padding:0 16px 16px}
-.sec h2{font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;padding-top:4px}
-/* Epic card */
-.epic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
-.epic{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
-.epic .etitle{font-size:14px;font-weight:700;margin-bottom:4px;line-height:1.3}
-.epic .emeta{font-size:11px;color:var(--mid);margin-bottom:10px}
-.bar-bg{background:#f0f0f0;border-radius:99px;height:8px;margin-bottom:8px}
-.bar-fill{height:100%;border-radius:99px}
-.epic .edesc{font-size:12px;color:#555;line-height:1.5;margin-bottom:10px;border-left:3px solid #e0e0e0;padding-left:8px}
-/* Story rows */
-.story{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f5f5f5;font-size:12px}
-.story:last-child{border-bottom:none}
-.story .sk{color:var(--blue);font-weight:600;white-space:nowrap;font-size:11px}
-.story .ss{flex:1;line-height:1.3}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif;background:var(--bg);color:var(--dark);min-height:100vh}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+
+/* ── Header ── */
+.hdr{background:var(--blue);color:#fff;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hdr-title{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.hdr-sub{font-size:12px;opacity:.65;margin-top:3px}
+.hdr-link{color:var(--yellow);font-size:12px;font-weight:700}
+
+/* ── Overall progress hero ── */
+.hero{background:linear-gradient(135deg,#003f7a 0%,var(--blue) 100%);color:#fff;padding:24px;margin:16px;border-radius:16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.hero-ring{position:relative;width:110px;height:110px;flex-shrink:0}
+.hero-ring svg{width:110px;height:110px}
+.hero-ring .ring-pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hero-ring .ring-pct span:first-child{font-size:28px;font-weight:800;color:var(--yellow)}
+.hero-ring .ring-pct span:last-child{font-size:11px;opacity:.7}
+.hero-stats{display:flex;gap:28px;flex-wrap:wrap}
+.hero-stat .n{font-size:36px;font-weight:800;line-height:1}
+.hero-stat .l{font-size:12px;opacity:.65;margin-top:2px}
+.hero-stat .n.y{color:var(--yellow)}
+.hero-stat .n.g{color:#6be8a0}
+.hero-stat .n.r{color:#ff8faf}
+
+/* ── KPI row ── */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;padding:0 16px 16px}
+.kpi{background:var(--card);border-radius:12px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.kpi .n{font-size:32px;font-weight:800;line-height:1}
+.kpi .l{font-size:11px;color:var(--mid);margin-top:4px}
+
+/* ── Epic cards ── */
+.section-title{font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.7px;padding:0 16px 8px}
+.epics-list{padding:0 16px;display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.epic-card{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07);transition:box-shadow .2s}
+.epic-card:hover{box-shadow:0 3px 12px rgba(0,0,0,.12)}
+.ec-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;gap:12px}
+.ec-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.ec-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ec-info{min-width:0}
+.ec-title{font-size:14px;font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ec-meta{font-size:11px;color:var(--mid);margin-top:3px}
+.ec-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.pct-ring{position:relative;width:52px;height:52px}
+.pct-ring svg{width:52px;height:52px}
+.pct-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+.ec-counts{display:flex;flex-direction:column;gap:3px;align-items:flex-end}
+.count-pill{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.done-pill{background:#e6f4ed;color:#00843D}
+.prog-pill{background:#fff3e0;color:#F26522}
+.todo-pill{background:#f5f5f5;color:#999}
+/* Segmented bar */
+.seg-bar{display:flex;height:5px;overflow:hidden}
+.seg{transition:width .4s}
+.seg-done{background:#00843D}
+.seg-prog{background:#F26522}
+.seg-todo{background:#E8E8E8}
+/* Stories panel */
+.stories-panel{padding:0 16px 12px;border-top:1px solid #f5f5f5}
+.story-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #fafafa;font-size:12px}
+.story-row:last-of-type{border-bottom:none}
+.s-icon{font-size:13px;flex-shrink:0}
+.s-key{color:var(--blue);font-weight:600;font-size:11px;white-space:nowrap;flex-shrink:0}
+.s-sum{flex:1;line-height:1.35;color:#333}
+.more-hint{font-size:11px;color:var(--mid);padding:6px 0}
 /* Badges */
-.badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700}
-.badge-done{background:#e6f4ed;color:#00843D}
-.badge-progress{background:#fff3e0;color:#F26522}
-.badge-review{background:#e8f0fe;color:#0058A3}
-.badge-backlog{background:#f5f5f5;color:#767676}
-.badge-critical{background:#fde8ef;color:#E00751}
-.badge-high{background:#fff3e0;color:#F26522}
-/* 2-col layout */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 16px}
-@media(max-width:600px){.two-col{grid-template-columns:1fr}}
-.panel{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
-.panel h3{font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
+.b{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
+.b-done{background:#e6f4ed;color:#00843D}
+.b-prog{background:#fff3e0;color:#F26522}
+.b-rev{background:#e8f0fe;color:#0058A3}
+.b-todo{background:#f5f5f5;color:#999}
+.b-crit{background:#fde8ef;color:#E00751}
+.b-high{background:#fff3e0;color:#F26522}
+/* Bottom panels */
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 24px}
+@media(max-width:640px){.bottom-grid{grid-template-columns:1fr}}
+.panel{background:var(--card);border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.panel-title{font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px}
 </style>
 </head>
 <body>
 
 <div class="hdr">
   <div>
-    <h1>🛒 Upptäcka · T3 Dashboard</h1>
-    <div class="sub">FY26 T3 — April 1 onwards · INTERACT project · 2026-06-18 09:32</div>
+    <div class="hdr-title">🛒 Upptäcka · T3 Team Dashboard</div>
+    <div class="hdr-sub">FY26 T3 · April 1 onwards · 2026-06-18 09:32</div>
   </div>
-  <div class="right">
-    <div>Based on 17 active epics · 58 stories</div>
-    <div style="margin-top:4px"><a href="https://vishalt450.github.io/upptacka-faq-web/" style="color:#FFDA1A">⬡ Uppa Chatbot →</a></div>
+  <a href="https://vishalt450.github.io/upptacka-faq-web/" class="hdr-link">⬡ Uppa Chatbot →</a>
+</div>
+
+<!-- Hero overall progress -->
+<div class="hero">
+  <div class="hero-ring">
+    <svg viewBox="0 0 36 36">
+      <circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="3"/>
+      <circle cx="18" cy="18" r="15.9" fill="none" stroke="#FFDA1A" stroke-width="3"
+        stroke-dasharray="26, 100"
+        stroke-linecap="round" transform="rotate(-90 18 18)"/>
+    </svg>
+    <div class="ring-pct">
+      <span>26%</span>
+      <span>overall</span>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="n g">15</div><div class="l">Stories Done</div></div>
+    <div class="hero-stat"><div class="n y">43</div><div class="l">Stories Remaining</div></div>
+    <div class="hero-stat"><div class="n">17</div><div class="l">Active Epics</div></div>
+    <div class="hero-stat"><div class="n r">15</div><div class="l">Open Bugs</div></div>
   </div>
 </div>
 
 <!-- KPIs -->
-<div class="kpis">
+<div class="kpi-row">
   <div class="kpi"><div class="n" style="color:var(--orange)">5</div><div class="l">In Sprint Now</div></div>
-  <div class="kpi"><div class="n" style="color:var(--green)">15</div><div class="l">Stories Done T3</div></div>
-  <div class="kpi"><div class="n" style="color:var(--blue)">58</div><div class="l">Total Stories T3</div></div>
-  <div class="kpi"><div class="n" style="color:var(--orange)">9</div><div class="l">Epics In Progress</div></div>
-  <div class="kpi"><div class="n" style="color:var(--red)">15</div><div class="l">Open Bugs</div></div>
   <div class="kpi"><div class="n" style="color:var(--green)">2</div><div class="l">Epics Complete</div></div>
+  <div class="kpi"><div class="n" style="color:var(--blue)">7</div><div class="l">Epics In Progress</div></div>
+  <div class="kpi"><div class="n" style="color:var(--mid)">8</div><div class="l">Epics Not Started</div></div>
 </div>
 
 <!-- Epic Progress -->
-<div class="sec">
-  <h2>Epic Progress — T3 (April 1 onwards)</h2>
-  <div class="epic-grid">
+<div class="section-title">Epic Progress — click any epic to see stories</div>
+<div class="epics-list">
 
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10650" target="_blank">FY26-T3 PoC – In‑store Basket Handover from Upptäcka to IKEA.com (2 St</a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-progress">In Progress</span> &nbsp;·&nbsp; 
-        1/3 done &nbsp;·&nbsp;
-        2 in progress &nbsp;·&nbsp;
-        Updated 2026-06-09
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:33%;background:#F26522"></div></div>
-      <div style="font-size:11px;color:#F26522;margin-bottom:8px;font-weight:700">33% complete</div>
-      <div class="edesc">Execute a live Proof of Concept in two pilot stores to observe and understand customer behavior when handing over an in‑store article list from Upptäcka kiosks to the IKEA.com cart and checkout, witho</div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10840" target="_blank" class="sk">INTERACT-10840</a>
-          <span class="ss">DATA Fulfilment services at Upptäcka dashboard</span>
-          <span class="badge badge-progress">In Progress</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10729" target="_blank" class="sk">INTERACT-10729</a>
-          <span class="ss">PoC research flows and document results</span>
-          <span class="badge badge-done">Done</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10720" target="_blank" class="sk">INTERACT-10720</a>
-          <span class="ss">DATA PoC analysis and results</span>
-          <span class="badge badge-review">In Review</span>
+<div class="epic-card" id="ep-0">
+  <div class="ec-head" onclick="toggle(0)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#F26522"></div>
+      <div class="ec-info">
+        <div class="ec-title">FY26-T3 PoC – In‑store Basket Handover from Upptäcka to IKEA.com (2 Stor</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10650" target="_blank" onclick="event.stopPropagation()">INTERACT-10650</a>
+          &nbsp;·&nbsp; Updated 2026-06-09
+          &nbsp;·&nbsp; <span style="color:#F26522;font-weight:600">2 in progress</span>
         </div>
+      </div>
     </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10651" target="_blank">FY26-T3 Services flow for out‑of‑sock articles at kiosk</a>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:33;--c:#F26522">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#F26522" stroke-width="3"
+            stroke-dasharray="33, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#F26522">33%</span>
       </div>
-      <div class="emeta">
-        <span class="badge badge-progress">In Progress</span> &nbsp;·&nbsp; 
-        1/8 done &nbsp;·&nbsp;
-        2 in progress &nbsp;·&nbsp;
-        Updated 2026-06-17
+      <div class="ec-counts">
+        <span class="count-pill done-pill">1 done</span>
+        <span class="count-pill prog-pill">2 active</span>
+        
       </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:12%;background:#F26522"></div></div>
-      <div style="font-size:11px;color:#F26522;margin-bottom:8px;font-weight:700">12% complete</div>
-      <div class="edesc">Customers using Upptäcka kiosks can encounter products that are not immediately available for pickup, whether because they are out of scope on that given day (but will be available on a later date) or</div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10875" target="_blank" class="sk">INTERACT-10875</a>
-          <span class="ss">Buying options in Mini-PIP of Out of stock and Not in range products</span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10874" target="_blank" class="sk">INTERACT-10874</a>
-          <span class="ss">Buying options in Mini-PIP of partly available products</span>
-          <span class="badge badge-backlog">Invalid</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10849" target="_blank" class="sk">INTERACT-10849</a>
-          <span class="ss">Explore how to show positive states for 'not sold' without giving false informat</span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10676" target="_blank" class="sk">INTERACT-10676</a>
-          <span class="ss">Define logic for Buying options prioritization based on availability, product ty</span>
-          <span class="badge badge-review">In Review</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10670" target="_blank" class="sk">INTERACT-10670</a>
-          <span class="ss">SPIKE: How to prioritize buying options based on availability and store format</span>
-          <span class="badge badge-done">Done</span>
-        </div><div style="font-size:11px;color:var(--mid);padding-top:4px">+3 more stories</div>
-    </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9752" target="_blank">Scale Ikea Foundation integration to global</a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-progress">In Progress</span> &nbsp;·&nbsp; 
-        0/2 done &nbsp;·&nbsp;
-        2 in progress &nbsp;·&nbsp;
-        Updated 2026-06-04
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#CCCCCC"></div></div>
-      <div style="font-size:11px;color:#CCCCCC;margin-bottom:8px;font-weight:700">0% complete</div>
-      <div class="edesc">IKEA Foundation's quiz is piloted in few stores with hardcoded approach where we 'own' the content. To scale this globally, INGKA CMS will own the content and Upptäcka will consume quiz from this API.</div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10812" target="_blank" class="sk">INTERACT-10812</a>
-          <span class="ss">DESIGN: Review the new content for IKEA Foundation quiz</span>
-          <span class="badge badge-progress">In Progress</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-9312" target="_blank" class="sk">INTERACT-9312</a>
-          <span class="ss">Ingka CMS -Implement the new content model for IKEA Foundation quiz</span>
-          <span class="badge badge-progress">In Progress</span>
-        </div>
-    </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10196" target="_blank">FY26-T3 Define and build the data process for the Quick METOD planner </a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-progress">In Progress</span> &nbsp;·&nbsp; 
-        0/1 done &nbsp;·&nbsp;
-        1 in progress &nbsp;·&nbsp;
-        Updated 2026-06-03
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#CCCCCC"></div></div>
-      <div style="font-size:11px;color:#CCCCCC;margin-bottom:8px;font-weight:700">0% complete</div>
-      <div class="edesc">What is the problem we want to solve? • Go/No‑Go for broader rollout. • Understand how the simplified and advanced planners will work together. • Evaluate if customers with REDSKAP on Upptäcka will ar</div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10357" target="_blank" class="sk">INTERACT-10357</a>
-          <span class="ss">Data: Define and build the data process for the Quick METOD planner pilot (Redsk</span>
-          <span class="badge badge-review">In Review</span>
-        </div>
-    </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9982" target="_blank">Migrate to Checkout/Cart Next (deadline TBD)</a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-backlog">Backlog</span> &nbsp;·&nbsp; 
-        1/1 done &nbsp;·&nbsp;
-        0 in progress &nbsp;·&nbsp;
-        Updated 2026-06-05
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:100%;background:#00843D"></div></div>
-      <div style="font-size:11px;color:#00843D;margin-bottom:8px;font-weight:700">100% complete</div>
-      <div class="edesc">WHY Mandatory move to new generation of Cart and checkout. There will be a new api with both cart and checkout. Later on also services and favourites/lists will come. Developer guide/API spec [https:/</div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10815" target="_blank" class="sk">INTERACT-10815</a>
-          <span class="ss">Migrate to new GetDeliveryAvailability (deadline July 1)</span>
-          <span class="badge badge-done">Done</span>
-        </div>
-    </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-8858" target="_blank">Explore linking revenue from purchases with delivery services and clic</a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-done">Done</span> &nbsp;·&nbsp; 
-        3/3 done &nbsp;·&nbsp;
-        0 in progress &nbsp;·&nbsp;
-        Updated 2026-05-22
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:100%;background:#00843D"></div></div>
-      <div style="font-size:11px;color:#00843D;margin-bottom:8px;font-weight:700">100% complete</div>
-      <div class="edesc">What's the problem we want to solve? • A large part of revenue created in small format are service orders and the revenue goes to online, instead of the BU as it should. How it is today? (highlight th</div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10619" target="_blank" class="sk">INTERACT-10619</a>
-          <span class="ss">Define PoC scope</span>
-          <span class="badge badge-done">Done</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10284" target="_blank" class="sk">INTERACT-10284</a>
-          <span class="ss">DATA Define PoC in 2 stores success metrics</span>
-          <span class="badge badge-done">Done</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10183" target="_blank" class="sk">INTERACT-10183</a>
-          <span class="ss">Decide on preconditions for - Orders with delivery services to be assigned to th</span>
-          <span class="badge badge-done">Done</span>
-        </div>
-    </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9898" target="_blank">(Design) Multipurpose Focus tiles (LADA)</a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-progress">In Progress</span> &nbsp;·&nbsp; 
-        3/4 done &nbsp;·&nbsp;
-        0 in progress &nbsp;·&nbsp;
-        Updated 2026-06-10
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:75%;background:#0058A3"></div></div>
-      <div style="font-size:11px;color:#0058A3;margin-bottom:8px;font-weight:700">75% complete</div>
-      <div class="edesc">We have a need for Multipurpose Focus tiles targeting mostly small store format, eg Lada, but even in the blue box this might be needed for case of IKEA Family vs IKEA for Business. Another case where</div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10594" target="_blank" class="sk">INTERACT-10594</a>
-          <span class="ss">Enable focus option for store page </span>
-          <span class="badge badge-done">Done</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10593" target="_blank" class="sk">INTERACT-10593</a>
-          <span class="ss">Implement multiple focus tile for LADA stores: Add new setting in Admin </span>
-          <span class="badge badge-done">Done</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10592" target="_blank" class="sk">INTERACT-10592</a>
-          <span class="ss">DESIGN: Final design for multi purpuse focus in Lada</span>
-          <span class="badge badge-backlog">Invalid</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10471" target="_blank" class="sk">INTERACT-10471</a>
-          <span class="ss">DESIGN: Exloration of multipurpose homepage for LADA stores</span>
-          <span class="badge badge-done">Done</span>
-        </div>
-    </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9303" target="_blank">Explore Hosted Payments (HPP) feasibility for FS in Upptäcka</a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-done">Done</span> &nbsp;·&nbsp; 
-        2/4 done &nbsp;·&nbsp;
-        0 in progress &nbsp;·&nbsp;
-        Updated 2026-05-04
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:50%;background:#0058A3"></div></div>
-      <div style="font-size:11px;color:#0058A3;margin-bottom:8px;font-weight:700">50% complete</div>
-      <div class="edesc">What's the problem we want to solve? • Investigate feasibility of a simple payment method using HPP (Hosted Payment Page) or PayOrderLink that allows customers to make secure payments without directly</div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/LNM-10650" target="_blank" class="sk">LNM-10650</a>
-          <span class="ss">SPIKE investigate </span>
-          <span class="badge badge-backlog">Canceled</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10363" target="_blank" class="sk">INTERACT-10363</a>
-          <span class="ss">SPIKE investigate payment related APIs [backend]</span>
-          <span class="badge badge-backlog">Invalid</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10362" target="_blank" class="sk">INTERACT-10362</a>
-          <span class="ss">SPIKE investigate payorder link capabilities and requirements</span>
-          <span class="badge badge-done">Done</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-8015" target="_blank" class="sk">INTERACT-8015</a>
-          <span class="ss">SPIKE: investigate Shop&Go work on HPP / payments</span>
-          <span class="badge badge-done">Done</span>
-        </div>
-    </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-7904" target="_blank">FS orders with services created in Sälja can be viewed in Upptäcka ins</a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-progress">In Progress</span> &nbsp;·&nbsp; 
-        2/7 done &nbsp;·&nbsp;
-        0 in progress &nbsp;·&nbsp;
-        Updated 2026-06-03
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:29%;background:#F26522"></div></div>
-      <div style="font-size:11px;color:#F26522;margin-bottom:8px;font-weight:700">29% complete</div>
-      <div class="edesc">What: FS orders created by coworkers generate an order confirmation message that the customer receives via Email or SMS. These notification messages should contain a link that allows customer to open </div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10733" target="_blank" class="sk">INTERACT-10733</a>
-          <span class="ss">SPIKE: Investigate how orders with services via Sälja work</span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10625" target="_blank" class="sk">INTERACT-10625</a>
-          <span class="ss">Show correct information when opening a canceled order from Email / SMS link</span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10453" target="_blank" class="sk">INTERACT-10453</a>
-          <span class="ss">Final Design: How to show services in mobile list </span>
-          <span class="badge badge-backlog">Invalid</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-8597" target="_blank" class="sk">INTERACT-8597</a>
-          <span class="ss">Verify and document flow for non-Upptäcka created orders</span>
-          <span class="badge badge-done">Done</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-7886" target="_blank" class="sk">INTERACT-7886</a>
-          <span class="ss">SPIKE Extend life of instore list if order includes services</span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div><div style="font-size:11px;color:var(--mid);padding-top:4px">+2 more stories</div>
-    </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10466" target="_blank">Show Services Information on Upptäcka</a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-progress">In Progress</span> &nbsp;·&nbsp; 
-        1/6 done &nbsp;·&nbsp;
-        0 in progress &nbsp;·&nbsp;
-        Updated 2026-06-03
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:17%;background:#F26522"></div></div>
-      <div style="font-size:11px;color:#F26522;margin-bottom:8px;font-weight:700">17% complete</div>
-      <div class="edesc">Why Customers often need support before, during, and after purchasing home furnishing solutions. IKEA offers a broad range of services such as (delivery), assembly, interior design and planning to mak</div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10576" target="_blank" class="sk">INTERACT-10576</a>
-          <span class="ss">Create landing page for Services</span>
-          <span class="badge badge-backlog">Pending</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10564" target="_blank" class="sk">INTERACT-10564</a>
-          <span class="ss">Integrate with Ingka CMS to get all the information about services </span>
-          <span class="badge badge-backlog">Invalid</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10563" target="_blank" class="sk">INTERACT-10563</a>
-          <span class="ss">Separate entry points for customer looking for services </span>
-          <span class="badge badge-backlog">Pending</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10562" target="_blank" class="sk">INTERACT-10562</a>
-          <span class="ss">Service tab to display information about various services in IKEA </span>
-          <span class="badge badge-backlog">Pending</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10561" target="_blank" class="sk">INTERACT-10561</a>
-          <span class="ss">Create template for service information </span>
-          <span class="badge badge-backlog">Pending</span>
-        </div><div style="font-size:11px;color:var(--mid);padding-top:4px">+1 more stories</div>
-    </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10678" target="_blank">Migrate Landa with mouse and keyboard to Upptäcka</a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-progress">In Progress</span> &nbsp;·&nbsp; 
-        1/11 done &nbsp;·&nbsp;
-        0 in progress &nbsp;·&nbsp;
-        Updated 2026-06-04
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:9%;background:#F26522"></div></div>
-      <div style="font-size:11px;color:#F26522;margin-bottom:8px;font-weight:700">9% complete</div>
-      <div class="edesc">What is the problem we want to solve? Currently, Inter IKEA and Ingka operate separate home planning solutions with overlapping capabilities, leading to: • Duplicated efforts and costs in developing a</div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10803" target="_blank" class="sk">INTERACT-10803</a>
-          <span class="ss">DESIGN: Home screen for planning stations with Mouse & Keyboard</span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10800" target="_blank" class="sk">INTERACT-10800</a>
-          <span class="ss">Create migration script from DEXF to SDF </span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10799" target="_blank" class="sk">INTERACT-10799</a>
-          <span class="ss">TBD: Contextualize the planners based on location</span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10798" target="_blank" class="sk">INTERACT-10798</a>
-          <span class="ss">TBD: Disable all integrations except IPEX and BOKA for Landa + Upptäcka</span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10797" target="_blank" class="sk">INTERACT-10797</a>
-          <span class="ss">Identify a way to detect if Mouse & Keyboard is connected </span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div><div style="font-size:11px;color:var(--mid);padding-top:4px">+5 more stories</div>
-    </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10035" target="_blank">Support DISEPO integration in Upptäcka</a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-backlog">Backlog</span> &nbsp;·&nbsp; 
-        0/2 done &nbsp;·&nbsp;
-        0 in progress &nbsp;·&nbsp;
-        Updated 2026-06-10
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#CCCCCC"></div></div>
-      <div style="font-size:11px;color:#CCCCCC;margin-bottom:8px;font-weight:700">0% complete</div>
-      <div class="edesc">Why ? Support DISEPO to run as an integration in Upptäcka instead of running as standalone app in SDF. This to enable DISEPO to take advantage of the buying flow in Upptäcka, and enable better re-use </div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10247" target="_blank" class="sk">INTERACT-10247</a>
-          <span class="ss">Design: Review focus tile setting in admin and test with different screen sizes </span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-9534" target="_blank" class="sk">INTERACT-9534</a>
-          <span class="ss">Design: Design handover options for DISEPO</span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div>
-    </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9899" target="_blank">(Design) Focus tile: What Upptäcka can help me with & how can I buy (L</a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-backlog">Backlog</span> &nbsp;·&nbsp; 
-        0/1 done &nbsp;·&nbsp;
-        0 in progress &nbsp;·&nbsp;
-        Updated 2026-06-05
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#CCCCCC"></div></div>
-      <div style="font-size:11px;color:#CCCCCC;margin-bottom:8px;font-weight:700">0% complete</div>
-      <div class="edesc">Painpoints: • Communication shared everywhere around kiosks that stores print out • Communication intends to explain customers what kiosks can help them with • Work on Focus tile to illustrate Buy pro</div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-9727" target="_blank" class="sk">INTERACT-9727</a>
-          <span class="ss">DESIGN: Focus tile to explain how Upptäcka can help customer while shopping</span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div>
-    </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9945" target="_blank">SDM offers on Upptäcka and Instore web- rollout globally</a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-progress">In Progress</span> &nbsp;·&nbsp; 
-        0/1 done &nbsp;·&nbsp;
-        0 in progress &nbsp;·&nbsp;
-        Updated 2026-06-04
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#CCCCCC"></div></div>
-      <div style="font-size:11px;color:#CCCCCC;margin-bottom:8px;font-weight:700">0% complete</div>
-      <div class="edesc">What's the problem we want to solve? • We are not promoting local discounts today, meaning markets are loosing opportunity to sell • Web + app are communicating this, Upptäcka is not aligned. How it i</div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10814" target="_blank" class="sk">INTERACT-10814</a>
-          <span class="ss">Add in store offer label when the article has SDM offers </span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div>
-    </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9730" target="_blank">FY26-T2 Enhance available locations</a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-done">Done</span> &nbsp;·&nbsp; 
-        0/1 done &nbsp;·&nbsp;
-        0 in progress &nbsp;·&nbsp;
-        Updated 2026-05-11
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#CCCCCC"></div></div>
-      <div style="font-size:11px;color:#CCCCCC;margin-bottom:8px;font-weight:700">0% complete</div>
-      <div class="edesc">Our Problem The actual location list on Upptäcka to define the position of a kiosk include locations that must not be used, some others that are too generic and some others that do not match the struc</div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10360" target="_blank" class="sk">INTERACT-10360</a>
-          <span class="ss">Review and update existing location package after new location structure</span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div>
-    </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10043" target="_blank">Explore Enhanced Kiosk Contextualization Using Kompass Location</a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-backlog">Backlog</span> &nbsp;·&nbsp; 
-        0/1 done &nbsp;·&nbsp;
-        0 in progress &nbsp;·&nbsp;
-        Updated 2026-05-03
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#CCCCCC"></div></div>
-      <div style="font-size:11px;color:#CCCCCC;margin-bottom:8px;font-weight:700">0% complete</div>
-      <div class="edesc">Renew the locations handled by SDF (and therefore Upptäcka experience), removing those not needed, adding granularity where needed and reorganizing the whole list so it matches the way we understand t</div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-9620" target="_blank" class="sk">INTERACT-9620</a>
-          <span class="ss">DESIGN: Explore new locations in Admin and Kiosk</span>
-          <span class="badge badge-backlog">Backlog</span>
-        </div>
-    </div>
-    <div class="epic">
-      <div class="etitle">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9297" target="_blank">in stock items - Delivery services and Click & Collect information</a>
-      </div>
-      <div class="emeta">
-        <span class="badge badge-done">Done</span> &nbsp;·&nbsp; 
-        0/2 done &nbsp;·&nbsp;
-        0 in progress &nbsp;·&nbsp;
-        Updated 2026-05-02
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#CCCCCC"></div></div>
-      <div style="font-size:11px;color:#CCCCCC;margin-bottom:8px;font-weight:700">0% complete</div>
-      <div class="edesc">What is the problem we want to solve? • Enable customers to purchase big and bulky items with delivery or collection • Learnings from customer days: [https://miro.com/app/board/uXjVJLXk-8o=/?moveToWid</div>
-      <div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-10332" target="_blank" class="sk">INTERACT-10332</a>
-          <span class="ss">SPIKE "Delivery to your door" conditions in kiosk (Spain)</span>
-          <span class="badge badge-backlog">Invalid</span>
-        </div><div class="story">
-          <a href="https://jira.digital.ingka.com/browse/INTERACT-9834" target="_blank" class="sk">INTERACT-9834</a>
-          <span class="ss">Support handover to online cart in APP (in-stock items)</span>
-          <span class="badge badge-backlog">Invalid</span>
-        </div>
     </div>
   </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    <div class="seg seg-done"  style="width:33%"  title="1 done"></div>
+    <div class="seg seg-prog"  style="width:67%" title="2 in progress"></div>
+    
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-0" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#F26522">🔄</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10840" target="_blank" class="s-key">INTERACT-10840</a>
+          <span class="s-sum">DATA Fulfilment services at Upptäcka dashboard</span>
+          <span class="b b-prog" style="font-size:10px">In Progress</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#00843D">✅</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10729" target="_blank" class="s-key">INTERACT-10729</a>
+          <span class="s-sum">PoC research flows and document results</span>
+          <span class="b b-done" style="font-size:10px">Done</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#0058A3">👁</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10720" target="_blank" class="s-key">INTERACT-10720</a>
+          <span class="s-sum">DATA PoC analysis and results</span>
+          <span class="b b-rev" style="font-size:10px">In Review</span>
+        </div>
+  </div>
+</div>
+<div class="epic-card" id="ep-1">
+  <div class="ec-head" onclick="toggle(1)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#F26522"></div>
+      <div class="ec-info">
+        <div class="ec-title">FY26-T3 Services flow for out‑of‑sock articles at kiosk</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10651" target="_blank" onclick="event.stopPropagation()">INTERACT-10651</a>
+          &nbsp;·&nbsp; Updated 2026-06-17
+          &nbsp;·&nbsp; <span style="color:#F26522;font-weight:600">2 in progress</span>
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:12;--c:#F26522">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#F26522" stroke-width="3"
+            stroke-dasharray="12, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#F26522">12%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">1 done</span>
+        <span class="count-pill prog-pill">2 active</span>
+        <span class="count-pill todo-pill">5 left</span>
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    <div class="seg seg-done"  style="width:12%"  title="1 done"></div>
+    <div class="seg seg-prog"  style="width:25%" title="2 in progress"></div>
+    <div class="seg seg-todo"  style="width:63%"  title="5 to do"></div>
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-1" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10875" target="_blank" class="s-key">INTERACT-10875</a>
+          <span class="s-sum">Buying options in Mini-PIP of Out of stock and Not in range products</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10874" target="_blank" class="s-key">INTERACT-10874</a>
+          <span class="s-sum">Buying options in Mini-PIP of partly available products</span>
+          <span class="b b-todo" style="font-size:10px">Invalid</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10849" target="_blank" class="s-key">INTERACT-10849</a>
+          <span class="s-sum">Explore how to show positive states for 'not sold' without giving false informat</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#0058A3">👁</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10676" target="_blank" class="s-key">INTERACT-10676</a>
+          <span class="s-sum">Define logic for Buying options prioritization based on availability, product ty</span>
+          <span class="b b-rev" style="font-size:10px">In Review</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#00843D">✅</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10670" target="_blank" class="s-key">INTERACT-10670</a>
+          <span class="s-sum">SPIKE: How to prioritize buying options based on availability and store format</span>
+          <span class="b b-done" style="font-size:10px">Done</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10669" target="_blank" class="s-key">INTERACT-10669</a>
+          <span class="s-sum">Design 'More ways to buy' for Kiosk List (multiple products)</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#F26522">🔄</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10668" target="_blank" class="s-key">INTERACT-10668</a>
+          <span class="s-sum">Design 'More ways to buy' for out of stock PIP</span>
+          <span class="b b-prog" style="font-size:10px">In Progress</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INSTOREDIG-494" target="_blank" class="s-key">INSTOREDIG-494</a>
+          <span class="s-sum">SPIKE Find in another store: all options are elegible to appear on the list</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><p class="more-hint">Showing top 10 stories · <a href="https://jira.digital.ingka.com/browse/INTERACT-10651" target="_blank">View all in Jira →</a></p>
+  </div>
+</div>
+<div class="epic-card" id="ep-2">
+  <div class="ec-head" onclick="toggle(2)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#F26522"></div>
+      <div class="ec-info">
+        <div class="ec-title">Scale Ikea Foundation integration to global</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-9752" target="_blank" onclick="event.stopPropagation()">INTERACT-9752</a>
+          &nbsp;·&nbsp; Updated 2026-06-04
+          &nbsp;·&nbsp; <span style="color:#F26522;font-weight:600">2 in progress</span>
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:0;--c:#C8C8C8">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#C8C8C8" stroke-width="3"
+            stroke-dasharray="0, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#C8C8C8">0%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">0 done</span>
+        <span class="count-pill prog-pill">2 active</span>
+        
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    
+    <div class="seg seg-prog"  style="width:100%" title="2 in progress"></div>
+    
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-2" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#F26522">🔄</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10812" target="_blank" class="s-key">INTERACT-10812</a>
+          <span class="s-sum">DESIGN: Review the new content for IKEA Foundation quiz</span>
+          <span class="b b-prog" style="font-size:10px">In Progress</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#F26522">🔄</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-9312" target="_blank" class="s-key">INTERACT-9312</a>
+          <span class="s-sum">Ingka CMS -Implement the new content model for IKEA Foundation quiz</span>
+          <span class="b b-prog" style="font-size:10px">In Progress</span>
+        </div>
+  </div>
+</div>
+<div class="epic-card" id="ep-3">
+  <div class="ec-head" onclick="toggle(3)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#F26522"></div>
+      <div class="ec-info">
+        <div class="ec-title">FY26-T3 Define and build the data process for the Quick METOD planner pi</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10196" target="_blank" onclick="event.stopPropagation()">INTERACT-10196</a>
+          &nbsp;·&nbsp; Updated 2026-06-03
+          &nbsp;·&nbsp; <span style="color:#F26522;font-weight:600">1 in progress</span>
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:0;--c:#C8C8C8">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#C8C8C8" stroke-width="3"
+            stroke-dasharray="0, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#C8C8C8">0%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">0 done</span>
+        <span class="count-pill prog-pill">1 active</span>
+        
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    
+    <div class="seg seg-prog"  style="width:100%" title="1 in progress"></div>
+    
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-3" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#0058A3">👁</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10357" target="_blank" class="s-key">INTERACT-10357</a>
+          <span class="s-sum">Data: Define and build the data process for the Quick METOD planner pilot (Redsk</span>
+          <span class="b b-rev" style="font-size:10px">In Review</span>
+        </div>
+  </div>
+</div>
+<div class="epic-card" id="ep-4">
+  <div class="ec-head" onclick="toggle(4)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#F26522"></div>
+      <div class="ec-info">
+        <div class="ec-title">(Design) Multipurpose Focus tiles (LADA)</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-9898" target="_blank" onclick="event.stopPropagation()">INTERACT-9898</a>
+          &nbsp;·&nbsp; Updated 2026-06-10
+          
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:75;--c:#0058A3">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#0058A3" stroke-width="3"
+            stroke-dasharray="75, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#0058A3">75%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">3 done</span>
+        
+        <span class="count-pill todo-pill">1 left</span>
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    <div class="seg seg-done"  style="width:75%"  title="3 done"></div>
+    
+    <div class="seg seg-todo"  style="width:25%"  title="1 to do"></div>
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-4" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#00843D">✅</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10594" target="_blank" class="s-key">INTERACT-10594</a>
+          <span class="s-sum">Enable focus option for store page </span>
+          <span class="b b-done" style="font-size:10px">Done</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#00843D">✅</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10593" target="_blank" class="s-key">INTERACT-10593</a>
+          <span class="s-sum">Implement multiple focus tile for LADA stores: Add new setting in Admin </span>
+          <span class="b b-done" style="font-size:10px">Done</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10592" target="_blank" class="s-key">INTERACT-10592</a>
+          <span class="s-sum">DESIGN: Final design for multi purpuse focus in Lada</span>
+          <span class="b b-todo" style="font-size:10px">Invalid</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#00843D">✅</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10471" target="_blank" class="s-key">INTERACT-10471</a>
+          <span class="s-sum">DESIGN: Exloration of multipurpose homepage for LADA stores</span>
+          <span class="b b-done" style="font-size:10px">Done</span>
+        </div>
+  </div>
+</div>
+<div class="epic-card" id="ep-5">
+  <div class="ec-head" onclick="toggle(5)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#00843D"></div>
+      <div class="ec-info">
+        <div class="ec-title">Explore linking revenue from purchases with delivery services and click </div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-8858" target="_blank" onclick="event.stopPropagation()">INTERACT-8858</a>
+          &nbsp;·&nbsp; Updated 2026-05-22
+          
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:100;--c:#00843D">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#00843D" stroke-width="3"
+            stroke-dasharray="100, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#00843D">100%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">3 done</span>
+        
+        
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    <div class="seg seg-done"  style="width:100%"  title="3 done"></div>
+    
+    
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-5" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#00843D">✅</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10619" target="_blank" class="s-key">INTERACT-10619</a>
+          <span class="s-sum">Define PoC scope</span>
+          <span class="b b-done" style="font-size:10px">Done</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#00843D">✅</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10284" target="_blank" class="s-key">INTERACT-10284</a>
+          <span class="s-sum">DATA Define PoC in 2 stores success metrics</span>
+          <span class="b b-done" style="font-size:10px">Done</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#00843D">✅</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10183" target="_blank" class="s-key">INTERACT-10183</a>
+          <span class="s-sum">Decide on preconditions for - Orders with delivery services to be assigned to th</span>
+          <span class="b b-done" style="font-size:10px">Done</span>
+        </div>
+  </div>
+</div>
+<div class="epic-card" id="ep-6">
+  <div class="ec-head" onclick="toggle(6)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#00843D"></div>
+      <div class="ec-info">
+        <div class="ec-title">Explore Hosted Payments (HPP) feasibility for FS in Upptäcka</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-9303" target="_blank" onclick="event.stopPropagation()">INTERACT-9303</a>
+          &nbsp;·&nbsp; Updated 2026-05-04
+          
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:50;--c:#0058A3">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#0058A3" stroke-width="3"
+            stroke-dasharray="50, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#0058A3">50%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">2 done</span>
+        
+        <span class="count-pill todo-pill">2 left</span>
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    <div class="seg seg-done"  style="width:50%"  title="2 done"></div>
+    
+    <div class="seg seg-todo"  style="width:50%"  title="2 to do"></div>
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-6" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/LNM-10650" target="_blank" class="s-key">LNM-10650</a>
+          <span class="s-sum">SPIKE investigate </span>
+          <span class="b b-todo" style="font-size:10px">Canceled</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10363" target="_blank" class="s-key">INTERACT-10363</a>
+          <span class="s-sum">SPIKE investigate payment related APIs [backend]</span>
+          <span class="b b-todo" style="font-size:10px">Invalid</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#00843D">✅</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10362" target="_blank" class="s-key">INTERACT-10362</a>
+          <span class="s-sum">SPIKE investigate payorder link capabilities and requirements</span>
+          <span class="b b-done" style="font-size:10px">Done</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#00843D">✅</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-8015" target="_blank" class="s-key">INTERACT-8015</a>
+          <span class="s-sum">SPIKE: investigate Shop&Go work on HPP / payments</span>
+          <span class="b b-done" style="font-size:10px">Done</span>
+        </div>
+  </div>
+</div>
+<div class="epic-card" id="ep-7">
+  <div class="ec-head" onclick="toggle(7)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#F26522"></div>
+      <div class="ec-info">
+        <div class="ec-title">FS orders with services created in Sälja can be viewed in Upptäcka insto</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-7904" target="_blank" onclick="event.stopPropagation()">INTERACT-7904</a>
+          &nbsp;·&nbsp; Updated 2026-06-03
+          
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:29;--c:#F26522">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#F26522" stroke-width="3"
+            stroke-dasharray="29, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#F26522">29%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">2 done</span>
+        
+        <span class="count-pill todo-pill">5 left</span>
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    <div class="seg seg-done"  style="width:29%"  title="2 done"></div>
+    
+    <div class="seg seg-todo"  style="width:71%"  title="5 to do"></div>
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-7" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10733" target="_blank" class="s-key">INTERACT-10733</a>
+          <span class="s-sum">SPIKE: Investigate how orders with services via Sälja work</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10625" target="_blank" class="s-key">INTERACT-10625</a>
+          <span class="s-sum">Show correct information when opening a canceled order from Email / SMS link</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10453" target="_blank" class="s-key">INTERACT-10453</a>
+          <span class="s-sum">Final Design: How to show services in mobile list </span>
+          <span class="b b-todo" style="font-size:10px">Invalid</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#00843D">✅</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-8597" target="_blank" class="s-key">INTERACT-8597</a>
+          <span class="s-sum">Verify and document flow for non-Upptäcka created orders</span>
+          <span class="b b-done" style="font-size:10px">Done</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-7886" target="_blank" class="s-key">INTERACT-7886</a>
+          <span class="s-sum">SPIKE Extend life of instore list if order includes services</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-7885" target="_blank" class="s-key">INTERACT-7885</a>
+          <span class="s-sum">Implement information about added services in in-store web list</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#00843D">✅</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-7828" target="_blank" class="s-key">INTERACT-7828</a>
+          <span class="s-sum">Design exploration: How to show services in mobile list </span>
+          <span class="b b-done" style="font-size:10px">Done</span>
+        </div><p class="more-hint">Showing top 10 stories · <a href="https://jira.digital.ingka.com/browse/INTERACT-7904" target="_blank">View all in Jira →</a></p>
+  </div>
+</div>
+<div class="epic-card" id="ep-8">
+  <div class="ec-head" onclick="toggle(8)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#F26522"></div>
+      <div class="ec-info">
+        <div class="ec-title">Migrate Landa with mouse and keyboard to Upptäcka</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10678" target="_blank" onclick="event.stopPropagation()">INTERACT-10678</a>
+          &nbsp;·&nbsp; Updated 2026-06-04
+          
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:9;--c:#F26522">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#F26522" stroke-width="3"
+            stroke-dasharray="9, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#F26522">9%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">1 done</span>
+        
+        <span class="count-pill todo-pill">10 left</span>
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    <div class="seg seg-done"  style="width:9%"  title="1 done"></div>
+    
+    <div class="seg seg-todo"  style="width:91%"  title="10 to do"></div>
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-8" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10803" target="_blank" class="s-key">INTERACT-10803</a>
+          <span class="s-sum">DESIGN: Home screen for planning stations with Mouse & Keyboard</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10800" target="_blank" class="s-key">INTERACT-10800</a>
+          <span class="s-sum">Create migration script from DEXF to SDF </span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10799" target="_blank" class="s-key">INTERACT-10799</a>
+          <span class="s-sum">TBD: Contextualize the planners based on location</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10798" target="_blank" class="s-key">INTERACT-10798</a>
+          <span class="s-sum">TBD: Disable all integrations except IPEX and BOKA for Landa + Upptäcka</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10797" target="_blank" class="s-key">INTERACT-10797</a>
+          <span class="s-sum">Identify a way to detect if Mouse & Keyboard is connected </span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10796" target="_blank" class="s-key">INTERACT-10796</a>
+          <span class="s-sum">Create screensaver for Landa + Upptacka</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10795" target="_blank" class="s-key">INTERACT-10795</a>
+          <span class="s-sum">Create home screen for Landa + Upptäcka</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10794" target="_blank" class="s-key">INTERACT-10794</a>
+          <span class="s-sum">Add a way to identify Landa + Upptäcka</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10793" target="_blank" class="s-key">INTERACT-10793</a>
+          <span class="s-sum">Media for Screen saver </span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10792" target="_blank" class="s-key">INTERACT-10792</a>
+          <span class="s-sum">DESIGN: Upptäcka light for planning stations with Mouse & Keyboard</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><p class="more-hint">Showing top 10 stories · <a href="https://jira.digital.ingka.com/browse/INTERACT-10678" target="_blank">View all in Jira →</a></p>
+  </div>
+</div>
+<div class="epic-card" id="ep-9">
+  <div class="ec-head" onclick="toggle(9)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#C8C8C8"></div>
+      <div class="ec-info">
+        <div class="ec-title">Migrate to Checkout/Cart Next (deadline TBD)</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-9982" target="_blank" onclick="event.stopPropagation()">INTERACT-9982</a>
+          &nbsp;·&nbsp; Updated 2026-06-05
+          
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:100;--c:#00843D">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#00843D" stroke-width="3"
+            stroke-dasharray="100, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#00843D">100%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">1 done</span>
+        
+        
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    <div class="seg seg-done"  style="width:100%"  title="1 done"></div>
+    
+    
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-9" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#00843D">✅</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10815" target="_blank" class="s-key">INTERACT-10815</a>
+          <span class="s-sum">Migrate to new GetDeliveryAvailability (deadline July 1)</span>
+          <span class="b b-done" style="font-size:10px">Done</span>
+        </div>
+  </div>
+</div>
+<div class="epic-card" id="ep-10">
+  <div class="ec-head" onclick="toggle(10)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#F26522"></div>
+      <div class="ec-info">
+        <div class="ec-title">Show Services Information on Upptäcka</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10466" target="_blank" onclick="event.stopPropagation()">INTERACT-10466</a>
+          &nbsp;·&nbsp; Updated 2026-06-03
+          
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:17;--c:#F26522">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#F26522" stroke-width="3"
+            stroke-dasharray="17, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#F26522">17%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">1 done</span>
+        
+        <span class="count-pill todo-pill">5 left</span>
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    <div class="seg seg-done"  style="width:17%"  title="1 done"></div>
+    
+    <div class="seg seg-todo"  style="width:83%"  title="5 to do"></div>
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-10" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10576" target="_blank" class="s-key">INTERACT-10576</a>
+          <span class="s-sum">Create landing page for Services</span>
+          <span class="b b-todo" style="font-size:10px">Pending</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10564" target="_blank" class="s-key">INTERACT-10564</a>
+          <span class="s-sum">Integrate with Ingka CMS to get all the information about services </span>
+          <span class="b b-todo" style="font-size:10px">Invalid</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10563" target="_blank" class="s-key">INTERACT-10563</a>
+          <span class="s-sum">Separate entry points for customer looking for services </span>
+          <span class="b b-todo" style="font-size:10px">Pending</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10562" target="_blank" class="s-key">INTERACT-10562</a>
+          <span class="s-sum">Service tab to display information about various services in IKEA </span>
+          <span class="b b-todo" style="font-size:10px">Pending</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10561" target="_blank" class="s-key">INTERACT-10561</a>
+          <span class="s-sum">Create template for service information </span>
+          <span class="b b-todo" style="font-size:10px">Pending</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#00843D">✅</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10479" target="_blank" class="s-key">INTERACT-10479</a>
+          <span class="s-sum">Explore how to show information about Services on Upptäcka</span>
+          <span class="b b-done" style="font-size:10px">Done</span>
+        </div><p class="more-hint">Showing top 10 stories · <a href="https://jira.digital.ingka.com/browse/INTERACT-10466" target="_blank">View all in Jira →</a></p>
+  </div>
+</div>
+<div class="epic-card" id="ep-11">
+  <div class="ec-head" onclick="toggle(11)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#C8C8C8"></div>
+      <div class="ec-info">
+        <div class="ec-title">(Design) Focus tile: What Upptäcka can help me with & how can I buy (LAD</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-9899" target="_blank" onclick="event.stopPropagation()">INTERACT-9899</a>
+          &nbsp;·&nbsp; Updated 2026-06-05
+          
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:0;--c:#C8C8C8">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#C8C8C8" stroke-width="3"
+            stroke-dasharray="0, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#C8C8C8">0%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">0 done</span>
+        
+        <span class="count-pill todo-pill">1 left</span>
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    
+    
+    <div class="seg seg-todo"  style="width:100%"  title="1 to do"></div>
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-11" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-9727" target="_blank" class="s-key">INTERACT-9727</a>
+          <span class="s-sum">DESIGN: Focus tile to explain how Upptäcka can help customer while shopping</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div>
+  </div>
+</div>
+<div class="epic-card" id="ep-12">
+  <div class="ec-head" onclick="toggle(12)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#C8C8C8"></div>
+      <div class="ec-info">
+        <div class="ec-title">Explore Enhanced Kiosk Contextualization Using Kompass Location</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10043" target="_blank" onclick="event.stopPropagation()">INTERACT-10043</a>
+          &nbsp;·&nbsp; Updated 2026-05-03
+          
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:0;--c:#C8C8C8">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#C8C8C8" stroke-width="3"
+            stroke-dasharray="0, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#C8C8C8">0%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">0 done</span>
+        
+        <span class="count-pill todo-pill">1 left</span>
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    
+    
+    <div class="seg seg-todo"  style="width:100%"  title="1 to do"></div>
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-12" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-9620" target="_blank" class="s-key">INTERACT-9620</a>
+          <span class="s-sum">DESIGN: Explore new locations in Admin and Kiosk</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div>
+  </div>
+</div>
+<div class="epic-card" id="ep-13">
+  <div class="ec-head" onclick="toggle(13)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#00843D"></div>
+      <div class="ec-info">
+        <div class="ec-title">FY26-T2 Enhance available locations</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-9730" target="_blank" onclick="event.stopPropagation()">INTERACT-9730</a>
+          &nbsp;·&nbsp; Updated 2026-05-11
+          
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:0;--c:#C8C8C8">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#C8C8C8" stroke-width="3"
+            stroke-dasharray="0, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#C8C8C8">0%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">0 done</span>
+        
+        <span class="count-pill todo-pill">1 left</span>
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    
+    
+    <div class="seg seg-todo"  style="width:100%"  title="1 to do"></div>
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-13" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10360" target="_blank" class="s-key">INTERACT-10360</a>
+          <span class="s-sum">Review and update existing location package after new location structure</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div>
+  </div>
+</div>
+<div class="epic-card" id="ep-14">
+  <div class="ec-head" onclick="toggle(14)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#F26522"></div>
+      <div class="ec-info">
+        <div class="ec-title">SDM offers on Upptäcka and Instore web- rollout globally</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-9945" target="_blank" onclick="event.stopPropagation()">INTERACT-9945</a>
+          &nbsp;·&nbsp; Updated 2026-06-04
+          
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:0;--c:#C8C8C8">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#C8C8C8" stroke-width="3"
+            stroke-dasharray="0, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#C8C8C8">0%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">0 done</span>
+        
+        <span class="count-pill todo-pill">1 left</span>
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    
+    
+    <div class="seg seg-todo"  style="width:100%"  title="1 to do"></div>
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-14" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10814" target="_blank" class="s-key">INTERACT-10814</a>
+          <span class="s-sum">Add in store offer label when the article has SDM offers </span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div>
+  </div>
+</div>
+<div class="epic-card" id="ep-15">
+  <div class="ec-head" onclick="toggle(15)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#C8C8C8"></div>
+      <div class="ec-info">
+        <div class="ec-title">Support DISEPO integration in Upptäcka</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10035" target="_blank" onclick="event.stopPropagation()">INTERACT-10035</a>
+          &nbsp;·&nbsp; Updated 2026-06-10
+          
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:0;--c:#C8C8C8">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#C8C8C8" stroke-width="3"
+            stroke-dasharray="0, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#C8C8C8">0%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">0 done</span>
+        
+        <span class="count-pill todo-pill">2 left</span>
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    
+    
+    <div class="seg seg-todo"  style="width:100%"  title="2 to do"></div>
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-15" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10247" target="_blank" class="s-key">INTERACT-10247</a>
+          <span class="s-sum">Design: Review focus tile setting in admin and test with different screen sizes </span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-9534" target="_blank" class="s-key">INTERACT-9534</a>
+          <span class="s-sum">Design: Design handover options for DISEPO</span>
+          <span class="b b-todo" style="font-size:10px">Backlog</span>
+        </div>
+  </div>
+</div>
+<div class="epic-card" id="ep-16">
+  <div class="ec-head" onclick="toggle(16)">
+    <div class="ec-left">
+      <div class="ec-dot" style="background:#00843D"></div>
+      <div class="ec-info">
+        <div class="ec-title">in stock items - Delivery services and Click & Collect information</div>
+        <div class="ec-meta">
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-9297" target="_blank" onclick="event.stopPropagation()">INTERACT-9297</a>
+          &nbsp;·&nbsp; Updated 2026-05-02
+          
+        </div>
+      </div>
+    </div>
+    <div class="ec-right">
+      <div class="pct-ring" style="--p:0;--c:#C8C8C8">
+        <svg viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f0f0" stroke-width="3"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#C8C8C8" stroke-width="3"
+            stroke-dasharray="0, 100"
+            stroke-linecap="round" transform="rotate(-90 18 18)"/>
+        </svg>
+        <span class="pct-num" style="color:#C8C8C8">0%</span>
+      </div>
+      <div class="ec-counts">
+        <span class="count-pill done-pill">0 done</span>
+        
+        <span class="count-pill todo-pill">2 left</span>
+      </div>
+    </div>
+  </div>
+  <!-- Segmented bar -->
+  <div class="seg-bar">
+    
+    
+    <div class="seg seg-todo"  style="width:100%"  title="2 to do"></div>
+  </div>
+  <!-- Expandable stories -->
+  <div class="stories-panel" id="stories-16" style="display:none">
+    <div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-10332" target="_blank" class="s-key">INTERACT-10332</a>
+          <span class="s-sum">SPIKE "Delivery to your door" conditions in kiosk (Spain)</span>
+          <span class="b b-todo" style="font-size:10px">Invalid</span>
+        </div><div class="story-row">
+          <span class="s-icon" style="color:#999">○</span>
+          <a href="https://jira.digital.ingka.com/browse/INTERACT-9834" target="_blank" class="s-key">INTERACT-9834</a>
+          <span class="s-sum">Support handover to online cart in APP (in-stock items)</span>
+          <span class="b b-todo" style="font-size:10px">Invalid</span>
+        </div>
+  </div>
+</div>
 </div>
 
-<div class="two-col">
-
+<!-- Sprint + Bugs -->
+<div class="bottom-grid">
   <div class="panel">
-    <h3>Current Sprint — Upptäcka</h3>
-    <div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-10656" target="_blank" class="sk">INTERACT-10656</a>
-      <span class="ss">Implement MOV in Upptäcka kiosk buying flow</span>
-      <span class="badge badge-progress">In Progress</span>
-    </div><div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-10383" target="_blank" class="sk">INTERACT-10383</a>
-      <span class="ss">Create function in Upptäcka and pass down to Upptäcka APIs</span>
-      <span class="badge badge-done">Done</span>
-    </div><div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-10843" target="_blank" class="sk">INTERACT-10843</a>
-      <span class="ss">Use workflow in Upptäcka</span>
-      <span class="badge badge-review">In Review</span>
-    </div><div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-10820" target="_blank" class="sk">INTERACT-10820</a>
-      <span class="ss">Implement MOV in Upptäcka kiosk buying flow</span>
-      <span class="badge badge-review">In Review</span>
-    </div><div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-10382" target="_blank" class="sk">INTERACT-10382</a>
-      <span class="ss">Update mf-library with new Upptäcka API</span>
-      <span class="badge badge-done">Done</span>
-    </div><div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-10774" target="_blank" class="sk">INTERACT-10774</a>
-      <span class="ss">Dependabot: Create workflow for automatic task in JIRA</span>
-      <span class="badge badge-progress">In Progress</span>
-    </div><div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-10735" target="_blank" class="sk">INTERACT-10735</a>
-      <span class="ss">Implement MOQ and sets of multiples in Kiosk buying flow</span>
-      <span class="badge badge-progress">In Progress</span>
+    <div class="panel-title">Current Sprint</div>
+    <div class="story-row">
+      <a href="https://jira.digital.ingka.com/browse/INTERACT-10656" target="_blank" class="s-key">INTERACT-10656</a>
+      <span class="s-sum">Implement MOV in Upptäcka kiosk buying flow</span>
+      <span class="b b-prog">In Progress</span>
+    </div><div class="story-row">
+      <a href="https://jira.digital.ingka.com/browse/INTERACT-10383" target="_blank" class="s-key">INTERACT-10383</a>
+      <span class="s-sum">Create function in Upptäcka and pass down to Upptäcka APIs</span>
+      <span class="b b-done">Done</span>
+    </div><div class="story-row">
+      <a href="https://jira.digital.ingka.com/browse/INTERACT-10843" target="_blank" class="s-key">INTERACT-10843</a>
+      <span class="s-sum">Use workflow in Upptäcka</span>
+      <span class="b b-rev">In Review</span>
+    </div><div class="story-row">
+      <a href="https://jira.digital.ingka.com/browse/INTERACT-10820" target="_blank" class="s-key">INTERACT-10820</a>
+      <span class="s-sum">Implement MOV in Upptäcka kiosk buying flow</span>
+      <span class="b b-rev">In Review</span>
+    </div><div class="story-row">
+      <a href="https://jira.digital.ingka.com/browse/INTERACT-10382" target="_blank" class="s-key">INTERACT-10382</a>
+      <span class="s-sum">Update mf-library with new Upptäcka API</span>
+      <span class="b b-done">Done</span>
+    </div><div class="story-row">
+      <a href="https://jira.digital.ingka.com/browse/INTERACT-10774" target="_blank" class="s-key">INTERACT-10774</a>
+      <span class="s-sum">Dependabot: Create workflow for automatic task in JIRA</span>
+      <span class="b b-prog">In Progress</span>
+    </div><div class="story-row">
+      <a href="https://jira.digital.ingka.com/browse/INTERACT-10735" target="_blank" class="s-key">INTERACT-10735</a>
+      <span class="s-sum">Implement MOQ and sets of multiples in Kiosk buying flow</span>
+      <span class="b b-prog">In Progress</span>
     </div>
   </div>
-
   <div class="panel">
-    <h3>Open Bugs — Upptäcka (15 total)</h3>
-    <div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-8662" target="_blank" class="sk">INTERACT-8662</a>
-      <span class="ss">Fullstop (Show&Sales stopped) items are searchable in Upptäcka</span>
-      <span class="badge badge-backlog">Low</span>
-    </div><div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-9095" target="_blank" class="sk">INTERACT-9095</a>
-      <span class="ss">SDF: Application selection sometimes not showing Upptäcka/other apps</span>
-      <span class="badge badge-backlog">Low</span>
-    </div><div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-8994" target="_blank" class="sk">INTERACT-8994</a>
-      <span class="ss">Gävle store does not show hard coded message as it should do</span>
-      <span class="badge badge-backlog">Low</span>
-    </div><div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-8229" target="_blank" class="sk">INTERACT-8229</a>
-      <span class="ss">Shoppable image not working with visual message</span>
-      <span class="badge badge-backlog">Low</span>
-    </div><div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-7700" target="_blank" class="sk">INTERACT-7700</a>
-      <span class="ss">Show the "Best seller" and "Limited edition" commercial messages in Up</span>
-      <span class="badge badge-backlog">Low</span>
-    </div><div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-7250" target="_blank" class="sk">INTERACT-7250</a>
-      <span class="ss">Bug from iSell: IllegalArgument Exception while registering the paymen</span>
-      <span class="badge badge-backlog">Low</span>
-    </div><div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-7795" target="_blank" class="sk">INTERACT-7795</a>
-      <span class="ss">Extended p-tag page loads before loading in-store when scanning a p-ta</span>
-      <span class="badge badge-backlog">Low</span>
-    </div><div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-7778" target="_blank" class="sk">INTERACT-7778</a>
-      <span class="ss">NOWIT: INC1003044313 QR code from Upptäcka doesn't work in sälja</span>
-      <span class="badge badge-backlog">Low</span>
-    </div><div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-7126" target="_blank" class="sk">INTERACT-7126</a>
-      <span class="ss">Listig: Shop'n'Go cant retrieve list</span>
-      <span class="badge badge-backlog">Low</span>
-    </div><div class="story">
-      <a href="https://jira.digital.ingka.com/browse/INTERACT-7326" target="_blank" class="sk">INTERACT-7326</a>
-      <span class="ss">Add planners</span>
-      <span class="badge badge-backlog">Low</span>
-    </div><div style="font-size:11px;color:var(--mid);margin-top:6px">+5 more open bugs</div>
+    <div class="panel-title">Open Bugs · 15 total</div>
+    <div class="story-row">
+      <a href="https://jira.digital.ingka.com/browse/INTERACT-8662" target="_blank" class="s-key">INTERACT-8662</a>
+      <span class="s-sum">Fullstop (Show&Sales stopped) items are searchable in Upptäcka</span>
+      <span class="b b-todo">Low</span>
+    </div><div class="story-row">
+      <a href="https://jira.digital.ingka.com/browse/INTERACT-9095" target="_blank" class="s-key">INTERACT-9095</a>
+      <span class="s-sum">SDF: Application selection sometimes not showing Upptäcka/other apps</span>
+      <span class="b b-todo">Low</span>
+    </div><div class="story-row">
+      <a href="https://jira.digital.ingka.com/browse/INTERACT-8994" target="_blank" class="s-key">INTERACT-8994</a>
+      <span class="s-sum">Gävle store does not show hard coded message as it should do</span>
+      <span class="b b-todo">Low</span>
+    </div><div class="story-row">
+      <a href="https://jira.digital.ingka.com/browse/INTERACT-8229" target="_blank" class="s-key">INTERACT-8229</a>
+      <span class="s-sum">Shoppable image not working with visual message</span>
+      <span class="b b-todo">Low</span>
+    </div><div class="story-row">
+      <a href="https://jira.digital.ingka.com/browse/INTERACT-7700" target="_blank" class="s-key">INTERACT-7700</a>
+      <span class="s-sum">Show the "Best seller" and "Limited edition" commercial messages in Up</span>
+      <span class="b b-todo">Low</span>
+    </div><div class="story-row">
+      <a href="https://jira.digital.ingka.com/browse/INTERACT-7250" target="_blank" class="s-key">INTERACT-7250</a>
+      <span class="s-sum">Bug from iSell: IllegalArgument Exception while registering the paymen</span>
+      <span class="b b-todo">Low</span>
+    </div><div class="story-row">
+      <a href="https://jira.digital.ingka.com/browse/INTERACT-7795" target="_blank" class="s-key">INTERACT-7795</a>
+      <span class="s-sum">Extended p-tag page loads before loading in-store when scanning a p-ta</span>
+      <span class="b b-todo">Low</span>
+    </div><div class="story-row">
+      <a href="https://jira.digital.ingka.com/browse/INTERACT-7778" target="_blank" class="s-key">INTERACT-7778</a>
+      <span class="s-sum">NOWIT: INC1003044313 QR code from Upptäcka doesn't work in sälja</span>
+      <span class="b b-todo">Low</span>
+    </div><p class="more-hint">+7 more · <a href="https://jira.digital.ingka.com/issues/?jql=project%3DINTERACT%20AND%20issuetype%3DBug%20AND%20status!%3DDone%20AND%20text~%22Uppt%C3%A4cka%22" target="_blank">View all in Jira →</a></p>
   </div>
 </div>
 
-<div style="padding:8px 16px 24px;font-size:11px;color:var(--mid)">
-  Jira data · INTERACT project · Generated 2026-06-18 09:32 · T3 start: April 1, 2026
+<div style="padding:0 16px 32px;font-size:11px;color:var(--mid)">
+  INTERACT project · Jira data · Generated 2026-06-18 09:32
 </div>
+
+<script>
+function toggle(i) {
+  const p = document.getElementById('stories-' + i);
+  p.style.display = p.style.display === 'none' ? 'block' : 'none';
+}
+</script>
 </body></html>
