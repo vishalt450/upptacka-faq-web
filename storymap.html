@@ -165,7 +165,8 @@ header .meta{font-size:11px;opacity:.7;}
   <button class="hdr-btn" onclick="exportJSON()">⬇ Export</button>
   <button class="hdr-btn" onclick="loadExample()" title="Load cake ordering demo">🎂 Demo</button>
   <button class="hdr-btn" onclick="clearMap()" title="Reset map">↺ Reset</button>
-  <button class="hdr-btn" onclick="clusterActivities()" title="Group similar activities by Patton principles">🔗 Cluster</button>
+  <button class="hdr-btn" onclick="clusterActivities()" title="Group similar activities">🔗 Cluster</button>
+  <button class="hdr-btn" style="background:#1565c0;border-color:#1976d2;font-weight:700;" onclick="fullReview()">📋 Review</button>
   <button class="hdr-btn" style="background:#4527a0;border-color:#6a3de8;" onclick="aiReview()">🤖 AI Review</button>
   <span><span class="save-dot" id="savedot"></span><span style="font-size:11px;opacity:.7" id="savelabel">Saved</span></span>
 </header>
@@ -686,6 +687,151 @@ function exportJSON(){
 }
 function toggleCtx(){
   document.getElementById('ctx-panel').classList.toggle('open');
+}
+
+// ── FULL REVIEW ────────────────────────────────────────────
+function fullReview(){
+  const allTasks = STATE.activities.flatMap(a=>a.tasks);
+  const allStories = allTasks.flatMap(t=>t.stories);
+  const r1stories = allStories.filter(s=>(parseInt(s.release)||1)===1);
+  const r2stories = allStories.filter(s=>parseInt(s.release)===2);
+  const r3stories = allStories.filter(s=>parseInt(s.release)===3);
+  const emptyTasks = allTasks.filter(t=>t.stories.length===0);
+  const emptyActs = STATE.activities.filter(a=>a.tasks.length===0);
+  const actsWithR1 = STATE.activities.filter(a=>a.tasks.some(t=>t.stories.some(s=>(parseInt(s.release)||1)===1)));
+  const suggestions = [];
+
+  // 1. Missing stories
+  emptyTasks.forEach(t=>{
+    const act = STATE.activities.find(a=>a.tasks.some(x=>x.id===t.id));
+    suggestions.push({
+      type:'missing-story', priority:'high',
+      icon:'📝', label:'Missing stories',
+      text:`Task "<strong>${esc(t.title)}</strong>" in <em>${esc(act?act.title:'')}</em> has no stories yet.`,
+      action:`Click <strong>+ Story</strong> or <strong>📝 Bulk</strong> under this task to add stories.`
+    });
+  });
+
+  // 2. Empty activities (no tasks)
+  emptyActs.forEach(a=>{
+    suggestions.push({
+      type:'empty-activity', priority:'high',
+      icon:'🏗️', label:'Empty activity',
+      text:`Activity "<strong>${esc(a.title)}</strong>" has no tasks — the backbone has a gap.`,
+      action:`Click <strong>+ Task</strong> inside this activity to add tasks (steps the user takes).`
+    });
+  });
+
+  // 3. Vertical slicing check
+  const missingR1Acts = STATE.activities.filter(a=>!actsWithR1.includes(a));
+  if(r1stories.length > 0 && missingR1Acts.length > 0){
+    suggestions.push({
+      type:'vertical-slice', priority:'high',
+      icon:'⚠️', label:'Vertical slicing detected',
+      text:`${missingR1Acts.length} activit${missingR1Acts.length>1?'ies':'y'} have no R1 stories: <em>${missingR1Acts.map(a=>a.title).join(', ')}</em>.`,
+      action:`Add at least one R1 story to each activity. Jeff Patton: "slice horizontally — one thin story across every activity."`
+    });
+  }
+
+  // 4. Overstuffed MVP
+  const avgTaskCount = allTasks.length / Math.max(STATE.activities.length,1);
+  if(r1stories.length > allTasks.length * 1.5){
+    suggestions.push({
+      type:'overstuffed-mvp', priority:'medium',
+      icon:'⚠️', label:'Overstuffed MVP (R1)',
+      text:`R1 has <strong>${r1stories.length} stories</strong> — that's ${(r1stories.length/allTasks.length).toFixed(1)}x per task. A walking skeleton should have ~1 per task.`,
+      action:`Move lower-priority R1 stories to R2. Ask: "Can the user complete the core job without this?"`
+    });
+  }
+
+  // 5. No MVP defined yet
+  if(allStories.length > 0 && r1stories.length === 0){
+    suggestions.push({
+      type:'no-mvp', priority:'high',
+      icon:'🚨', label:'No MVP (R1) defined',
+      text:`You have <strong>${allStories.length} stories</strong> but none are tagged R1.`,
+      action:`Click the release badge on your most essential stories to tag them R1 — this defines your walking skeleton.`
+    });
+  }
+
+  // 6. Thin activities (only 1 task)
+  STATE.activities.filter(a=>a.tasks.length===1).forEach(a=>{
+    suggestions.push({
+      type:'thin-activity', priority:'low',
+      icon:'💡', label:'Thin activity',
+      text:`"<strong>${esc(a.title)}</strong>" has only 1 task — activities usually need 2–5 tasks to be meaningful.`,
+      action:`Consider adding more tasks, or merging this activity with a neighbour.`
+    });
+  });
+
+  // 7. Stories without text
+  allStories.filter(s=>!s.text||s.text.trim().length<5).forEach(s=>{
+    const task = allTasks.find(t=>t.stories.some(x=>x.id===s.id));
+    suggestions.push({
+      type:'empty-story', priority:'medium',
+      icon:'✏️', label:'Story too short',
+      text:`A story in "<strong>${esc(task?task.title:'')}</strong>" is very short or empty.`,
+      action:`Double-click the story card to edit. Write it as: "As a customer, I want to… so that…"`
+    });
+  });
+
+  // 8. R3 exists but no R2
+  if(r3stories.length > 0 && r2stories.length === 0){
+    suggestions.push({
+      type:'missing-r2', priority:'medium',
+      icon:'📅', label:'R3 stories but no R2',
+      text:`You have <strong>${r3stories.length} R3 stories</strong> but no R2 — there's a gap in your release plan.`,
+      action:`Define R2 stories — the next increment after MVP before you tackle the nice-to-haves.`
+    });
+  }
+
+  // 9. Large activities (too many tasks)
+  STATE.activities.filter(a=>a.tasks.length>7).forEach(a=>{
+    suggestions.push({
+      type:'large-activity', priority:'low',
+      icon:'✂️', label:'Very large activity',
+      text:`"<strong>${esc(a.title)}</strong>" has <strong>${a.tasks.length} tasks</strong> — consider splitting it into 2 activities.`,
+      action:`Group related tasks into a new activity. Each activity should represent one clear user goal.`
+    });
+  });
+
+  // 10. Positive: all good
+  if(suggestions.length === 0){
+    suggestions.push({
+      type:'all-good', priority:'info',
+      icon:'🎉', label:'Map looks great!',
+      text:`All activities have tasks and stories. R1 is well distributed. No Patton anti-patterns detected.`,
+      action:`Next step: run <strong>🤖 AI Review</strong> for deeper Copilot-powered suggestions.`
+    });
+  }
+
+  // Store and render
+  const high = suggestions.filter(s=>s.priority==='high');
+  const med  = suggestions.filter(s=>s.priority==='medium');
+  const low  = suggestions.filter(s=>s.priority==='low'||s.priority==='info');
+  STATE.reviewSuggestions = suggestions;
+  saveState();
+
+  const panel = document.getElementById('analysis-panel');
+  const priorityColor = {high:'#fce4ec', medium:'#fff3e0', low:'#e8f5e9', info:'#e3f2fd'};
+  const borderColor   = {high:'#f48fb1', medium:'#ffe082', low:'#a5d6a7', info:'#90caf9'};
+  let html = `<div class="a-card" style="background:#e8eaf6;border:1px solid #9fa8da">
+    <h4>📋 Full Review — ${suggestions.length} finding${suggestions.length!==1?'s':''}</h4>
+    <div class="a-stat"><span>🔴 High priority</span><span class="val" style="color:#c62828">${high.length}</span></div>
+    <div class="a-stat"><span>🟡 Medium</span><span class="val" style="color:#e65100">${med.length}</span></div>
+    <div class="a-stat"><span>🟢 Low / Info</span><span class="val" style="color:#1b5e20">${low.length}</span></div>
+  </div>`;
+
+  suggestions.forEach((s,i)=>{
+    html += `<div class="a-card" style="background:${priorityColor[s.priority]};border:1px solid ${borderColor[s.priority]}">
+      <h4>${s.icon} ${s.label}</h4>
+      <p style="font-size:12px;margin-bottom:6px">${s.text}</p>
+      <p style="font-size:11px;color:#555;background:rgba(255,255,255,.6);padding:5px 8px;border-radius:5px">👉 ${s.action}</p>
+    </div>`;
+  });
+
+  panel.innerHTML = html;
+  showToast('📋 Review done — ' + suggestions.length + ' findings in Analysis panel');
 }
 
 // ── ANALYSIS PANEL ────────────────────────────────────────
