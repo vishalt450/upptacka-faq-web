@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Uppa — AI Chatbot Build Story</title>
+  <style>
+
+    :root{--blue:#0058a3;--yellow:#ffdb00;--green:#00854a;--orange:#F26522;
+      --bg:#f5f6f8;--white:#fff;--text:#1a1a1a;--muted:#666;--border:#e0e6f0;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+    .hero{color:#fff;padding:60px 40px 50px;text-align:center;}
+    .hero .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-bottom:14px;}
+    .hero h1{font-size:40px;font-weight:800;margin-bottom:12px;line-height:1.15;}
+    .hero h1 span{color:var(--yellow);}
+    .hero .subtitle{font-size:17px;opacity:.85;max-width:640px;margin:0 auto 28px;}
+    .hero .meta{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;font-size:13px;opacity:.7;}
+    .page{max-width:860px;margin:0 auto;padding:40px 24px 80px;}
+    .nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:40px;}
+    .nav a{background:var(--white);border:1px solid var(--border);border-radius:20px;
+      padding:5px 14px;font-size:12px;color:var(--blue);text-decoration:none;transition:all .15s;}
+    .nav a:hover{background:var(--blue);color:#fff;border-color:var(--blue);}
+    .chapter{margin-bottom:56px;}
+    .chapter-header{display:flex;align-items:center;gap:14px;margin-bottom:22px;}
+    .chapter-number{width:42px;height:42px;border-radius:50%;color:#fff;font-size:16px;font-weight:800;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .chapter-header h2{font-size:22px;font-weight:700;}
+    .chapter p{font-size:15px;color:#333;margin-bottom:14px;}
+    .chapter ul{padding-left:22px;font-size:15px;color:#333;margin-bottom:14px;}
+    .chapter ul li{margin-bottom:8px;}
+    .callout{border-radius:8px;padding:18px 22px;margin:20px 0;font-size:14px;}
+    .callout.problem{background:#fff3e0;border-left:4px solid #f57c00;color:#7a4100;}
+    .callout.insight{background:#e8f5e9;border-left:4px solid var(--green);color:#1b5e20;}
+    .callout.decision{background:#e3f2fd;border-left:4px solid var(--blue);color:#0d3e7a;}
+    .callout strong{display:block;margin-bottom:4px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;}
+    .timeline{position:relative;padding-left:28px;border-left:2px solid var(--border);}
+    .tl-item{position:relative;margin-bottom:30px;}
+    .tl-item::before{content:"";width:12px;height:12px;border-radius:50%;
+      position:absolute;left:-35px;top:5px;}
+    .tl-item h3{font-size:15px;font-weight:700;margin-bottom:4px;}
+    .tl-item p{font-size:14px;color:#444;}
+    .tl-tag{display:inline-block;color:#fff;font-size:10px;font-weight:700;
+      padding:2px 8px;border-radius:10px;margin-bottom:6px;letter-spacing:.04em;}
+    .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin:20px 0;}
+    .stat{background:var(--white);border-radius:10px;padding:18px 16px;
+      text-align:center;box-shadow:0 1px 6px rgba(0,0,0,.07);}
+    .stat .num{font-size:32px;font-weight:800;line-height:1;}
+    .stat .label{font-size:12px;color:var(--muted);margin-top:4px;}
+    .cards2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0;}
+    .card{background:var(--white);border-radius:8px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+    .card .icon{font-size:24px;margin-bottom:6px;}
+    .card h3{font-size:14px;font-weight:700;margin-bottom:4px;}
+    .card p{font-size:13px;color:var(--muted);}
+    .cta-box{border-radius:12px;padding:28px 32px;margin:32px 0;text-align:center;}
+    .cta-box h3{font-size:20px;font-weight:700;margin-bottom:8px;}
+    .cta-box p{font-size:14px;opacity:.85;margin-bottom:20px;}
+    .btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+    .btn{display:inline-block;padding:11px 24px;border-radius:8px;font-size:14px;font-weight:700;
+      text-decoration:none;transition:all .15s;}
+    .btn-primary{background:var(--white);color:#003f7a;}
+    .btn-primary:hover{background:var(--yellow);color:#003f7a;}
+    .btn-secondary{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.5);}
+    .btn-secondary:hover{background:rgba(255,255,255,.25);}
+    .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--blue);
+      font-size:13px;text-decoration:none;margin-bottom:32px;}
+    .back-link:hover{text-decoration:underline;}
+    .quote{border-left:4px solid var(--yellow);background:var(--white);
+      padding:16px 22px;border-radius:4px;margin:24px 0;font-size:16px;font-style:italic;color:#333;
+      box-shadow:0 1px 4px rgba(0,0,0,.07);}
+    .quote cite{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:8px;}
+    .divider{border:none;border-top:1px solid var(--border);margin:40px 0;}
+    footer{text-align:center;font-size:12px;color:#aaa;padding:24px;border-top:1px solid var(--border);}
+    footer a{color:var(--blue);}
+    @media(max-width:600px){.hero h1{font-size:26px;}.cards2{grid-template-columns:1fr;}.stats{grid-template-columns:1fr 1fr;}}
+
+    .hero{background:linear-gradient(135deg,#002D62 0%,#0058a3 60%,#1976d2 100%);}
+    .chapter-number{background:#0058a3;}
+    .chapter-header h2{color:#0058a3;}
+    .tl-item::before{background:#0058a3;}
+    .tl-tag{background:#0058a3;}
+    .tl-tag.green{background:#00854a;}
+    .stat{border-top:3px solid #0058a3;} .stat .num{color:#0058a3;}
+    .stat.green{border-top-color:#00854a;} .stat.green .num{color:#00854a;}
+    .cta-box{background:linear-gradient(135deg,#002D62,#0058a3);color:#fff;}
+  </style>
+</head>
+<body>
+<div class="hero">
+  <div class="eyebrow">Build Story &middot; Product AI &middot; Uppt&auml;cka</div>
+  <h1>&#129302; Uppa<br/><span>Uppt&auml;cka AI Chatbot</span></h1>
+  <p class="subtitle">How a multi-source FAQ chatbot was built for IKEA&rsquo;s in-store kiosk &mdash; combining 111 handbook slides, 188+ Jira tickets, and NLP scoring into a zero-backend assistant.</p>
+  <div class="meta">
+    <span>&#128100; Vishal Tonger &mdash; Uppt&auml;cka PO</span>
+    <span>&#128197; June 2026</span>
+    <span>&#128736;&#65039; Python &middot; Jira API &middot; GitHub Pages</span>
+  </div>
+</div>
+
+<div class="page">
+  <a href="story.html" class="back-link">&#8592; Back to all Product AI stories</a>
+  <nav class="nav">
+    <a href="#ch1">1. The Problem</a>
+    <a href="#ch2">2. Knowledge Sources</a>
+    <a href="#ch3">3. Building It</a>
+    <a href="#ch4">4. How Search Works</a>
+    <a href="#ch5">5. What It Delivers</a>
+    <a href="#ch6">6. Try It</a>
+  </nav>
+
+  <div class="chapter" id="ch1">
+    <div class="chapter-header"><div class="chapter-number">1</div><h2>The Problem</h2></div>
+    <p>Customers and co-workers constantly ask the same questions about the Uppt&auml;cka kiosk: <em>&ldquo;Can it order delivery?&rdquo;, &ldquo;Does it show PTAG prices?&rdquo;, &ldquo;What happens when I scan an item?&rdquo;</em></p>
+    <div class="callout problem">
+      <strong>&#128308; The manual loop</strong>
+      Answers were spread across 111 product handbook slides, a Confluence FAQ, and hundreds of Jira tickets. Finding one answer meant opening 3–4 different tools, each time.
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">111</div><div class="label">handbook slides to search manually</div></div>
+      <div class="stat"><div class="num">188+</div><div class="label">Jira Done tickets with feature knowledge</div></div>
+      <div class="stat green"><div class="num">10s</div><div class="label">to get an answer with Uppa</div></div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="chapter" id="ch2">
+    <div class="chapter-header"><div class="chapter-number">2</div><h2>Knowledge Sources</h2></div>
+    <p>Uppa combines three sources, each ranked and scored per query:</p>
+    <div class="cards2">
+      <div class="card"><div class="icon">&#128218;</div><h3>Curated FAQ</h3><p>Hand-crafted Q&amp;A pairs covering the most common kiosk questions. Highest confidence answers.</p></div>
+      <div class="card"><div class="icon">&#128196;</div><h3>111 Handbook Slides</h3><p>Uppt&auml;cka product handbook fully parsed and indexed. Covers features, flows, and edge cases.</p></div>
+      <div class="card"><div class="icon">&#127381;</div><h3>Jira Done Tickets</h3><p>188 completed Jira tickets from INTERACT. Parsed for &ldquo;What it does / Why it matters&rdquo; sections.</p></div>
+      <div class="card"><div class="icon">&#127760;</div><h3>Zero Backend</h3><p>All knowledge is embedded in a single <code>knowledge.json</code> file. No server, no API calls, no cost per query.</p></div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="chapter" id="ch3">
+    <div class="chapter-header"><div class="chapter-number">3</div><h2>Building It</h2></div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-tag">Step 1</div>
+        <h3>Start with FAQ only</h3>
+        <p>Basic keyword matching against curated Q&amp;A pairs. Worked for exact questions, failed on paraphrasing.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag">Step 2</div>
+        <h3>Add NLP scoring</h3>
+        <p>Added stop-word removal, stemming (Porter), and synonym expansion. Now &ldquo;Can I place an order?&rdquo; matches &ldquo;delivery services ordering&rdquo;.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag">Step 3</div>
+        <h3>Ingest 111 handbook slides</h3>
+        <p>Parsed the full Uppt&auml;cka handbook PDF. Each slide became a scored knowledge entry with section, title, and body text.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag green">Step 4</div>
+        <h3>Add Jira Done tickets via API</h3>
+        <p>Fetched 188+ Done tickets from INTERACT via Jira REST API. Parsed Jira markup to extract clean text. Removed boilerplate (Definition of Done, empty sections).</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag green">Step 5</div>
+        <h3>Google-style autocomplete</h3>
+        <p>Added live autocomplete suggestions as the user types, using the combined title index from all sources.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="chapter" id="ch4">
+    <div class="chapter-header"><div class="chapter-number">4</div><h2>How Search Works</h2></div>
+    <p>Every query goes through a multi-stage scoring pipeline:</p>
+    <div class="callout decision">
+      <strong>&#128309; Scoring pipeline</strong>
+      1. Tokenise query &rarr; remove stop words &rarr; stem tokens<br/>
+      2. Expand with synonyms (e.g. &ldquo;order&rdquo; &rarr; &ldquo;delivery, purchase, buy&rdquo;)<br/>
+      3. Score each knowledge entry: exact phrase match (3&times;) + word overlap + title bonus<br/>
+      4. Return top-3 results with source card + confidence badge
+    </div>
+    <div class="quote">
+      &ldquo;It found the answer in the handbook even when I typed it completely differently from how it was written.&rdquo;
+      <cite>&mdash; Vishal, testing with real customer questions</cite>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="chapter" id="ch5">
+    <div class="chapter-header"><div class="chapter-number">5</div><h2>What It Delivers</h2></div>
+    <div class="stats">
+      <div class="stat"><div class="num">3</div><div class="label">knowledge sources in one search</div></div>
+      <div class="stat green"><div class="num">0</div><div class="label">backend servers or API costs</div></div>
+      <div class="stat"><div class="num">188+</div><div class="label">Jira tickets as searchable knowledge</div></div>
+      <div class="stat green"><div class="num">100%</div><div class="label">IKEA network access &mdash; SSO protected</div></div>
+    </div>
+    <div class="callout insight">
+      <strong>&#128994; No maintenance cost</strong>
+      knowledge.json is regenerated on demand from live Jira data. Run the fetch script and push &mdash; the chatbot is updated in minutes.
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="chapter" id="ch6">
+    <div class="chapter-header"><div class="chapter-number">6</div><h2>Try It &amp; Documentation</h2></div>
+    <div class="cta-box">
+      <h3>&#129302; Open Uppa Chatbot</h3>
+      <p>Ask anything about the Uppt&auml;cka kiosk. Requires IKEA network or SSO login.</p>
+      <div class="btn-row">
+        <a href="https://pages.git.build.ingka.ikea.com/viton2/upptacka-dashboards/index.html" class="btn btn-primary" target="_blank">&#128279; Open Uppa (IKEA)</a>
+        <a href="https://confluence.build.ingka.ikea.com/spaces/IDE/pages/1327267404/Uppa+%E2%80%94+Uppt%C3%A4cka+AI+Assistant+Dashboards" class="btn btn-secondary" target="_blank">&#128196; Confluence Documentation</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+<footer>Built with GitHub Copilot CLI &middot; Vishal Tonger (viton2) &middot; Uppt&auml;cka PO &middot; June 2026 &middot;
+  <a href="story.html">&#8592; All Product AI Stories</a></footer>
+</body>
+</html>

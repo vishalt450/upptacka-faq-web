@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Tertial Progress Dashboard — Build Story</title>
+  <style>
+
+    :root{--blue:#0058a3;--yellow:#ffdb00;--green:#00854a;--orange:#F26522;
+      --bg:#f5f6f8;--white:#fff;--text:#1a1a1a;--muted:#666;--border:#e0e6f0;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+    .hero{color:#fff;padding:60px 40px 50px;text-align:center;}
+    .hero .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-bottom:14px;}
+    .hero h1{font-size:40px;font-weight:800;margin-bottom:12px;line-height:1.15;}
+    .hero h1 span{color:var(--yellow);}
+    .hero .subtitle{font-size:17px;opacity:.85;max-width:640px;margin:0 auto 28px;}
+    .hero .meta{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;font-size:13px;opacity:.7;}
+    .page{max-width:860px;margin:0 auto;padding:40px 24px 80px;}
+    .nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:40px;}
+    .nav a{background:var(--white);border:1px solid var(--border);border-radius:20px;
+      padding:5px 14px;font-size:12px;color:var(--blue);text-decoration:none;transition:all .15s;}
+    .nav a:hover{background:var(--blue);color:#fff;border-color:var(--blue);}
+    .chapter{margin-bottom:56px;}
+    .chapter-header{display:flex;align-items:center;gap:14px;margin-bottom:22px;}
+    .chapter-number{width:42px;height:42px;border-radius:50%;color:#fff;font-size:16px;font-weight:800;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .chapter-header h2{font-size:22px;font-weight:700;}
+    .chapter p{font-size:15px;color:#333;margin-bottom:14px;}
+    .chapter ul{padding-left:22px;font-size:15px;color:#333;margin-bottom:14px;}
+    .chapter ul li{margin-bottom:8px;}
+    .callout{border-radius:8px;padding:18px 22px;margin:20px 0;font-size:14px;}
+    .callout.problem{background:#fff3e0;border-left:4px solid #f57c00;color:#7a4100;}
+    .callout.insight{background:#e8f5e9;border-left:4px solid var(--green);color:#1b5e20;}
+    .callout.decision{background:#e3f2fd;border-left:4px solid var(--blue);color:#0d3e7a;}
+    .callout strong{display:block;margin-bottom:4px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;}
+    .timeline{position:relative;padding-left:28px;border-left:2px solid var(--border);}
+    .tl-item{position:relative;margin-bottom:30px;}
+    .tl-item::before{content:"";width:12px;height:12px;border-radius:50%;
+      position:absolute;left:-35px;top:5px;}
+    .tl-item h3{font-size:15px;font-weight:700;margin-bottom:4px;}
+    .tl-item p{font-size:14px;color:#444;}
+    .tl-tag{display:inline-block;color:#fff;font-size:10px;font-weight:700;
+      padding:2px 8px;border-radius:10px;margin-bottom:6px;letter-spacing:.04em;}
+    .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin:20px 0;}
+    .stat{background:var(--white);border-radius:10px;padding:18px 16px;
+      text-align:center;box-shadow:0 1px 6px rgba(0,0,0,.07);}
+    .stat .num{font-size:32px;font-weight:800;line-height:1;}
+    .stat .label{font-size:12px;color:var(--muted);margin-top:4px;}
+    .cards2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0;}
+    .card{background:var(--white);border-radius:8px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+    .card .icon{font-size:24px;margin-bottom:6px;}
+    .card h3{font-size:14px;font-weight:700;margin-bottom:4px;}
+    .card p{font-size:13px;color:var(--muted);}
+    .cta-box{border-radius:12px;padding:28px 32px;margin:32px 0;text-align:center;}
+    .cta-box h3{font-size:20px;font-weight:700;margin-bottom:8px;}
+    .cta-box p{font-size:14px;opacity:.85;margin-bottom:20px;}
+    .btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+    .btn{display:inline-block;padding:11px 24px;border-radius:8px;font-size:14px;font-weight:700;
+      text-decoration:none;transition:all .15s;}
+    .btn-primary{background:var(--white);color:#003f7a;}
+    .btn-primary:hover{background:var(--yellow);color:#003f7a;}
+    .btn-secondary{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.5);}
+    .btn-secondary:hover{background:rgba(255,255,255,.25);}
+    .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--blue);
+      font-size:13px;text-decoration:none;margin-bottom:32px;}
+    .back-link:hover{text-decoration:underline;}
+    .quote{border-left:4px solid var(--yellow);background:var(--white);
+      padding:16px 22px;border-radius:4px;margin:24px 0;font-size:16px;font-style:italic;color:#333;
+      box-shadow:0 1px 4px rgba(0,0,0,.07);}
+    .quote cite{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:8px;}
+    .divider{border:none;border-top:1px solid var(--border);margin:40px 0;}
+    footer{text-align:center;font-size:12px;color:#aaa;padding:24px;border-top:1px solid var(--border);}
+    footer a{color:var(--blue);}
+    @media(max-width:600px){.hero h1{font-size:26px;}.cards2{grid-template-columns:1fr;}.stats{grid-template-columns:1fr 1fr;}}
+
+    .hero{background:linear-gradient(135deg,#7a3000 0%,#F26522 60%,#ff8f00 100%);}
+    .chapter-number{background:#F26522;}
+    .chapter-header h2{color:#F26522;}
+    .tl-item::before{background:#F26522;}
+    .tl-tag{background:#F26522;}
+    .tl-tag.blue{background:#0058a3;}
+    .tl-tag.green{background:#00854a;}
+    .stat{border-top:3px solid #F26522;} .stat .num{color:#F26522;}
+    .stat.blue{border-top-color:#0058a3;} .stat.blue .num{color:#0058a3;}
+    .stat.green{border-top-color:#00854a;} .stat.green .num{color:#00854a;}
+    .nav a:hover{background:#F26522;color:#fff;border-color:#F26522;}
+    .cta-box{background:linear-gradient(135deg,#7a3000,#F26522);color:#fff;}
+  </style>
+</head>
+<body>
+<div class="hero">
+  <div class="eyebrow">Build Story &middot; Product AI &middot; Uppt&auml;cka</div>
+  <h1>&#128203; Tertial Progress<br/><span>T2 &amp; T3 Epic Tracker</span></h1>
+  <p class="subtitle">How 76 Jira epics were fetched, classified by Planned Tertial, sorted by Portfolio priority rank, and turned into a stakeholder-ready progress dashboard &mdash; with CV and BI always visible.</p>
+  <div class="meta">
+    <span>&#128100; Vishal Tonger &mdash; Uppt&auml;cka PO</span>
+    <span>&#128197; June 2026</span>
+    <span>&#128736;&#65039; Python &middot; Jira API &middot; Portfolio Plan &middot; GitHub Pages</span>
+  </div>
+</div>
+
+<div class="page">
+  <a href="story.html" class="back-link">&#8592; Back to all Product AI stories</a>
+  <nav class="nav">
+    <a href="#ch1">1. The Problem</a>
+    <a href="#ch2">2. The Data Challenges</a>
+    <a href="#ch3">3. Building It</a>
+    <a href="#ch4">4. How Priority Works</a>
+    <a href="#ch5">5. What&rsquo;s in the Dashboard</a>
+    <a href="#ch6">6. Open It</a>
+  </nav>
+
+  <div class="chapter" id="ch1">
+    <div class="chapter-header"><div class="chapter-number">1</div><h2>The Problem</h2></div>
+    <p>Every tertial review required manually opening the Jira Portfolio Plan, filtering by T2/T3, and copying epic statuses into slides. Stakeholders had no self-serve view of progress against tertial goals.</p>
+    <div class="callout problem">
+      <strong>&#128308; The preparation loop</strong>
+      30–60 minutes before each stakeholder meeting: open Portfolio Plan, filter T2/T3 epics, check story counts, copy Customer Value and Business Impact from each epic, assemble a progress slide. Every time.
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">76</div><div class="label">T2+T3 epics in INTERACT project</div></div>
+      <div class="stat blue"><div class="num">3</div><div class="label">failed classification approaches before the right one</div></div>
+      <div class="stat green"><div class="num">1</div><div class="label">page with all epics, CV, BI, status &amp; rank</div></div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="chapter" id="ch2">
+    <div class="chapter-header"><div class="chapter-number">2</div><h2>The Data Challenges</h2></div>
+    <p>Getting the right 76 epics in the right order took three iterations. Each failure taught something important about how this Jira instance works.</p>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-tag" style="background:#c62828;">Attempt 1 &mdash; Wrong</div>
+        <h3>Filter by creation date</h3>
+        <p>Result: Only 4 T2 / 46 T3 epics. Creation date doesn&rsquo;t correlate with which tertial an epic belongs to &mdash; many old epics carry forward.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag" style="background:#f57c00;">Attempt 2 &mdash; Better</div>
+        <h3>Parse title text (FY26-T2 / FY26-T3)</h3>
+        <p>Result: 23 T2 / 23 T3 epics. More accurate but missed epics named differently and counted some that were T1 or T4.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag green">Attempt 3 &mdash; Correct</div>
+        <h3>Use the Planned Tertial custom field</h3>
+        <p>Jira field <code>customfield_13202</code> stores the official Planned Tertial value. Result: 20 T2 / 22 T3 via field + Kiosk-label fallback = 76 total.</p>
+      </div>
+    </div>
+    <div class="callout insight">
+      <strong>&#128994; Also fixed: story fetching</strong>
+      Stories must be fetched with <code>"Epic Link" = KEY</code> JQL &mdash; not <code>parent = KEY</code>. The <code>parent</code> field returns 0 results on this Jira instance.
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="chapter" id="ch3">
+    <div class="chapter-header"><div class="chapter-number">3</div><h2>Building It</h2></div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-tag">Step 1</div>
+        <h3>Fetch all T2+T3 epics</h3>
+        <p>JQL: <code>"Planned Tertial" in ("FY26 - T2","FY26 - T3")</code> + Kiosk label fallback for epics without the field set. 76 epics total.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag">Step 2</div>
+        <h3>Enrich with CV, BI, and stories</h3>
+        <p>Fetched <code>customfield_24001</code> (Customer Value) and <code>customfield_24000</code> (Business Impact) for each epic. Fetched stories via <code>"Epic Link" = KEY</code>.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag blue">Step 3</div>
+        <h3>Apply Portfolio priority rank</h3>
+        <p>Used <code>ORDER BY Rank ASC</code> in JQL to get the same priority order as the Jira Portfolio Plan view. Each epic shows its <code>#N</code> rank badge.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag blue">Step 4</div>
+        <h3>T3 first, always-visible CV+BI</h3>
+        <p>T3 (current tertial) displayed above T2. Customer Value and Business Impact shown outside any collapsible — always visible without clicking. Stories behind an expandable toggle.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="chapter" id="ch4">
+    <div class="chapter-header"><div class="chapter-number">4</div><h2>How Priority Works</h2></div>
+    <p>Epics are sorted by the same rank used in the official Jira Portfolio Plan:</p>
+    <div class="callout decision">
+      <strong>&#128309; Portfolio Plan URL</strong>
+      <code>https://jira.digital.ingka.com/secure/PortfolioPlanView.jspa?id=1000&amp;sid=1042&amp;vid=4191</code><br/><br/>
+      The dashboard&rsquo;s <strong>#1, #2, #3 &hellip;</strong> priority badges match exactly what the PO sees in the Portfolio Plan backlog view.
+    </div>
+    <div class="quote">
+      &ldquo;The numbers on the dashboard match exactly what I see in the Portfolio Plan. Finally one source of truth.&rdquo;
+      <cite>&mdash; Vishal, after adding portfolio rank sorting</cite>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="chapter" id="ch5">
+    <div class="chapter-header"><div class="chapter-number">5</div><h2>What&rsquo;s in the Dashboard</h2></div>
+    <div class="cards2">
+      <div class="card"><div class="icon">&#128203;</div><h3>76 Epics, T3 First</h3><p>All T2+T3 epics. T3 (current tertial) shown first, sorted by Portfolio priority rank. T2 follows.</p></div>
+      <div class="card"><div class="icon">&#128269;</div><h3>Status Colors</h3><p>In Progress (blue border), Backlog (grey), Done (green). Status-colored left border on each epic card.</p></div>
+      <div class="card"><div class="icon">&#127775;</div><h3>CV &amp; BI Always Visible</h3><p>Customer Value and Business Impact shown on every card without needing to expand. Key context always in view.</p></div>
+      <div class="card"><div class="icon">&#128221;</div><h3>Story Counts + Expand</h3><p>Each epic shows story count by status. Click to expand and see all stories with their individual statuses.</p></div>
+      <div class="card"><div class="icon">&#127381;</div><h3>#N Priority Badge</h3><p>Portfolio rank number shown on each epic, matching the official Jira Portfolio Plan order.</p></div>
+      <div class="card"><div class="icon">&#128337;</div><h3>Regenerable on Demand</h3><p>Run <code>build_dashboard.py</code> to re-fetch from Jira and regenerate. Takes ~2 minutes for all 76 epics.</p></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">76</div><div class="label">epics tracked (T2+T3)</div></div>
+      <div class="stat green"><div class="num">22</div><div class="label">T3 epics (current tertial)</div></div>
+      <div class="stat blue"><div class="num">20</div><div class="label">T2 epics (prev tertial)</div></div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="chapter" id="ch6">
+    <div class="chapter-header"><div class="chapter-number">6</div><h2>Open It &amp; Documentation</h2></div>
+    <div class="cta-box">
+      <h3>&#128203; Open Tertial Progress Dashboard</h3>
+      <p>All T2+T3 epics by portfolio priority. Requires IKEA SSO login.</p>
+      <div class="btn-row">
+        <a href="https://pages.git.build.ingka.ikea.com/viton2/upptacka-dashboards/dashboard.html" class="btn btn-primary" target="_blank">&#128279; Open Dashboard (IKEA)</a>
+        <a href="https://confluence.build.ingka.ikea.com/spaces/IDE/pages/1330076090/Uppt%C3%A4cka+Dashboards+%E2%80%94+KPI+Tertial+Progress" class="btn btn-secondary" target="_blank">&#128196; Confluence Documentation</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+<footer>Built with GitHub Copilot CLI &middot; Vishal Tonger (viton2) &middot; Uppt&auml;cka PO &middot; June 2026 &middot;
+  <a href="story.html">&#8592; All Product AI Stories</a></footer>
+</body>
+</html>

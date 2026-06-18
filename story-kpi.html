@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>KPI Dashboard — Build Story</title>
+  <style>
+
+    :root{--blue:#0058a3;--yellow:#ffdb00;--green:#00854a;--orange:#F26522;
+      --bg:#f5f6f8;--white:#fff;--text:#1a1a1a;--muted:#666;--border:#e0e6f0;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+    .hero{color:#fff;padding:60px 40px 50px;text-align:center;}
+    .hero .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-bottom:14px;}
+    .hero h1{font-size:40px;font-weight:800;margin-bottom:12px;line-height:1.15;}
+    .hero h1 span{color:var(--yellow);}
+    .hero .subtitle{font-size:17px;opacity:.85;max-width:640px;margin:0 auto 28px;}
+    .hero .meta{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;font-size:13px;opacity:.7;}
+    .page{max-width:860px;margin:0 auto;padding:40px 24px 80px;}
+    .nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:40px;}
+    .nav a{background:var(--white);border:1px solid var(--border);border-radius:20px;
+      padding:5px 14px;font-size:12px;color:var(--blue);text-decoration:none;transition:all .15s;}
+    .nav a:hover{background:var(--blue);color:#fff;border-color:var(--blue);}
+    .chapter{margin-bottom:56px;}
+    .chapter-header{display:flex;align-items:center;gap:14px;margin-bottom:22px;}
+    .chapter-number{width:42px;height:42px;border-radius:50%;color:#fff;font-size:16px;font-weight:800;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .chapter-header h2{font-size:22px;font-weight:700;}
+    .chapter p{font-size:15px;color:#333;margin-bottom:14px;}
+    .chapter ul{padding-left:22px;font-size:15px;color:#333;margin-bottom:14px;}
+    .chapter ul li{margin-bottom:8px;}
+    .callout{border-radius:8px;padding:18px 22px;margin:20px 0;font-size:14px;}
+    .callout.problem{background:#fff3e0;border-left:4px solid #f57c00;color:#7a4100;}
+    .callout.insight{background:#e8f5e9;border-left:4px solid var(--green);color:#1b5e20;}
+    .callout.decision{background:#e3f2fd;border-left:4px solid var(--blue);color:#0d3e7a;}
+    .callout strong{display:block;margin-bottom:4px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;}
+    .timeline{position:relative;padding-left:28px;border-left:2px solid var(--border);}
+    .tl-item{position:relative;margin-bottom:30px;}
+    .tl-item::before{content:"";width:12px;height:12px;border-radius:50%;
+      position:absolute;left:-35px;top:5px;}
+    .tl-item h3{font-size:15px;font-weight:700;margin-bottom:4px;}
+    .tl-item p{font-size:14px;color:#444;}
+    .tl-tag{display:inline-block;color:#fff;font-size:10px;font-weight:700;
+      padding:2px 8px;border-radius:10px;margin-bottom:6px;letter-spacing:.04em;}
+    .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin:20px 0;}
+    .stat{background:var(--white);border-radius:10px;padding:18px 16px;
+      text-align:center;box-shadow:0 1px 6px rgba(0,0,0,.07);}
+    .stat .num{font-size:32px;font-weight:800;line-height:1;}
+    .stat .label{font-size:12px;color:var(--muted);margin-top:4px;}
+    .cards2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0;}
+    .card{background:var(--white);border-radius:8px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+    .card .icon{font-size:24px;margin-bottom:6px;}
+    .card h3{font-size:14px;font-weight:700;margin-bottom:4px;}
+    .card p{font-size:13px;color:var(--muted);}
+    .cta-box{border-radius:12px;padding:28px 32px;margin:32px 0;text-align:center;}
+    .cta-box h3{font-size:20px;font-weight:700;margin-bottom:8px;}
+    .cta-box p{font-size:14px;opacity:.85;margin-bottom:20px;}
+    .btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+    .btn{display:inline-block;padding:11px 24px;border-radius:8px;font-size:14px;font-weight:700;
+      text-decoration:none;transition:all .15s;}
+    .btn-primary{background:var(--white);color:#003f7a;}
+    .btn-primary:hover{background:var(--yellow);color:#003f7a;}
+    .btn-secondary{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.5);}
+    .btn-secondary:hover{background:rgba(255,255,255,.25);}
+    .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--blue);
+      font-size:13px;text-decoration:none;margin-bottom:32px;}
+    .back-link:hover{text-decoration:underline;}
+    .quote{border-left:4px solid var(--yellow);background:var(--white);
+      padding:16px 22px;border-radius:4px;margin:24px 0;font-size:16px;font-style:italic;color:#333;
+      box-shadow:0 1px 4px rgba(0,0,0,.07);}
+    .quote cite{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:8px;}
+    .divider{border:none;border-top:1px solid var(--border);margin:40px 0;}
+    footer{text-align:center;font-size:12px;color:#aaa;padding:24px;border-top:1px solid var(--border);}
+    footer a{color:var(--blue);}
+    @media(max-width:600px){.hero h1{font-size:26px;}.cards2{grid-template-columns:1fr;}.stats{grid-template-columns:1fr 1fr;}}
+
+    .hero{background:linear-gradient(135deg,#1b5e20 0%,#00854a 60%,#43a047 100%);}
+    .chapter-number{background:#00854a;}
+    .chapter-header h2{color:#00854a;}
+    .tl-item::before{background:#00854a;}
+    .tl-tag{background:#00854a;}
+    .tl-tag.blue{background:#0058a3;}
+    .stat{border-top:3px solid #00854a;} .stat .num{color:#00854a;}
+    .stat.blue{border-top-color:#0058a3;} .stat.blue .num{color:#0058a3;}
+    .stat.orange{border-top-color:#F26522;} .stat.orange .num{color:#F26522;}
+    .nav a:hover{background:#00854a;color:#fff;border-color:#00854a;}
+    .cta-box{background:linear-gradient(135deg,#1b5e20,#00854a);color:#fff;}
+  </style>
+</head>
+<body>
+<div class="hero">
+  <div class="eyebrow">Build Story &middot; Product AI &middot; Uppt&auml;cka</div>
+  <h1>&#128200; KPI Dashboard<br/><span>Live BigQuery Metrics</span></h1>
+  <p class="subtitle">How live kiosk usage data from 643 stores was surfaced in a lightweight dashboard &mdash; querying BigQuery for ~$0.00001 per refresh, with sparklines, funnel, and market breakdown.</p>
+  <div class="meta">
+    <span>&#128100; Vishal Tonger &mdash; Uppt&auml;cka PO</span>
+    <span>&#128197; June 2026</span>
+    <span>&#128736;&#65039; Python &middot; BigQuery &middot; gcloud &middot; GitHub Pages</span>
+  </div>
+</div>
+
+<div class="page">
+  <a href="story.html" class="back-link">&#8592; Back to all Product AI stories</a>
+  <nav class="nav">
+    <a href="#ch1">1. The Problem</a>
+    <a href="#ch2">2. The Data Stack</a>
+    <a href="#ch3">3. Building It</a>
+    <a href="#ch4">4. Cost &amp; Safety</a>
+    <a href="#ch5">5. What&rsquo;s in the Dashboard</a>
+    <a href="#ch6">6. Open It</a>
+  </nav>
+
+  <div class="chapter" id="ch1">
+    <div class="chapter-header"><div class="chapter-number">1</div><h2>The Problem</h2></div>
+    <p>Uppt&auml;cka usage data existed in Looker Studio &mdash; but only the data team could refresh it, and it required navigating through a GCP project most POs had never opened.</p>
+    <div class="callout problem">
+      <strong>&#128308; The access gap</strong>
+      Sessions, value-add, conversion funnel, PTAG performance &mdash; all available in BigQuery, but inaccessible to the PO without data team involvement. Monthly reviews were the only time numbers got shared.
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">643</div><div class="label">IKEA stores sending kiosk data</div></div>
+      <div class="stat blue"><div class="num">85 MB</div><div class="label">date-partitioned BigQuery table</div></div>
+      <div class="stat"><div class="num">0</div><div class="label">self-serve PO access before this</div></div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="chapter" id="ch2">
+    <div class="chapter-header"><div class="chapter-number">2</div><h2>The Data Stack</h2></div>
+    <p>Uppt&auml;cka&rsquo;s kiosk events flow through a well-defined data pipeline:</p>
+    <div class="callout decision">
+      <strong>&#128309; Pipeline</strong>
+      Kiosk events (KEPS) &rarr; nightly batch export &rarr; BigQuery (<code>ingka-upptacka-data-prod</code>) &rarr; Looker Studio<br/><br/>
+      The dashboard taps directly into the BigQuery layer, bypassing Looker Studio entirely.
+    </div>
+    <div class="cards2">
+      <div class="card"><div class="icon">&#128202;</div><h3>Project: ingka-upptacka-data-prod</h3><p>The Uppt&auml;cka data product in GCP. Managed by the Uppt&auml;cka data team.</p></div>
+      <div class="card"><div class="icon">&#128203;</div><h3>Table: dp_usage_by_store_aggregation</h3><p>Daily aggregated metrics per store: sessions, orders, value, funnel steps, PTAG events. DATE-partitioned.</p></div>
+      <div class="card"><div class="icon">&#128197;</div><h3>85 MB total, 2.2 MB per query</h3><p>Partition pruning means only the relevant date range is scanned &mdash; keeping costs near zero.</p></div>
+      <div class="card"><div class="icon">&#127760;</div><h3>643 stores globally</h3><p>Every IKEA store with an active Uppt&auml;cka kiosk contributes daily data to the table.</p></div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="chapter" id="ch3">
+    <div class="chapter-header"><div class="chapter-number">3</div><h2>Building It</h2></div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-tag">Step 1</div>
+        <h3>Discover the data product</h3>
+        <p>Found <code>ingka-upptacka-data-prod</code> via the BigQuery Agents Hub. Confirmed table schema and partition structure. Cost-validated with a dry-run query: $0.00001 per full refresh.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag">Step 2</div>
+        <h3>Authenticate with gcloud</h3>
+        <p>Installed Google Cloud SDK via Homebrew. Used Application Default Credentials (<code>gcloud auth application-default login</code>) with the IKEA Google account.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag">Step 3</div>
+        <h3>Build the Python data script</h3>
+        <p>Wrote <code>build_kpi.py</code>: queries last 30d vs prev 30d, 16-week trend, PTAG funnel, conversion funnel, top-20 markets. Outputs <code>kpi_data.json</code>.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag blue">Step 4</div>
+        <h3>Generate static HTML dashboard</h3>
+        <p>Embedded the JSON data into a single-file HTML page with inline SVG sparklines, KPI cards with trend arrows, conversion funnel bars, and country table.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag blue">Step 5</div>
+        <h3>Publish to IKEA GitHub Pages</h3>
+        <p>Pushed to <code>git.build.ingka.ikea.com/viton2/upptacka-dashboards</code>. SSO-protected via SAML Auth0 &mdash; only IKEA employees can view it.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="chapter" id="ch4">
+    <div class="chapter-header"><div class="chapter-number">4</div><h2>Cost &amp; Safety</h2></div>
+    <div class="callout insight">
+      <strong>&#128994; Verified cost: $0.00001 per full refresh</strong>
+      BigQuery charges $5/TB scanned. DATE partitioning means each 30d query reads only 2.2 MB from the 85 MB table. 1,000 refreshes costs $0.01.
+    </div>
+    <div class="callout decision">
+      <strong>&#128309; Access control</strong>
+      The dashboard is hosted on IKEA internal GitHub Pages (SAML/SSO protected). No data leaves IKEA systems. BigQuery credentials use Application Default Credentials &mdash; no hardcoded keys anywhere.
+    </div>
+    <div class="quote">
+      &ldquo;I ran a dry-run first. Zero cost confirmed before we touched live data.&rdquo;
+      <cite>&mdash; Vishal, on the BigQuery cost check</cite>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="chapter" id="ch5">
+    <div class="chapter-header"><div class="chapter-number">5</div><h2>What&rsquo;s in the Dashboard</h2></div>
+    <div class="cards2">
+      <div class="card"><div class="icon">&#128200;</div><h3>8 KPI Cards</h3><p>Sessions, quality rate, value added, hours saved, mobile sessions, S&auml;lja handovers, delivery orders, PTAG orders. Each with vs-prev-30d trend arrow.</p></div>
+      <div class="card"><div class="icon">&#129375;</div><h3>Conversion Funnel</h3><p>Sessions &rarr; Search &rarr; PIP &rarr; Add to List &rarr; Delivery Order. Visual drop-off bars.</p></div>
+      <div class="card"><div class="icon">&#128269;</div><h3>PTAG Section</h3><p>Scan sessions, list starts, items added, orders. Full PTAG funnel in one view.</p></div>
+      <div class="card"><div class="icon">&#128202;</div><h3>6 Sparkline Trend Charts</h3><p>16-week inline SVG trends for sessions, value add, quality rate, orders, PTAG, S&auml;lja.</p></div>
+      <div class="card"><div class="icon">&#127760;</div><h3>Top 20 Markets Table</h3><p>Best-performing countries by sessions and value added. Sortable by metric.</p></div>
+      <div class="card"><div class="icon">&#128337;</div><h3>30d vs 30d Comparison</h3><p>Every metric compared to the prior 30-day period with % change and colour-coded trend.</p></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">9.4M</div><div class="label">kiosk sessions (last 30d)</div></div>
+      <div class="stat"><div class="num">&#8364;148M</div><div class="label">value added to list (last 30d)</div></div>
+      <div class="stat orange"><div class="num">10s</div><div class="label">to refresh from live BigQuery data</div></div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="chapter" id="ch6">
+    <div class="chapter-header"><div class="chapter-number">6</div><h2>Open It &amp; Documentation</h2></div>
+    <div class="cta-box">
+      <h3>&#128200; Open KPI Dashboard</h3>
+      <p>Live Uppt&auml;cka usage metrics from BigQuery. Requires IKEA SSO login.</p>
+      <div class="btn-row">
+        <a href="https://pages.git.build.ingka.ikea.com/viton2/upptacka-dashboards/kpi.html" class="btn btn-primary" target="_blank">&#128279; Open KPI Dashboard (IKEA)</a>
+        <a href="https://confluence.build.ingka.ikea.com/spaces/IDE/pages/1330076090/Uppt%C3%A4cka+Dashboards+%E2%80%94+KPI+Tertial+Progress" class="btn btn-secondary" target="_blank">&#128196; Confluence Documentation</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+<footer>Built with GitHub Copilot CLI &middot; Vishal Tonger (viton2) &middot; Uppt&auml;cka PO &middot; June 2026 &middot;
+  <a href="story.html">&#8592; All Product AI Stories</a></footer>
+</body>
+</html>
