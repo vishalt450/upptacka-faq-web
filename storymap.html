@@ -300,32 +300,54 @@ function searchKnowledge(query, topN=5){
 
 // ── STATE ─────────────────────────────────────────────────
 const DEFAULT_STATE = {
-  context: "Uppt\u00e4cka is IKEA\u2019s in-store digital kiosk. Customers use it to find products, check prices, start shopping lists, order delivery services, and get help. The kiosk runs in IKEA stores globally.",
+  context: 'Customer journey: Ordering a cake online — from discovery to post-delivery review.',
+  visibleReleases:[1,2,3],
+  aiSuggestions:[], clusters:{},
   activities: [
-    { id:'a1', title:'Discover Products', tasks:[
-      { id:'t1', title:'Search by keyword', stories:[] },
-      { id:'t2', title:'Browse by category', stories:[] },
-      { id:'t3', title:'Scan item barcode', stories:[] }
+    { id:'a1', title:'Discover & Browse', tasks:[
+      { id:'t1', title:'Search for cakes', stories:[] },
+      { id:'t2', title:'Filter by occasion, flavour & size', stories:[] },
+      { id:'t3', title:'View featured & trending cakes', stories:[] },
+      { id:'t4', title:'Read reviews & ratings', stories:[] }
     ]},
-    { id:'a2', title:'Build a List', tasks:[
-      { id:'t4', title:'Add items to list', stories:[] },
-      { id:'t5', title:'View & edit list', stories:[] }
+    { id:'a2', title:'Choose & Customise', tasks:[
+      { id:'t5', title:'View cake details & photos', stories:[] },
+      { id:'t6', title:'Select size & servings', stories:[] },
+      { id:'t7', title:'Pick flavour & filling', stories:[] },
+      { id:'t8', title:'Add personal message or design', stories:[] },
+      { id:'t9', title:'Preview customisation', stories:[] }
     ]},
-    { id:'a3', title:'Get Prices & Info', tasks:[
-      { id:'t6', title:'Check PTAG price', stories:[] },
-      { id:'t7', title:'View product details', stories:[] }
+    { id:'a3', title:'Add to Cart', tasks:[
+      { id:'t10', title:'Add cake to cart', stories:[] },
+      { id:'t11', title:'Update quantity or options', stories:[] },
+      { id:'t12', title:'Apply promo / discount code', stories:[] },
+      { id:'t13', title:'Save cart for later', stories:[] }
     ]},
-    { id:'a4', title:'Order & Checkout', tasks:[
-      { id:'t8', title:'Start delivery order', stories:[] },
-      { id:'t9', title:'Complete order', stories:[] }
+    { id:'a4', title:'Set Delivery', tasks:[
+      { id:'t14', title:'Choose delivery date', stories:[] },
+      { id:'t15', title:'Select delivery time slot', stories:[] },
+      { id:'t16', title:'Enter delivery address', stories:[] },
+      { id:'t17', title:'Choose delivery or pickup', stories:[] }
     ]},
-    { id:'a5', title:'Get Help', tasks:[
-      { id:'t10', title:'Use Uppa chatbot', stories:[] },
-      { id:'t11', title:'Handover to S\u00e4lja', stories:[] }
+    { id:'a5', title:'Checkout & Pay', tasks:[
+      { id:'t18', title:'Review order summary', stories:[] },
+      { id:'t19', title:'Enter contact details', stories:[] },
+      { id:'t20', title:'Select payment method', stories:[] },
+      { id:'t21', title:'Confirm & place order', stories:[] }
+    ]},
+    { id:'a6', title:'Track Order', tasks:[
+      { id:'t22', title:'Receive order confirmation email', stories:[] },
+      { id:'t23', title:'View order status page', stories:[] },
+      { id:'t24', title:'Get baking & dispatch notifications', stories:[] },
+      { id:'t25', title:'Track live delivery', stories:[] }
+    ]},
+    { id:'a7', title:'Receive & Review', tasks:[
+      { id:'t26', title:'Receive & inspect the cake', stories:[] },
+      { id:'t27', title:'Rate experience & quality', stories:[] },
+      { id:'t28', title:'Share photo on social media', stories:[] },
+      { id:'t29', title:'Reorder or gift to a friend', stories:[] }
     ]}
-  ],
-  releases:['R1 \u2014 MVP','R2','R3'],
-  visibleReleases:[1,2,3]
+  ]
 };
 
 let STATE = JSON.parse(JSON.stringify(DEFAULT_STATE));
