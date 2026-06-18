@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>🗺️ Story Map — Uppt&auml;cka</title>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<style>
+:root{
+  --blue:#0058a3;--blue-light:#e3f2fd;--yellow:#ffdb00;
+  --green:#00854a;--orange:#F26522;--red:#c62828;
+  --bg:#f0f2f5;--white:#fff;--text:#1a1a1a;--muted:#666;--border:#dde3ec;
+  --r1:#0058a3;--r2:#00854a;--r3:#F26522;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ── HEADER ── */
+header{background:var(--blue);color:#fff;padding:10px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0;z-index:100;}
+header h1{font-size:16px;font-weight:700;flex:1;}
+header .meta{font-size:11px;opacity:.7;}
+.hdr-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;}
+.hdr-btn:hover{background:rgba(255,255,255,.25);}
+.hdr-btn.active{background:var(--yellow);color:#003f7a;border-color:var(--yellow);}
+.save-dot{width:8px;height:8px;border-radius:50%;background:#4caf50;display:inline-block;margin-right:4px;}
+
+/* ── CONTEXT PANEL ── */
+#ctx-panel{background:var(--white);border-bottom:2px solid var(--yellow);padding:12px 20px;flex-shrink:0;display:none;}
+#ctx-panel.open{display:block;}
+#ctx-panel .ctx-row{display:flex;gap:12px;}
+#ctx-panel textarea{flex:1;border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:13px;font-family:inherit;resize:none;height:60px;}
+.ctx-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:4px;}
+
+/* ── MAIN LAYOUT ── */
+#main{display:flex;flex:1;overflow:hidden;}
+
+/* ── BOARD ── */
+#board-wrap{flex:1;overflow-x:auto;overflow-y:auto;padding:16px;}
+#board{display:flex;gap:0;min-height:100%;align-items:flex-start;}
+
+/* ── ACTIVITY COLUMN ── */
+.activity-col{flex-shrink:0;width:220px;background:transparent;margin-right:8px;}
+.activity-header{background:var(--blue);color:#fff;border-radius:8px 8px 0 0;padding:10px 12px;cursor:grab;position:relative;}
+.activity-header h3{font-size:13px;font-weight:700;margin-bottom:2px;line-height:1.3;}
+.activity-header .act-meta{font-size:10px;opacity:.7;}
+.act-actions{position:absolute;top:6px;right:6px;display:none;gap:4px;}
+.activity-header:hover .act-actions{display:flex;}
+.act-btn{background:rgba(255,255,255,.2);border:none;color:#fff;width:20px;height:20px;border-radius:4px;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;}
+.act-btn:hover{background:rgba(255,255,255,.4);}
+
+/* ── TASKS ROW ── */
+.tasks-row{background:var(--blue-light);border-left:2px solid var(--blue);border-right:2px solid var(--blue);padding:6px 6px 0;}
+.task-card{background:var(--white);border:1px solid #b3cde8;border-top:3px solid var(--blue);border-radius:6px;padding:7px 9px;margin-bottom:6px;cursor:grab;position:relative;font-size:12px;font-weight:600;color:var(--blue);}
+.task-card:hover .task-actions{display:flex;}
+.task-actions{position:absolute;top:4px;right:4px;display:none;gap:3px;}
+.t-btn{background:var(--blue-light);border:none;color:var(--blue);width:18px;height:18px;border-radius:3px;cursor:pointer;font-size:10px;}
+
+/* ── STORIES AREA ── */
+.stories-area{background:rgba(255,255,255,.5);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:6px;min-height:80px;}
+.release-band{margin-bottom:4px;}
+.release-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:2px 6px;border-radius:3px;margin-bottom:4px;display:inline-block;}
+.release-label.r1{background:var(--r1);color:#fff;}
+.release-label.r2{background:var(--r2);color:#fff;}
+.release-label.r3{background:var(--r3);color:#fff;}
+.story-drop-zone{min-height:32px;border:1px dashed var(--border);border-radius:6px;padding:3px;}
+.story-card{background:var(--white);border-radius:6px;padding:7px 9px 7px 11px;margin-bottom:4px;font-size:11px;cursor:grab;position:relative;border:1px solid var(--border);line-height:1.4;}
+.story-card.r1{border-left:3px solid var(--r1);}
+.story-card.r2{border-left:3px solid var(--r2);}
+.story-card.r3{border-left:3px solid var(--r3);}
+.story-card:hover .s-actions{display:flex;}
+.s-actions{position:absolute;top:3px;right:3px;display:none;gap:2px;}
+.s-btn{background:var(--bg);border:none;color:var(--muted);width:16px;height:16px;border-radius:2px;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;}
+.r-badge{display:inline-block;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;cursor:pointer;margin-right:4px;vertical-align:middle;}
+.r-badge.r1{background:var(--blue-light);color:var(--r1);}
+.r-badge.r2{background:#e8f5e9;color:var(--r2);}
+.r-badge.r3{background:#fff3e0;color:var(--r3);}
+
+/* ── ADD BUTTONS ── */
+.add-story-btn{width:100%;border:1px dashed #aac4e0;background:transparent;color:#7aa7c7;padding:5px;border-radius:5px;cursor:pointer;font-size:11px;margin-top:2px;}
+.add-story-btn:hover{background:var(--blue-light);color:var(--blue);border-color:var(--blue);}
+.add-task-btn{width:100%;border:1px dashed rgba(0,88,163,.3);background:transparent;color:rgba(0,88,163,.5);padding:4px;border-radius:5px;cursor:pointer;font-size:11px;margin-bottom:4px;}
+.add-task-btn:hover{background:var(--blue-light);color:var(--blue);}
+.add-activity-col{width:180px;flex-shrink:0;}
+.add-activity-btn{width:100%;height:60px;border:2px dashed var(--border);background:transparent;color:var(--muted);border-radius:8px;cursor:pointer;font-size:13px;}
+.add-activity-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--white);}
+
+/* ── AGENT SIDEBAR ── */
+#agent{width:340px;flex-shrink:0;background:var(--white);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+#agent.collapsed{width:0;border:none;}
+.agent-header{background:#1a2e4a;color:#fff;padding:12px 16px;font-size:13px;font-weight:700;flex-shrink:0;display:flex;align-items:center;gap:8px;}
+.agent-header span{flex:1;}
+.agent-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
+.agent-tab{flex:1;padding:8px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;}
+.agent-tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+#analysis-panel{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;}
+#chat-panel{flex:1;overflow:hidden;display:none;flex-direction:column;}
+#chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;}
+.msg{padding:8px 11px;border-radius:8px;font-size:12px;line-height:1.5;max-width:90%;}
+.msg.user{background:var(--blue);color:#fff;align-self:flex-end;border-radius:8px 8px 2px 8px;}
+.msg.agent{background:#f0f4fa;color:var(--text);align-self:flex-start;border-radius:8px 8px 8px 2px;}
+.msg.agent ul{padding-left:16px;margin-top:4px;}
+.msg.agent li{margin-bottom:3px;}
+.chat-input-row{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;}
+.chat-input-row input{flex:1;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;}
+.chat-input-row input:focus{outline:none;border-color:var(--blue);}
+.chat-send-btn{background:var(--blue);color:#fff;border:none;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:12px;font-weight:600;}
+
+/* ── ANALYSIS CARDS ── */
+.a-card{background:var(--bg);border-radius:8px;padding:11px 13px;font-size:12px;}
+.a-card h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:8px;}
+.a-card ul{padding-left:14px;color:#333;}
+.a-card ul li{margin-bottom:4px;}
+.a-stat{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border);}
+.a-stat:last-child{border:none;}
+.a-stat .val{font-weight:700;color:var(--blue);}
+.suggestion-card{background:#fffde7;border:1px solid #ffe082;border-radius:8px;padding:10px 12px;font-size:12px;cursor:pointer;}
+.suggestion-card:hover{background:#fff9c4;}
+.suggestion-card .s-title{font-weight:600;color:#333;margin-bottom:3px;}
+.suggestion-card .s-source{font-size:10px;color:var(--muted);}
+.add-sug-btn{float:right;background:var(--blue);color:#fff;border:none;border-radius:4px;padding:2px 7px;font-size:10px;cursor:pointer;margin-top:-2px;}
+.gap-item{padding:4px 0;border-bottom:1px solid var(--border);font-size:12px;color:#c62828;}
+.gap-item:last-child{border:none;}
+
+/* ── MODALS ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1000;display:none;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--white);border-radius:12px;padding:24px;width:400px;max-width:95vw;}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:16px;color:var(--blue);}
+.modal input,.modal textarea,.modal select{width:100%;border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;margin-bottom:12px;}
+.modal textarea{height:70px;resize:none;}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;}
+.btn-primary{background:var(--blue);color:#fff;border:none;border-radius:6px;padding:8px 18px;cursor:pointer;font-size:13px;font-weight:600;}
+.btn-cancel{background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:8px 14px;cursor:pointer;font-size:13px;}
+
+.sortable-ghost{opacity:.3;}
+.sortable-drag{opacity:.8;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <h1>🗺️ Story Map</h1>
+  <span class="meta" id="map-stats"></span>
+  <button class="hdr-btn" onclick="toggleCtx()">📋 Context</button>
+  <button class="hdr-btn" onclick="toggleRelease(1)" id="rbtn1">R1</button>
+  <button class="hdr-btn" onclick="toggleRelease(2)" id="rbtn2">R2</button>
+  <button class="hdr-btn" onclick="toggleRelease(3)" id="rbtn3">R3</button>
+  <button class="hdr-btn" onclick="exportJSON()">⬇ Export</button>
+  <button class="hdr-btn" onclick="clearMap()" title="Reset map">↺ Reset</button>
+  <span><span class="save-dot" id="savedot"></span><span style="font-size:11px;opacity:.7" id="savelabel">Saved</span></span>
+</header>
+
+<!-- CONTEXT PANEL -->
+<div id="ctx-panel">
+  <div class="ctx-label">Problem Statement &amp; Context (read by the agent)</div>
+  <div class="ctx-row">
+    <textarea id="ctx-text" placeholder="Describe the product, user, and problem you are mapping..." oninput="saveState()"></textarea>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <!-- BOARD -->
+  <div id="board-wrap">
+    <div id="board"></div>
+  </div>
+
+  <!-- AGENT -->
+  <div id="agent">
+    <div class="agent-header">🤖 <span>Uppa — Story Agent</span></div>
+    <div class="agent-tabs">
+      <div class="agent-tab active" onclick="switchTab('analysis')">💡 Analysis</div>
+      <div class="agent-tab" onclick="switchTab('chat')">💬 Chat</div>
+    </div>
+    <div id="analysis-panel"></div>
+    <div id="chat-panel">
+      <div id="chat-messages"></div>
+      <div class="chat-input-row">
+        <input id="chat-input" type="text" placeholder="Ask about the map or product…" onkeydown="if(event.key==='Enter')sendChat()"/>
+        <button class="chat-send-btn" onclick="sendChat()">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h3 id="modal-title">Edit</h3>
+    <input id="modal-input" type="text" placeholder="Title…"/>
+    <textarea id="modal-body" placeholder="Description (optional)…"></textarea>
+    <div id="modal-release-row" style="display:none">
+      <label style="font-size:12px;font-weight:600;color:var(--muted)">Release:</label>
+      <select id="modal-release">
+        <option value="1">R1 — MVP</option>
+        <option value="2">R2</option>
+        <option value="3">R3</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" id="modal-save">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── KNOWLEDGE ─────────────────────────────────────────────
+let QA = [], HANDBOOK = [], FEATURES = [];
+fetch('knowledge.json').then(r=>r.json()).then(d=>{
+  QA = d.qa || [];
+  HANDBOOK = d.handbook || [];
+  FEATURES = d.features || [];
+  renderAnalysis();
+});
+
+// ── UPPA NLP ENGINE (reused) ──────────────────────────────
+const STOP = new Set(['the','a','an','is','are','was','were','be','been','being','have','has','had',
+  'do','does','did','will','would','could','should','may','might','can','shall','to','of','in',
+  'on','at','by','for','with','about','as','from','into','through','or','and','but','not','no',
+  'i','you','we','they','it','this','that','what','how','when','where','which','who']);
+
+function stem(w){
+  return w.replace(/ners?$/,'n').replace(/nings?$/,'').replace(/tions?$/,'')
+    .replace(/ings?$/,'').replace(/ers?$/,'').replace(/ness$/,'')
+    .replace(/ed$/,'').replace(/ly$/,'').replace(/es$/,'').replace(/s$/,'');
+}
+const SYNONYMS={
+  search:['find','look','browse','discover','locate','explore'],
+  delivery:['deliver','ship','order','home','purchase','buy'],
+  list:['cart','basket','save','wishlist'],
+  price:['cost','ptag','tag','amount'],
+  scan:['barcode','qr','scan','camera'],
+  help:['assist','support','coworker','staff','employee'],
+  offer:['deal','discount','sale','promotion'],
+  planner:['plan','planning','design','designer','configure'],
+};
+function expandWord(w){
+  const base=stem(w), result=new Set([w,base]);
+  Object.entries(SYNONYMS).forEach(([key,syns])=>{
+    if(key===w||key===base||syns.includes(w)||syns.includes(base)){result.add(key);syns.forEach(s=>result.add(s));}
+  });
+  return result;
+}
+function searchKnowledge(query, topN=5){
+  const q=query.toLowerCase().replace(/[?!.,]/g,'');
+  const qWords=q.split(/\s+/);
+  const qM=qWords.filter(w=>w.length>=3&&!STOP.has(w));
+  const score=(text,title='')=>{
+    let s=0;
+    const tl=title.toLowerCase(), bl=text.toLowerCase();
+    qM.forEach(w=>{
+      const exp=expandWord(w);
+      if(tl.includes(w))s+=8; else if([...exp].some(e=>tl.includes(e)))s+=5;
+      if(bl.includes(w))s+=3; else if([...exp].some(e=>bl.includes(e)))s+=2;
+    });
+    return s;
+  };
+  const results=[];
+  QA.forEach(item=>{
+    const s=score(item.a||'',item.q||'');
+    if(s>=4) results.push({title:item.q,body:item.a,source:'FAQ',score:s});
+  });
+  FEATURES.forEach(item=>{
+    const s=score(item.body||'',item.title||'');
+    if(s>=4) results.push({title:item.title,body:item.body,source:'Jira',score:s});
+  });
+  HANDBOOK.forEach(item=>{
+    const s=score(item.body||'',item.title||'');
+    if(s>=6) results.push({title:item.title,body:item.body,source:'Handbook',score:s});
+  });
+  results.sort((a,b)=>b.score-a.score);
+  return results.slice(0,topN);
+}
+
+// ── STATE ─────────────────────────────────────────────────
+const DEFAULT_STATE = {
+  context: "Uppt\u00e4cka is IKEA\u2019s in-store digital kiosk. Customers use it to find products, check prices, start shopping lists, order delivery services, and get help. The kiosk runs in IKEA stores globally.",
+  activities: [
+    { id:'a1', title:'Discover Products', tasks:[
+      { id:'t1', title:'Search by keyword', stories:[] },
+      { id:'t2', title:'Browse by category', stories:[] },
+      { id:'t3', title:'Scan item barcode', stories:[] }
+    ]},
+    { id:'a2', title:'Build a List', tasks:[
+      { id:'t4', title:'Add items to list', stories:[] },
+      { id:'t5', title:'View & edit list', stories:[] }
+    ]},
+    { id:'a3', title:'Get Prices & Info', tasks:[
+      { id:'t6', title:'Check PTAG price', stories:[] },
+      { id:'t7', title:'View product details', stories:[] }
+    ]},
+    { id:'a4', title:'Order & Checkout', tasks:[
+      { id:'t8', title:'Start delivery order', stories:[] },
+      { id:'t9', title:'Complete order', stories:[] }
+    ]},
+    { id:'a5', title:'Get Help', tasks:[
+      { id:'t10', title:'Use Uppa chatbot', stories:[] },
+      { id:'t11', title:'Handover to S\u00e4lja', stories:[] }
+    ]}
+  ],
+  releases:['R1 \u2014 MVP','R2','R3'],
+  visibleReleases:[1,2,3]
+};
+
+let STATE = JSON.parse(JSON.stringify(DEFAULT_STATE));
+let idCounter = 100;
+const uid = () => 'id' + (++idCounter);
+
+// ── LOAD / SAVE ───────────────────────────────────────────
+function loadState(){
+  try{
+    const saved = localStorage.getItem('uppa_storymap');
+    if(saved){ STATE = JSON.parse(saved); idCounter = 200; }
+  }catch(e){}
+}
+function saveState(){
+  if(document.getElementById('ctx-text'))
+    STATE.context = document.getElementById('ctx-text').value;
+  localStorage.setItem('uppa_storymap', JSON.stringify(STATE));
+  const dot = document.getElementById('savedot');
+  const lbl = document.getElementById('savelabel');
+  if(dot){ dot.style.background='#4caf50'; lbl.textContent='Saved'; }
+  updateStats();
+  renderAnalysis();
+}
+function updateStats(){
+  let tasks=0,stories=0;
+  STATE.activities.forEach(a=>{a.tasks.forEach(t=>{tasks++;stories+=t.stories.length;})});
+  const el=document.getElementById('map-stats');
+  if(el) el.textContent = STATE.activities.length+' activities · '+tasks+' tasks · '+stories+' stories';
+}
+
+// ── RELEASE FILTER ────────────────────────────────────────
+function toggleRelease(r){
+  const idx = STATE.visibleReleases.indexOf(r);
+  if(idx>=0) STATE.visibleReleases.splice(idx,1);
+  else STATE.visibleReleases.push(r);
+  ['rbtn1','rbtn2','rbtn3'].forEach((id,i)=>{
+    const btn=document.getElementById(id);
+    if(btn) btn.classList.toggle('active', STATE.visibleReleases.includes(i+1));
+  });
+  renderBoard();
+  saveState();
+}
+
+// ── RENDER BOARD ──────────────────────────────────────────
+function renderBoard(){
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+
+  STATE.activities.forEach(act => {
+    const col = document.createElement('div');
+    col.className = 'activity-col';
+    col.dataset.actId = act.id;
+
+    col.innerHTML = `
+      <div class="activity-header" ondblclick="editActivity('${act.id}')">
+        <h3>${esc(act.title)}</h3>
+        <div class="act-meta">${act.tasks.length} tasks</div>
+        <div class="act-actions">
+          <button class="act-btn" onclick="editActivity('${act.id}')" title="Edit">✏️</button>
+          <button class="act-btn" onclick="deleteActivity('${act.id}')" title="Delete">🗑</button>
+        </div>
+      </div>
+      <div class="tasks-row" id="tasks-${act.id}">
+        ${act.tasks.map(t => renderTask(t, act.id)).join('')}
+        <button class="add-task-btn" onclick="addTask('${act.id}')">+ Task</button>
+      </div>`;
+
+    board.appendChild(col);
+    initActivitySortable(act.id);
+  });
+
+  // Add activity button
+  const addCol = document.createElement('div');
+  addCol.className = 'add-activity-col';
+  addCol.innerHTML = `<button class="add-activity-btn" onclick="addActivity()">＋<br/>Activity</button>`;
+  board.appendChild(addCol);
+
+  // Activities drag
+  Sortable.create(board, {
+    animation:150, handle:'.activity-header', ghostClass:'sortable-ghost',
+    filter:'.add-activity-col',
+    onEnd: e => {
+      const moved = STATE.activities.splice(e.oldIndex,1)[0];
+      STATE.activities.splice(e.newIndex,0,moved);
+      saveState(); renderBoard();
+    }
+  });
+
+  updateStats();
+}
+
+function renderTask(t, actId){
+  const stories = t.stories.filter(s => STATE.visibleReleases.includes(parseInt(s.release)||1));
+  return `
+    <div class="task-card" id="task-${t.id}" data-task-id="${t.id}" data-act-id="${actId}" ondblclick="editTask('${t.id}','${actId}')">
+      ${esc(t.title)}
+      <div class="task-actions">
+        <button class="t-btn" onclick="editTask('${t.id}','${actId}')">✏</button>
+        <button class="t-btn" onclick="suggestForTask('${t.id}')">💡</button>
+        <button class="t-btn" onclick="deleteTask('${t.id}','${actId}')">✕</button>
+      </div>
+    </div>
+    <div class="stories-area" id="stories-${t.id}">
+      ${[1,2,3].filter(r=>STATE.visibleReleases.includes(r)).map(r=>{
+        const rs = t.stories.filter(s=>(parseInt(s.release)||1)===r);
+        return rs.length>0 ? `
+          <div class="release-band">
+            <div class="release-label r${r}">${STATE.releases[r-1]}</div>
+            <div class="story-drop-zone" id="drop-${t.id}-r${r}" data-task="${t.id}" data-rel="${r}">
+              ${rs.map(s=>renderStory(s)).join('')}
+            </div>
+          </div>` : `<div class="story-drop-zone" id="drop-${t.id}-r${r}" data-task="${t.id}" data-rel="${r}" style="min-height:4px;border:none;"></div>`;
+      }).join('')}
+      <button class="add-story-btn" onclick="addStory('${t.id}')">＋ Story</button>
+    </div>`;
+}
+
+function renderStory(s){
+  return `<div class="story-card r${s.release||1}" id="story-${s.id}" data-story-id="${s.id}">
+    <span class="r-badge r${s.release||1}" onclick="cycleRelease('${s.id}')" title="Click to change release">R${s.release||1}</span>${esc(s.text)}
+    <div class="s-actions">
+      <button class="s-btn" onclick="editStory('${s.id}')">✏</button>
+      <button class="s-btn" onclick="deleteStory('${s.id}')">✕</button>
+    </div>
+  </div>`;
+}
+
+function initActivitySortable(actId){
+  const tasksRow = document.getElementById('tasks-'+actId);
+  if(!tasksRow) return;
+  Sortable.create(tasksRow, {
+    animation:100, ghostClass:'sortable-ghost',
+    filter:'.add-task-btn', group:'tasks',
+    onEnd: e => {
+      const taskId = e.item.dataset.taskId;
+      const srcActId = e.from.closest('.activity-col').dataset.actId;
+      const dstActId = e.to.closest('.activity-col').dataset.actId;
+      const srcAct = STATE.activities.find(a=>a.id===srcActId);
+      const dstAct = STATE.activities.find(a=>a.id===dstActId);
+      if(!srcAct||!dstAct) return;
+      const tIdx = srcAct.tasks.findIndex(t=>t.id===taskId);
+      if(tIdx<0) return;
+      const [task] = srcAct.tasks.splice(tIdx,1);
+      dstAct.tasks.splice(e.newIndex,0,task);
+      saveState(); renderBoard();
+    }
+  });
+
+  const act = STATE.activities.find(a=>a.id===actId);
+  if(!act) return;
+  act.tasks.forEach(t => {
+    [1,2,3].forEach(r => {
+      const zone = document.getElementById(`drop-${t.id}-r${r}`);
+      if(!zone) return;
+      Sortable.create(zone, {
+        animation:100, ghostClass:'sortable-ghost', group:'stories',
+        onEnd: e => {
+          const sid = e.item.dataset.storyId;
+          const dstZone = e.to;
+          const dstTaskId = dstZone.dataset.task;
+          const dstRel = parseInt(dstZone.dataset.rel)||1;
+          // Remove from source
+          STATE.activities.forEach(a=>a.tasks.forEach(tk=>{
+            const idx=tk.stories.findIndex(s=>s.id===sid);
+            if(idx>=0) tk.stories.splice(idx,1);
+          }));
+          // Add to destination
+          const dstTask = STATE.activities.flatMap(a=>a.tasks).find(tk=>tk.id===dstTaskId);
+          if(dstTask){
+            const story = {id:sid, text:e.item.textContent.trim().replace(/^R\d/,'').trim(), release:dstRel};
+            dstTask.stories.splice(e.newIndex,0,story);
+          }
+          saveState(); renderBoard();
+        }
+      });
+    });
+  });
+}
+
+// ── MODAL HELPERS ─────────────────────────────────────────
+let modalCb = null;
+function openModal(title, val='', body='', showRelease=false, rel=1, cb){
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-input').value = val;
+  document.getElementById('modal-body').value = body;
+  document.getElementById('modal-release-row').style.display = showRelease?'block':'none';
+  document.getElementById('modal-release').value = rel;
+  document.getElementById('modal').classList.add('open');
+  setTimeout(()=>document.getElementById('modal-input').focus(),50);
+  modalCb = cb;
+  document.getElementById('modal-save').onclick = ()=>{
+    const v=document.getElementById('modal-input').value.trim();
+    if(!v) return;
+    const b=document.getElementById('modal-body').value.trim();
+    const r=parseInt(document.getElementById('modal-release').value)||1;
+    closeModal();
+    if(modalCb) modalCb(v,b,r);
+    modalCb=null;
+  };
+}
+function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+
+// ── CRUD ──────────────────────────────────────────────────
+function addActivity(){
+  openModal('New Activity','','',false,1,(title)=>{
+    STATE.activities.push({id:uid(),title,tasks:[]});
+    saveState(); renderBoard();
+  });
+}
+function editActivity(id){
+  const act=STATE.activities.find(a=>a.id===id);
+  openModal('Edit Activity',act.title,'',false,1,(title)=>{act.title=title;saveState();renderBoard();});
+}
+function deleteActivity(id){
+  if(!confirm('Delete this activity and all its tasks/stories?')) return;
+  STATE.activities=STATE.activities.filter(a=>a.id!==id);
+  saveState(); renderBoard();
+}
+function addTask(actId){
+  openModal('New Task','','',false,1,(title)=>{
+    const act=STATE.activities.find(a=>a.id===actId);
+    if(act) act.tasks.push({id:uid(),title,stories:[]});
+    saveState(); renderBoard();
+  });
+}
+function editTask(taskId,actId){
+  const act=STATE.activities.find(a=>a.id===actId);
+  const task=act&&act.tasks.find(t=>t.id===taskId);
+  if(!task) return;
+  openModal('Edit Task',task.title,'',false,1,(title)=>{task.title=title;saveState();renderBoard();});
+}
+function deleteTask(taskId,actId){
+  const act=STATE.activities.find(a=>a.id===actId);
+  if(act) act.tasks=act.tasks.filter(t=>t.id!==taskId);
+  saveState(); renderBoard();
+}
+function addStory(taskId, prefill='', rel=1){
+  openModal('New Story',prefill,'',true,rel,(text,body,release)=>{
+    const task=STATE.activities.flatMap(a=>a.tasks).find(t=>t.id===taskId);
+    if(task) task.stories.push({id:uid(),text,release});
+    saveState(); renderBoard();
+  });
+}
+function editStory(sid){
+  const story=STATE.activities.flatMap(a=>a.tasks).flatMap(t=>t.stories).find(s=>s.id===sid);
+  if(!story) return;
+  openModal('Edit Story',story.text,'',true,story.release||1,(text,body,release)=>{
+    story.text=text; story.release=release; saveState(); renderBoard();
+  });
+}
+function deleteStory(sid){
+  STATE.activities.forEach(a=>a.tasks.forEach(t=>{t.stories=t.stories.filter(s=>s.id!==sid);}));
+  saveState(); renderBoard();
+}
+function cycleRelease(sid){
+  const story=STATE.activities.flatMap(a=>a.tasks).flatMap(t=>t.stories).find(s=>s.id===sid);
+  if(!story) return;
+  story.release = ((parseInt(story.release)||1) % 3) + 1;
+  saveState(); renderBoard();
+}
+function clearMap(){
+  if(!confirm('Reset map to default Uppt\u00e4cka template?')) return;
+  localStorage.removeItem('uppa_storymap');
+  STATE=JSON.parse(JSON.stringify(DEFAULT_STATE));
+  document.getElementById('ctx-text').value=STATE.context;
+  renderBoard(); renderAnalysis();
+}
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(STATE,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='storymap.json'; a.click();
+}
+function toggleCtx(){
+  document.getElementById('ctx-panel').classList.toggle('open');
+}
+
+// ── ANALYSIS PANEL ────────────────────────────────────────
+function renderAnalysis(){
+  const panel = document.getElementById('analysis-panel');
+  if(!panel) return;
+
+  const allTasks = STATE.activities.flatMap(a=>a.tasks);
+  const allStories = allTasks.flatMap(t=>t.stories);
+  const r1 = allStories.filter(s=>(parseInt(s.release)||1)===1).length;
+  const r2 = allStories.filter(s=>parseInt(s.release)===2).length;
+  const r3 = allStories.filter(s=>parseInt(s.release)===3).length;
+  const emptyTasks = allTasks.filter(t=>t.stories.length===0);
+
+  let html = '';
+
+  // Map health
+  html += `<div class="a-card"><h4>📊 Map Health</h4>
+    <div class="a-stat"><span>Activities</span><span class="val">${STATE.activities.length}</span></div>
+    <div class="a-stat"><span>Tasks</span><span class="val">${allTasks.length}</span></div>
+    <div class="a-stat"><span>Stories total</span><span class="val">${allStories.length}</span></div>
+    <div class="a-stat"><span>R1 — MVP</span><span class="val" style="color:var(--r1)">${r1}</span></div>
+    <div class="a-stat"><span>R2</span><span class="val" style="color:var(--r2)">${r2}</span></div>
+    <div class="a-stat"><span>R3</span><span class="val" style="color:var(--r3)">${r3}</span></div>
+  </div>`;
+
+  // Gaps
+  if(emptyTasks.length > 0){
+    html += `<div class="a-card"><h4>⚠️ Tasks with no stories (${emptyTasks.length})</h4>
+      ${emptyTasks.map(t=>`<div class="gap-item">📌 ${esc(t.title)}</div>`).join('')}
+    </div>`;
+  } else {
+    html += `<div class="a-card"><h4>✅ All tasks have stories</h4><p style="font-size:12px;color:var(--green)">Great coverage! Every task has at least one story.</p></div>`;
+  }
+
+  // Suggestions from knowledge — based on empty tasks
+  if(emptyTasks.length > 0){
+    const task = emptyTasks[0];
+    const results = searchKnowledge(task.title, 3);
+    if(results.length > 0){
+      html += `<div class="a-card"><h4>💡 Suggested for "${esc(task.title)}"</h4>
+        ${results.map(r=>`
+          <div class="suggestion-card" onclick="addStory('${task.id}','${esc(r.title)}')">
+            <button class="add-sug-btn" onclick="event.stopPropagation();addStory('${task.id}','${esc(r.title)}')">+ Add</button>
+            <div class="s-title">${esc(r.title.substring(0,60))}${r.title.length>60?'…':''}</div>
+            <div class="s-source">📎 ${r.source}</div>
+          </div>`).join('')}
+      </div>`;
+    }
+  }
+
+  // MVP check
+  if(r1 === 0 && allStories.length > 0){
+    html += `<div class="a-card" style="background:#fff3e0;border:1px solid #ffe082"><h4>⚠️ No MVP stories yet</h4><p style="font-size:12px">Tag your most critical stories as R1 by clicking the release badge on any story card.</p></div>`;
+  }
+
+  panel.innerHTML = html;
+}
+
+// ── AGENT CHAT ────────────────────────────────────────────
+function switchTab(tab){
+  document.querySelectorAll('.agent-tab').forEach((t,i)=>t.classList.toggle('active', (i===0&&tab==='analysis')||(i===1&&tab==='chat')));
+  document.getElementById('analysis-panel').style.display = tab==='analysis'?'flex':'none';
+  document.getElementById('chat-panel').style.display = tab==='chat'?'flex':'none';
+}
+
+function suggestForTask(taskId){
+  const task = STATE.activities.flatMap(a=>a.tasks).find(t=>t.id===taskId);
+  if(!task) return;
+  switchTab('chat');
+  sendAgentMessage(`Suggest stories for the task: "${task.title}"`);
+}
+
+function sendChat(){
+  const input = document.getElementById('chat-input');
+  const q = input.value.trim();
+  if(!q) return;
+  input.value='';
+  sendAgentMessage(q);
+}
+
+function sendAgentMessage(q){
+  addChatMsg('user', q);
+  setTimeout(()=>addChatMsg('agent', agentRespond(q)), 300);
+}
+
+function agentRespond(q){
+  const ql = q.toLowerCase();
+  const allTasks = STATE.activities.flatMap(a=>a.tasks);
+  const allStories = allTasks.flatMap(t=>t.stories);
+  const ctx = STATE.context || '';
+
+  // ── MAP ANALYSIS QUESTIONS ──
+  if(ql.includes('gap') || ql.includes('missing') || ql.includes('empty')){
+    const empty = allTasks.filter(t=>t.stories.length===0);
+    if(empty.length===0) return '✅ No gaps found! All tasks have at least one story. The map looks well covered.';
+    return `⚠️ Found <strong>${empty.length} task(s) with no stories:</strong><ul>${empty.map(t=>`<li><strong>${esc(t.title)}</strong></li>`).join('')}</ul>Click 💡 on any task card to get story suggestions from the product knowledge base.`;
+  }
+  if(ql.includes('mvp') || ql.includes('release 1') || ql.includes('r1')){
+    const r1 = allStories.filter(s=>(parseInt(s.release)||1)===1);
+    if(r1.length===0) return '⚠️ No stories are tagged R1 yet. To define your MVP, click the release badge on a story card to cycle it to R1. A good MVP covers one full user journey end-to-end — thinly, not deeply.';
+    return `📦 <strong>R1 — MVP has ${r1.length} stories:</strong><ul>${r1.slice(0,8).map(s=>`<li>${esc(s.text.substring(0,50))}${s.text.length>50?'…':''}</li>`).join('')}</ul>${r1.length>8?`<em>…and ${r1.length-8} more.</em>`:''}`;
+  }
+  if(ql.includes('summary') || ql.includes('overview')){
+    const r1=allStories.filter(s=>(parseInt(s.release)||1)===1).length;
+    const r2=allStories.filter(s=>parseInt(s.release)===2).length;
+    const r3=allStories.filter(s=>parseInt(s.release)===3).length;
+    return `🗺️ <strong>Map Summary</strong><br/>${STATE.activities.length} activities, ${allTasks.length} tasks, ${allStories.length} stories.<br/>R1: ${r1} · R2: ${r2} · R3: ${r3}<br/><br/>Activities: ${STATE.activities.map(a=>a.title).join(' → ')}`;
+  }
+  if(ql.includes('invest') || ql.includes('good story') || ql.includes('well written')){
+    return `📋 <strong>INVEST criteria for a good story:</strong><ul>
+      <li><strong>I</strong>ndependent — can be developed alone</li>
+      <li><strong>N</strong>egotiable — details can change</li>
+      <li><strong>V</strong>aluable — delivers value to the user</li>
+      <li><strong>E</strong>stimable — team can size it</li>
+      <li><strong>S</strong>mall — fits in a sprint</li>
+      <li><strong>T</strong>estable — can write acceptance criteria</li></ul>
+      Format: <em>"As a [user], I want [goal] so that [reason]"</em>`;
+  }
+  if(ql.includes('suggest') || ql.includes('stories for')){
+    const taskMatch = allTasks.find(t => ql.includes(t.title.toLowerCase()));
+    const searchQ = taskMatch ? taskMatch.title : q.replace(/suggest.*for|stories for/gi,'').trim();
+    const results = searchKnowledge(searchQ, 5);
+    if(results.length===0) return `🔍 No matches found in the knowledge base for "<strong>${esc(searchQ)}</strong>". Try a more specific term.`;
+    const taskForAdd = taskMatch || allTasks.find(t=>t.stories.length===0);
+    return `💡 <strong>From knowledge base for "${esc(searchQ)}":</strong><ul>
+      ${results.map(r=>`<li><strong>${esc(r.title.substring(0,55))}${r.title.length>55?'…':''}</strong> <em>(${r.source})</em></li>`).join('')}
+      </ul>${taskForAdd?`Click 💡 on "<strong>${esc(taskForAdd.title)}</strong>" to add these directly to the board.`:''}`;
+  }
+
+  // ── PRODUCT KNOWLEDGE SEARCH ──
+  const results = searchKnowledge(q, 4);
+  if(results.length > 0){
+    return `🔍 Found in product knowledge:<ul>${results.map(r=>`<li><strong>${esc(r.title.substring(0,60))}${r.title.length>60?'…':''}</strong> <em>(${r.source})</em></li>`).join('')}</ul>`;
+  }
+
+  // ── STORY MAPPING GUIDANCE ──
+  if(ql.includes('how') || ql.includes('what is') || ql.includes('explain')){
+    return `📖 <strong>Story Mapping (Jeff Patton):</strong><br/>
+      1. <strong>Activities</strong> = big goals (top row, left→right = user journey)<br/>
+      2. <strong>Tasks</strong> = steps to achieve each activity<br/>
+      3. <strong>Stories</strong> = functionality under each task<br/>
+      4. <strong>Releases</strong> = horizontal slices (R1=MVP, R2, R3)<br/><br/>
+      The key insight: read across the top = the full user journey. Read down = priority within each task.`;
+  }
+
+  return `🤔 I didn't find a specific match. Try asking:<br/>
+    <ul>
+      <li>"What are the gaps in this map?"</li>
+      <li>"Suggest stories for [task name]"</li>
+      <li>"What should be in the MVP?"</li>
+      <li>"Tell me about search" (product knowledge)</li>
+    </ul>`;
+}
+
+function addChatMsg(role, html){
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.innerHTML = html;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ── UTILS ─────────────────────────────────────────────────
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── INIT ──────────────────────────────────────────────────
+loadState();
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('ctx-text').value = STATE.context || DEFAULT_STATE.context;
+  renderBoard();
+  renderAnalysis();
+  // init release buttons
+  [1,2,3].forEach(r=>{
+    const btn=document.getElementById('rbtn'+r);
+    if(btn) btn.classList.toggle('active', STATE.visibleReleases.includes(r));
+  });
+  // initial chat greeting
+  addChatMsg('agent', `👋 Hi! I'm Uppa, your story mapping agent.<br/>I can search <strong>${QA.length + FEATURES.length + HANDBOOK.length}</strong> from the Uppt\u00e4cka knowledge base to suggest stories, find gaps, and help your team build the map.<br/><br/>Try: <em>"What are the gaps?"</em> or <em>"Suggest stories for Search"</em>`);
+});
+</script>
+</body>
+</html>
