@@ -427,6 +427,7 @@ function renderBoard(){
         <h3>${esc(act.title)}${(STATE.clusters&&STATE.clusters[act.id]!==undefined)?`<span class="cluster-badge cl${STATE.clusters[act.id]%5}">C${STATE.clusters[act.id]+1}</span>`:''}</h3>
         <div class="act-meta">${act.tasks.length} tasks${act.desc?` · <span style="font-weight:400;font-style:italic;opacity:.9">${esc(act.desc.substring(0,60))}${act.desc.length>60?'…':''}</span>`:''}</div>
         <div class="act-actions">
+          <button class="act-btn" onclick="suggestTasksForActivity('${act.id}')" title="AI: suggest tasks">✨</button>
           <button class="act-btn" onclick="editActivity('${act.id}')" title="Edit">✏️</button>
           <button class="act-btn del" onclick="deleteActivity('${act.id}')" title="Delete">🗑</button>
         </div>
@@ -574,17 +575,25 @@ function openModal(title, val='', body='', showRelease=false, rel=1, cb){
   document.getElementById('modal').classList.add('open');
   setTimeout(()=>document.getElementById('modal-input').focus(),50);
   modalCb = cb;
+  let _modalFired = false;
   const saveAction = ()=>{
+    if(_modalFired) return;
     const v=document.getElementById('modal-input').value.trim();
     if(!v) return;
+    _modalFired = true;
     const b=document.getElementById('modal-body').value.trim();
     const r=parseInt(document.getElementById('modal-release').value)||1;
+    const cb2 = modalCb;
+    modalCb = null;
     closeModal();
-    if(modalCb) modalCb(v,b,r);
-    modalCb=null;
+    if(cb2) cb2(v,b,r);
   };
-  document.getElementById('modal-save').onclick = saveAction;
-  document.getElementById('modal-input').onkeydown = (e)=>{
+  const savBtn = document.getElementById('modal-save');
+  savBtn.onclick = null;
+  savBtn.onclick = saveAction;
+  const inp = document.getElementById('modal-input');
+  inp.onkeydown = null;
+  inp.onkeydown = (e)=>{
     if(e.key==='Enter'){ e.preventDefault(); saveAction(); }
     if(e.key==='Escape'){ closeModal(); }
   };
@@ -594,11 +603,14 @@ function closeModal(){ document.getElementById('modal').classList.remove('open')
 // ── CRUD ──────────────────────────────────────────────────
 function addActivity(){
   openModal('New Activity','','',false,1,(title,desc)=>{
-    STATE.activities.push({id:uid(),title,desc,tasks:[]});
+    const newAct = {id:uid(),title,desc,tasks:[]};
+    STATE.activities.push(newAct);
     saveState(); renderBoard();
     const wrap = document.getElementById('board-wrap');
     if(wrap) setTimeout(()=>{ wrap.scrollLeft = wrap.scrollWidth; }, 50);
-    showToast('✅ Activity "' + title + '" added!');
+    // Auto-suggest tasks based on title + description
+    if(title || desc) suggestTasksForActivity(newAct.id);
+    else showToast('✅ Activity "' + title + '" added! Click + Task to add tasks.');
   });
 }
 function editActivity(id){
@@ -723,6 +735,140 @@ function exportJSON(){
 }
 function toggleCtx(){
   document.getElementById('ctx-panel').classList.toggle('open');
+}
+
+// ── AI TASK SUGGESTER ─────────────────────────────────────
+const TASK_PATTERNS = [
+  { keywords:['return','cancel','refund'],
+    tasks:['Request return or cancellation','Verify order eligibility','Select return reason','Confirm cancellation','Track refund status','Receive refund confirmation'] },
+  { keywords:['discover','browse','search','find','explore'],
+    tasks:['Search by keyword or category','Filter results','View product details','Read reviews & ratings','Save or shortlist items'] },
+  { keywords:['choose','select','customis','customiz','personaliz'],
+    tasks:['View options & variants','Select size / quantity','Pick flavour / colour / style','Add personal message or design','Preview selection'] },
+  { keywords:['cart','basket','add','list'],
+    tasks:['Add item to cart','Update quantity','Apply promo code','Save cart for later','Review cart contents'] },
+  { keywords:['deliver','shipping','address','pickup'],
+    tasks:['Choose delivery date','Select time slot','Enter delivery address','Choose delivery or pickup option','Confirm delivery details'] },
+  { keywords:['checkout','pay','payment','order'],
+    tasks:['Review order summary','Enter contact details','Select payment method','Confirm & place order','Receive order confirmation'] },
+  { keywords:['track','status','notif','dispatch'],
+    tasks:['View order status','Receive progress notifications','Track live delivery','Contact support if delayed'] },
+  { keywords:['receive','review','rate','feedback'],
+    tasks:['Receive & inspect the item','Rate experience & quality','Write a review','Share on social media','Reorder or gift'] },
+  { keywords:['login','account','sign','register','profile'],
+    tasks:['Create or log in to account','Set up profile details','Manage saved addresses','View order history'] },
+  { keywords:['support','help','contact','complaint'],
+    tasks:['Find help / FAQ','Contact customer support','Submit complaint or feedback','Track support ticket'] },
+];
+
+function localSuggestTasks(title, desc){
+  const combined = (title + ' ' + (desc||'')).toLowerCase();
+  for(const pattern of TASK_PATTERNS){
+    if(pattern.keywords.some(k => combined.includes(k))){
+      return pattern.tasks;
+    }
+  }
+  // Generic fallback based on title words
+  return [
+    'Initiate ' + title,
+    'Verify eligibility or requirements',
+    'Complete the action',
+    'Receive confirmation',
+    'Handle errors or edge cases'
+  ];
+}
+
+async function suggestTasksForActivity(actId){
+  const act = STATE.activities.find(a=>a.id===actId);
+  if(!act) return;
+  showToast('✨ Suggesting tasks for "' + act.title + '"…');
+
+  const token = localStorage.getItem('copilot_token');
+  let suggestedTasks = [];
+
+  if(token){
+    try{
+      const prompt = `You are a UX expert helping build a user story map. 
+Given this activity: "${act.title}"
+Description: "${act.desc||'none'}"
+Map context: "${STATE.context||''}"
+
+Suggest 4-6 concise tasks (user steps) for this activity. 
+Return ONLY a JSON array of strings. Example: ["Request return","Select reason","Confirm","Track refund"]
+No markdown, no explanation.`;
+      const resp = await fetch('https://api.githubcopilot.com/chat/completions',{
+        method:'POST',
+        headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+        body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:prompt}]})
+      });
+      if(resp.ok){
+        const data = await resp.json();
+        const raw = data.choices[0].message.content.trim().replace(/^```json\s*/,'').replace(/```$/,'');
+        suggestedTasks = JSON.parse(raw);
+      }
+    }catch(e){ /* fall through to local */ }
+  }
+
+  if(!suggestedTasks.length) suggestedTasks = localSuggestTasks(act.title, act.desc);
+
+  // Show as suggestion cards in analysis panel
+  STATE.taskSuggestions = STATE.taskSuggestions || {};
+  STATE.taskSuggestions[actId] = suggestedTasks.map(t=>({text:t, dismissed:false}));
+  renderAnalysisTaskSuggestions(actId);
+}
+
+function renderAnalysisTaskSuggestions(actId){
+  const act = STATE.activities.find(a=>a.id===actId);
+  if(!act) return;
+  const suggs = (STATE.taskSuggestions||{})[actId]||[];
+  const panel = document.getElementById('analysis-panel');
+  const pending = suggs.filter(s=>!s.dismissed);
+  const existingCard = document.getElementById('task-sugg-card-'+actId);
+  if(existingCard) existingCard.remove();
+
+  if(!pending.length){ showToast('All task suggestions applied!'); return; }
+
+  const card = document.createElement('div');
+  card.id = 'task-sugg-card-'+actId;
+  card.className = 'a-card';
+  card.style.cssText = 'background:#e3f2fd;border:2px solid #1976d2;';
+  card.innerHTML = `<h4>✨ Suggested tasks for "<em>${esc(act.title)}</em>"</h4>
+    <p style="font-size:11px;color:#555;margin-bottom:8px">Click ✓ to add a task, ✕ to dismiss.</p>
+    ${pending.map((s,i)=>`
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+      <button style="background:#1565c0;color:#fff;border:none;border-radius:4px;padding:3px 10px;font-size:12px;font-weight:700;cursor:pointer;" onclick="acceptTaskSugg('${actId}',${suggs.indexOf(s)})">✓ Add</button>
+      <button style="background:#eee;border:1px solid #ccc;border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;" onclick="dismissTaskSugg('${actId}',${suggs.indexOf(s)})">✕</button>
+      <span style="font-size:12px;">${esc(s.text)}</span>
+    </div>`).join('')}
+    <button style="width:100%;margin-top:4px;background:#1565c0;color:#fff;border:none;border-radius:5px;padding:6px;font-size:12px;font-weight:700;cursor:pointer;" onclick="acceptAllTaskSuggs('${actId}')">✓ Add All Tasks</button>`;
+
+  panel.insertBefore(card, panel.firstChild);
+  showToast('✨ ' + pending.length + ' task suggestions ready — see Analysis panel');
+}
+
+function acceptTaskSugg(actId, idx){
+  const act = STATE.activities.find(a=>a.id===actId);
+  const s = (STATE.taskSuggestions||{})[actId]?.[idx];
+  if(!act||!s) return;
+  act.tasks.push({id:uid(), title:s.text, desc:'', stories:[]});
+  s.dismissed = true;
+  saveState(); renderBoard();
+  renderAnalysisTaskSuggestions(actId);
+}
+function dismissTaskSugg(actId, idx){
+  const s = (STATE.taskSuggestions||{})[actId]?.[idx];
+  if(s){ s.dismissed = true; renderAnalysisTaskSuggestions(actId); }
+}
+function acceptAllTaskSuggs(actId){
+  const act = STATE.activities.find(a=>a.id===actId);
+  const suggs = (STATE.taskSuggestions||{})[actId]||[];
+  suggs.filter(s=>!s.dismissed).forEach(s=>{
+    act.tasks.push({id:uid(), title:s.text, desc:'', stories:[]});
+    s.dismissed = true;
+  });
+  saveState(); renderBoard();
+  renderAnalysisTaskSuggestions(actId);
+  showToast('✅ All tasks added to "' + act.title + '"!');
 }
 
 // ── FULL REVIEW ────────────────────────────────────────────
