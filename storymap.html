@@ -310,9 +310,11 @@ function searchKnowledge(query, topN=5){
 }
 
 // ── STATE ─────────────────────────────────────────────────
+const RELEASES = ['R1 — MVP', 'R2', 'R3'];
 const DEFAULT_STATE = {
   context: 'Customer journey: Ordering a cake online — from discovery to post-delivery review.',
   visibleReleases:[1,2,3],
+  releases: RELEASES,
   aiSuggestions:[], clusters:{},
   activities: [
     { id:'a1', title:'Discover & Browse', tasks:[
@@ -369,8 +371,16 @@ const uid = () => 'id' + (++idCounter);
 function loadState(){
   try{
     const saved = localStorage.getItem('uppa_storymap');
-    if(saved){ STATE = JSON.parse(saved); idCounter = 200; }
-  }catch(e){}
+    if(saved){
+      STATE = JSON.parse(saved);
+      idCounter = 200;
+      // Patch missing fields from older saved states
+      if(!STATE.releases) STATE.releases = RELEASES;
+      if(!STATE.visibleReleases) STATE.visibleReleases = [1,2,3];
+      if(!STATE.aiSuggestions) STATE.aiSuggestions = [];
+      if(!STATE.clusters) STATE.clusters = {};
+    }
+  }catch(e){ console.error('loadState failed:', e); }
 }
 function saveState(){
   if(document.getElementById('ctx-text'))
@@ -436,16 +446,22 @@ function renderBoard(){
   addCol.innerHTML = `<button class="add-activity-btn" onclick="addActivity()">＋<br/>Activity</button>`;
   board.appendChild(addCol);
 
-  // Activities drag
-  Sortable.create(board, {
-    animation:150, handle:'.activity-header', ghostClass:'sortable-ghost',
-    filter:'.add-activity-col',
-    onEnd: e => {
-      const moved = STATE.activities.splice(e.oldIndex,1)[0];
-      STATE.activities.splice(e.newIndex,0,moved);
-      saveState(); renderBoard();
-    }
-  });
+  // Board-level drag — init ONCE only
+  if(!board._sortable){
+    board._sortable = Sortable.create(board, {
+      animation:150, handle:'.activity-header', ghostClass:'sortable-ghost',
+      filter:'.add-activity-col',
+      onEnd: e => {
+        if(e.oldIndex === e.newIndex) return;
+        const acts = STATE.activities.filter((_,i)=>i!==e.oldIndex);
+        const moved = STATE.activities[e.oldIndex];
+        if(!moved) return;
+        acts.splice(e.newIndex > e.oldIndex ? e.newIndex-1 : e.newIndex, 0, moved);
+        STATE.activities = acts;
+        saveState(); renderBoard();
+      }
+    });
+  }
 
   updateStats();
 }
@@ -465,7 +481,7 @@ function renderTask(t, actId){
         const rs = t.stories.filter(s=>(parseInt(s.release)||1)===r);
         return rs.length>0 ? `
           <div class="release-band">
-            <div class="release-label r${r}">${STATE.releases[r-1]}</div>
+            <div class="release-label r${r}">${(STATE.releases||RELEASES)[r-1]}</div>
             <div class="story-drop-zone" id="drop-${t.id}-r${r}" data-task="${t.id}" data-rel="${r}">
               ${rs.map(s=>renderStory(s)).join('')}
             </div>
