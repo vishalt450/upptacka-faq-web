@@ -224,7 +224,7 @@ header .meta{font-size:11px;opacity:.7;}
   <div class="modal">
     <h3 id="modal-title">Edit</h3>
     <input id="modal-input" type="text" placeholder="Title…"/>
-    <textarea id="modal-body" placeholder="Description (optional)…"></textarea>
+    <textarea id="modal-body" placeholder="Description — add context, acceptance criteria, or notes here. This is saved and shown on the card." style="min-height:70px;"></textarea>
     <div id="modal-release-row" style="display:none">
       <label style="font-size:12px;font-weight:600;color:var(--muted)">Release:</label>
       <select id="modal-release">
@@ -425,7 +425,7 @@ function renderBoard(){
     col.innerHTML = `
       <div class="activity-header" ondblclick="editActivity('${act.id}')">
         <h3>${esc(act.title)}${(STATE.clusters&&STATE.clusters[act.id]!==undefined)?`<span class="cluster-badge cl${STATE.clusters[act.id]%5}">C${STATE.clusters[act.id]+1}</span>`:''}</h3>
-        <div class="act-meta">${act.tasks.length} tasks</div>
+        <div class="act-meta">${act.tasks.length} tasks${act.desc?` · <span style="font-weight:400;font-style:italic;opacity:.9">${esc(act.desc.substring(0,60))}${act.desc.length>60?'…':''}</span>`:''}</div>
         <div class="act-actions">
           <button class="act-btn" onclick="editActivity('${act.id}')" title="Edit">✏️</button>
           <button class="act-btn del" onclick="deleteActivity('${act.id}')" title="Delete">🗑</button>
@@ -470,7 +470,7 @@ function renderTask(t, actId){
   const stories = t.stories.filter(s => STATE.visibleReleases.includes(parseInt(s.release)||1));
   return `
     <div class="task-card" id="task-${t.id}" data-task-id="${t.id}" data-act-id="${actId}" ondblclick="editTask('${t.id}','${actId}')">
-      ${esc(t.title)}
+      ${esc(t.title)}${t.desc?`<div style="font-size:10px;font-weight:400;color:#888;margin-top:2px;white-space:normal;">${esc(t.desc.substring(0,80))}${t.desc.length>80?'…':''}</div>`:''}
       <div class="task-actions">
         <button class="t-btn" onclick="editTask('${t.id}','${actId}')" title="Edit task">✏</button>
         <button class="t-btn del" onclick="deleteTask('${t.id}','${actId}')" title="Delete task">✕</button>
@@ -503,7 +503,7 @@ function renderTask(t, actId){
 
 function renderStory(s){
   return `<div class="story-card r${s.release||1}" id="story-${s.id}" data-story-id="${s.id}">
-    <span class="r-badge r${s.release||1}" onclick="cycleRelease('${s.id}')" title="Click to change release">R${s.release||1}</span>${esc(s.text)}
+    <span class="r-badge r${s.release||1}" onclick="cycleRelease('${s.id}')" title="Click to change release">R${s.release||1}</span>${esc(s.text)}${s.desc?`<div style="font-size:10px;color:#888;margin-top:2px;font-style:italic;">${esc(s.desc.substring(0,70))}${s.desc.length>70?'…':''}</div>`:''}
     <div class="s-actions">
       <button class="s-btn" onclick="editStory('${s.id}')" title="Edit">✏</button>
       <button class="s-btn del" onclick="deleteStory('${s.id}')" title="Delete">✕</button>
@@ -593,10 +593,9 @@ function closeModal(){ document.getElementById('modal').classList.remove('open')
 
 // ── CRUD ──────────────────────────────────────────────────
 function addActivity(){
-  openModal('New Activity','','',false,1,(title)=>{
-    STATE.activities.push({id:uid(),title,tasks:[]});
+  openModal('New Activity','','',false,1,(title,desc)=>{
+    STATE.activities.push({id:uid(),title,desc,tasks:[]});
     saveState(); renderBoard();
-    // Scroll board right so new activity is visible
     const wrap = document.getElementById('board-wrap');
     if(wrap) setTimeout(()=>{ wrap.scrollLeft = wrap.scrollWidth; }, 50);
     showToast('✅ Activity "' + title + '" added!');
@@ -604,7 +603,7 @@ function addActivity(){
 }
 function editActivity(id){
   const act=STATE.activities.find(a=>a.id===id);
-  openModal('Edit Activity',act.title,'',false,1,(title)=>{act.title=title;saveState();renderBoard();});
+  openModal('Edit Activity',act.title,act.desc||'',false,1,(title,desc)=>{act.title=title;act.desc=desc;saveState();renderBoard();});
 }
 function deleteActivity(id){
   if(!confirm('Delete this activity and all its tasks/stories?')) return;
@@ -612,9 +611,9 @@ function deleteActivity(id){
   saveState(); renderBoard();
 }
 function addTask(actId){
-  openModal('New Task','','',false,1,(title)=>{
+  openModal('New Task','','',false,1,(title,desc)=>{
     const act=STATE.activities.find(a=>a.id===actId);
-    if(act) act.tasks.push({id:uid(),title,stories:[]});
+    if(act) act.tasks.push({id:uid(),title,desc,stories:[]});
     saveState(); renderBoard();
   });
 }
@@ -622,7 +621,7 @@ function editTask(taskId,actId){
   const act=STATE.activities.find(a=>a.id===actId);
   const task=act&&act.tasks.find(t=>t.id===taskId);
   if(!task) return;
-  openModal('Edit Task',task.title,'',false,1,(title)=>{task.title=title;saveState();renderBoard();});
+  openModal('Edit Task',task.title,task.desc||'',false,1,(title,desc)=>{task.title=title;task.desc=desc;saveState();renderBoard();});
 }
 function deleteTask(taskId,actId){
   if(!confirm('Delete this task and all its stories?')) return;
@@ -631,17 +630,17 @@ function deleteTask(taskId,actId){
   saveState(); renderBoard();
 }
 function addStory(taskId, prefill='', rel=1){
-  openModal('New Story',prefill,'',true,rel,(text,body,release)=>{
+  openModal('New Story',prefill,'',true,rel,(text,desc,release)=>{
     const task=STATE.activities.flatMap(a=>a.tasks).find(t=>t.id===taskId);
-    if(task) task.stories.push({id:uid(),text,release});
+    if(task) task.stories.push({id:uid(),text,desc,release});
     saveState(); renderBoard();
   });
 }
 function editStory(sid){
   const story=STATE.activities.flatMap(a=>a.tasks).flatMap(t=>t.stories).find(s=>s.id===sid);
   if(!story) return;
-  openModal('Edit Story',story.text,'',true,story.release||1,(text,body,release)=>{
-    story.text=text; story.release=release; saveState(); renderBoard();
+  openModal('Edit Story',story.text,story.desc||'',true,story.release||1,(text,desc,release)=>{
+    story.text=text; story.desc=desc; story.release=release; saveState(); renderBoard();
   });
 }
 function deleteStory(sid){
@@ -741,20 +740,22 @@ function fullReview(){
   // 1. Missing stories
   emptyTasks.forEach(t=>{
     const act = STATE.activities.find(a=>a.tasks.some(x=>x.id===t.id));
+    const descHint = t.desc ? ` Context: "<em>${esc(t.desc.substring(0,80))}</em>"` : '';
     suggestions.push({
       type:'missing-story', priority:'high',
       icon:'📝', label:'Missing stories',
-      text:`Task "<strong>${esc(t.title)}</strong>" in <em>${esc(act?act.title:'')}</em> has no stories yet.`,
+      text:`Task "<strong>${esc(t.title)}</strong>" in <em>${esc(act?act.title:'')}</em> has no stories yet.${descHint}`,
       action:`Click <strong>+ Story</strong> or <strong>📝 Bulk</strong> under this task to add stories.`
     });
   });
 
   // 2. Empty activities (no tasks)
   emptyActs.forEach(a=>{
+    const descHint = a.desc ? ` Context: "<em>${esc(a.desc.substring(0,80))}</em>"` : '';
     suggestions.push({
       type:'empty-activity', priority:'high',
       icon:'🏗️', label:'Empty activity',
-      text:`Activity "<strong>${esc(a.title)}</strong>" has no tasks — the backbone has a gap.`,
+      text:`Activity "<strong>${esc(a.title)}</strong>" has no tasks.${descHint}`,
       action:`Click <strong>+ Task</strong> inside this activity to add tasks (steps the user takes).`
     });
   });
@@ -1050,7 +1051,7 @@ function saveToken(){
 async function runAIReview(token){
   showToast('🤖 Running AI Review via Copilot API…');
   const mapState = {
-    activities: STATE.activities.map(a=>({title:a.title, tasks:a.tasks.map(t=>({title:t.title, stories:t.stories.map(s=>({text:s.text,release:s.release||'1'}))}))})
+    activities: STATE.activities.map(a=>({title:a.title, desc:a.desc||'', tasks:a.tasks.map(t=>({title:t.title, desc:t.desc||'', stories:t.stories.map(s=>({text:s.text, desc:s.desc||'', release:s.release||'1'}))}))})
     ),
     context: STATE.context
   };
