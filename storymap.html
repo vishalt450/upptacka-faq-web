@@ -43,16 +43,17 @@ header .meta{font-size:11px;opacity:.7;}
 .activity-header{background:var(--blue);color:#fff;border-radius:8px 8px 0 0;padding:10px 12px;cursor:grab;position:relative;}
 .activity-header h3{font-size:13px;font-weight:700;margin-bottom:2px;line-height:1.3;}
 .activity-header .act-meta{font-size:10px;opacity:.7;}
-.act-actions{position:absolute;top:6px;right:6px;display:flex;gap:4px;}
+.act-actions{position:absolute;top:6px;right:6px;display:none;gap:4px;}
+.activity-header:hover .act-actions{display:flex;}
 .act-btn{background:rgba(255,255,255,.2);border:none;color:#fff;width:20px;height:20px;border-radius:4px;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;}
 .act-btn:hover{background:rgba(255,255,255,.4);}
 
 /* ── TASKS ROW ── */
 .tasks-row{background:var(--blue-light);border-left:2px solid var(--blue);border-right:2px solid var(--blue);padding:6px 6px 0;}
-.task-card{background:var(--white);border:1px solid #b3cde8;border-top:3px solid var(--blue);border-radius:6px;padding:7px 28px 7px 9px;margin-bottom:6px;cursor:grab;position:relative;font-size:12px;font-weight:600;color:var(--blue);}
-.task-actions{position:absolute;top:4px;right:4px;display:flex;gap:3px;}
-.t-btn{background:var(--blue-light);border:1px solid #b3cde8;color:var(--blue);width:18px;height:18px;border-radius:3px;cursor:pointer;font-size:10px;}
-.t-btn:hover{background:#fdecea;color:var(--red);border-color:var(--red);}
+.task-card{background:var(--white);border:1px solid #b3cde8;border-top:3px solid var(--blue);border-radius:6px;padding:7px 9px;margin-bottom:6px;cursor:grab;position:relative;font-size:12px;font-weight:600;color:var(--blue);}
+.task-card:hover .task-actions{display:flex;}
+.task-actions{position:absolute;top:4px;right:4px;display:none;gap:3px;}
+.t-btn{background:var(--blue-light);border:none;color:var(--blue);width:18px;height:18px;border-radius:3px;cursor:pointer;font-size:10px;}
 
 /* ── STORIES AREA ── */
 .stories-area{background:rgba(255,255,255,.5);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:6px;min-height:80px;}
@@ -62,21 +63,21 @@ header .meta{font-size:11px;opacity:.7;}
 .release-label.r2{background:var(--r2);color:#fff;}
 .release-label.r3{background:var(--r3);color:#fff;}
 .story-drop-zone{min-height:32px;border:1px dashed var(--border);border-radius:6px;padding:3px;}
-.story-card{background:var(--white);border-radius:6px;padding:7px 44px 7px 11px;margin-bottom:4px;font-size:11px;cursor:grab;position:relative;border:1px solid var(--border);line-height:1.4;}
+.story-card{background:var(--white);border-radius:6px;padding:7px 9px 7px 11px;margin-bottom:4px;font-size:11px;cursor:grab;position:relative;border:1px solid var(--border);line-height:1.4;}
 .story-card.r1{border-left:3px solid var(--r1);}
 .story-card.r2{border-left:3px solid var(--r2);}
 .story-card.r3{border-left:3px solid var(--r3);}
-.s-actions{position:absolute;top:3px;right:3px;display:flex;gap:2px;}
-.s-btn{background:var(--bg);border:1px solid var(--border);color:var(--muted);width:18px;height:18px;border-radius:3px;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center;}
-.s-btn:hover{background:#fdecea;color:var(--red);border-color:var(--red);}
+.story-card:hover .s-actions{display:flex;}
+.s-actions{position:absolute;top:3px;right:3px;display:none;gap:2px;}
+.s-btn{background:var(--bg);border:none;color:var(--muted);width:16px;height:16px;border-radius:2px;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;}
 .r-badge{display:inline-block;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;cursor:pointer;margin-right:4px;vertical-align:middle;}
 .r-badge.r1{background:var(--blue-light);color:var(--r1);}
 .r-badge.r2{background:#e8f5e9;color:var(--r2);}
 .r-badge.r3{background:#fff3e0;color:var(--r3);}
 
 /* ── ADD BUTTONS ── */
-.add-story-btn{width:100%;border:2px dashed #0058a3;background:var(--blue-light);color:var(--blue);padding:6px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:700;margin-top:4px;}
-.add-story-btn:hover{background:var(--blue);color:#fff;}
+.add-story-btn{width:100%;border:1px dashed #aac4e0;background:transparent;color:#7aa7c7;padding:5px;border-radius:5px;cursor:pointer;font-size:11px;margin-top:2px;}
+.add-story-btn:hover{background:var(--blue-light);color:var(--blue);border-color:var(--blue);}
 .add-task-btn{width:100%;border:1px dashed rgba(0,88,163,.3);background:transparent;color:rgba(0,88,163,.5);padding:4px;border-radius:5px;cursor:pointer;font-size:11px;margin-bottom:4px;}
 .add-task-btn:hover{background:var(--blue-light);color:var(--blue);}
 .add-activity-col{width:180px;flex-shrink:0;}
@@ -133,6 +134,33 @@ header .meta{font-size:11px;opacity:.7;}
 
 .sortable-ghost{opacity:.3;}
 .sortable-drag{opacity:.8;}
+/* ── CLUSTER BADGES ── */
+.cluster-badge{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:6px;vertical-align:middle;}
+.cl0{background:#bbdefb;color:#0d47a1;}.cl1{background:#c8e6c9;color:#1b5e20;}.cl2{background:#ffe0b2;color:#bf360c;}.cl3{background:#e1bee7;color:#4a148c;}.cl4{background:#fce4ec;color:#880e4f;}
+/* ── AI SUGGESTIONS ── */
+.ai-sug-card{background:#f3f0ff;border:1px solid #c5b8f8;border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:12px;}
+.ai-sug-title{font-weight:600;color:#4527a0;margin-bottom:3px;}
+.ai-sug-meta{font-size:10px;color:var(--muted);margin-bottom:4px;}
+.ai-sug-why{font-size:11px;color:#555;font-style:italic;margin-bottom:6px;}
+.ai-btn-row{display:flex;gap:6px;}
+.ai-accept{background:#4527a0;color:#fff;border:none;border-radius:4px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;}
+.ai-accept:hover{background:#6a3de8;}
+.ai-dismiss{background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;}
+/* ── BULK ADD ── */
+.bulk-area{display:none;padding:4px 0;}
+.bulk-area.open{display:block;}
+.bulk-ta{width:100%;border:1px solid var(--border);border-radius:5px;padding:6px 8px;font-size:11px;font-family:inherit;resize:none;height:68px;margin-bottom:4px;}
+.bulk-ta:focus{outline:none;border-color:var(--blue);}
+.bulk-row{display:flex;gap:4px;}
+.bulk-ok{background:var(--blue);color:#fff;border:none;border-radius:4px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;}
+.bulk-cancel{background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:11px;cursor:pointer;}
+.add-story-btn-row{display:flex;gap:4px;margin-top:4px;}
+.add-story-btn{flex:1;border:2px dashed #0058a3;background:var(--blue-light);color:var(--blue);padding:6px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:700;}
+.add-story-btn:hover{background:var(--blue);color:#fff;}
+.bulk-btn{background:var(--bg);border:1px dashed var(--border);color:var(--muted);padding:6px 8px;border-radius:5px;cursor:pointer;font-size:11px;}
+.bulk-btn:hover{border-color:var(--blue);color:var(--blue);}
+/* ── TOKEN MODAL ── */
+.token-note{font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.5;}
 </style>
 </head>
 <body>
@@ -147,6 +175,8 @@ header .meta{font-size:11px;opacity:.7;}
   <button class="hdr-btn" onclick="toggleRelease(3)" id="rbtn3">R3</button>
   <button class="hdr-btn" onclick="exportJSON()">⬇ Export</button>
   <button class="hdr-btn" onclick="clearMap()" title="Reset map">↺ Reset</button>
+  <button class="hdr-btn" onclick="clusterActivities()" title="Group similar activities by Patton principles">🔗 Cluster</button>
+  <button class="hdr-btn" style="background:#4527a0;border-color:#6a3de8;" onclick="aiReview()">🤖 AI Review</button>
   <span><span class="save-dot" id="savedot"></span><span style="font-size:11px;opacity:.7" id="savelabel">Saved</span></span>
 </header>
 
@@ -179,6 +209,19 @@ header .meta{font-size:11px;opacity:.7;}
         <input id="chat-input" type="text" placeholder="Ask about the map or product…" onkeydown="if(event.key==='Enter')sendChat()"/>
         <button class="chat-send-btn" onclick="sendChat()">Send</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOKEN MODAL -->
+<div class="modal-bg" id="token-modal">
+  <div class="modal">
+    <h3>🔑 GitHub Copilot Token</h3>
+    <p class="token-note">AI Review calls the Copilot API — same token as Product Discovery v2.<br/>Get it: <strong>Product Discovery v2 → ⚙ Settings → copy token</strong></p>
+    <input id="token-input" type="password" placeholder="ghp_… or gho_…"/>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="document.getElementById('token-modal').classList.remove('open')">Cancel</button>
+      <button class="btn-primary" onclick="saveToken()">Save &amp; Run Review</button>
     </div>
   </div>
 </div>
@@ -356,7 +399,7 @@ function renderBoard(){
 
     col.innerHTML = `
       <div class="activity-header" ondblclick="editActivity('${act.id}')">
-        <h3>${esc(act.title)}</h3>
+        <h3>${esc(act.title)}${(STATE.clusters&&STATE.clusters[act.id]!==undefined)?`<span class="cluster-badge cl${STATE.clusters[act.id]%5}">C${STATE.clusters[act.id]+1}</span>`:''}</h3>
         <div class="act-meta">${act.tasks.length} tasks</div>
         <div class="act-actions">
           <button class="act-btn" onclick="editActivity('${act.id}')" title="Edit">✏️</button>
@@ -414,7 +457,17 @@ function renderTask(t, actId){
             </div>
           </div>` : `<div class="story-drop-zone" id="drop-${t.id}-r${r}" data-task="${t.id}" data-rel="${r}" style="min-height:4px;border:none;"></div>`;
       }).join('')}
-      <button class="add-story-btn" onclick="addStory('${t.id}')">＋ Story</button>
+      <div class="add-story-btn-row">
+        <button class="add-story-btn" onclick="addStory('${t.id}')">＋ Story</button>
+        <button class="bulk-btn" onclick="toggleBulk('${t.id}')" title="Type multiple stories at once">📝 Bulk</button>
+      </div>
+      <div class="bulk-area" id="bulk-${t.id}">
+        <textarea class="bulk-ta" id="bulk-ta-${t.id}" placeholder="One story per line…&#10;View product price&#10;Show stock availability&#10;Display delivery options"></textarea>
+        <div class="bulk-row">
+          <button class="bulk-ok" onclick="bulkAddStories('${t.id}')">✓ Add All</button>
+          <button class="bulk-cancel" onclick="toggleBulk('${t.id}')">Cancel</button>
+        </div>
+      </div>
     </div>`;
 }
 
@@ -581,14 +634,12 @@ function toggleCtx(){
 function renderAnalysis(){
   const panel = document.getElementById('analysis-panel');
   if(!panel) return;
-
   const allTasks = STATE.activities.flatMap(a=>a.tasks);
   const allStories = allTasks.flatMap(t=>t.stories);
   const r1 = allStories.filter(s=>(parseInt(s.release)||1)===1).length;
   const r2 = allStories.filter(s=>parseInt(s.release)===2).length;
   const r3 = allStories.filter(s=>parseInt(s.release)===3).length;
   const emptyTasks = allTasks.filter(t=>t.stories.length===0);
-
   let html = '';
 
   // Map health
@@ -601,35 +652,64 @@ function renderAnalysis(){
     <div class="a-stat"><span>R3</span><span class="val" style="color:var(--r3)">${r3}</span></div>
   </div>`;
 
-  // Gaps
-  if(emptyTasks.length > 0){
-    html += `<div class="a-card"><h4>⚠️ Tasks with no stories (${emptyTasks.length})</h4>
-      ${emptyTasks.map(t=>`<div class="gap-item">📌 ${esc(t.title)}</div>`).join('')}
-    </div>`;
-  } else {
-    html += `<div class="a-card"><h4>✅ All tasks have stories</h4><p style="font-size:12px;color:var(--green)">Great coverage! Every task has at least one story.</p></div>`;
+  // Patton checks
+  const issues = [];
+  const actsWithR1 = STATE.activities.filter(a=>a.tasks.some(t=>t.stories.some(s=>(parseInt(s.release)||1)===1)));
+  if(allStories.length>0 && actsWithR1.length>0 && actsWithR1.length < STATE.activities.length*0.6){
+    const missing = STATE.activities.filter(a=>!actsWithR1.includes(a)).map(a=>a.title);
+    issues.push(`<strong>Vertical slicing</strong> — ${missing.slice(0,3).join(', ')} have no R1 stories. Patton: slice horizontally — one thin story across every activity.`);
+  }
+  if(r1 > Math.max(allTasks.length*1.5, 10)){
+    issues.push(`<strong>Overstuffed MVP</strong> — ${r1} stories in R1. Walking skeleton = ~1 per task. Move some to R2.`);
+  }
+  if(allStories.length>0 && r1===0){
+    issues.push(`<strong>No walking skeleton</strong> — Tag your most essential stories R1 (click the badge) to define the thin end-to-end slice.`);
+  }
+  const emptyActs = STATE.activities.filter(a=>a.tasks.length===0);
+  if(emptyActs.length) issues.push(`<strong>Empty backbone</strong> — ${emptyActs.map(a=>a.title).join(', ')} have no tasks (ribs missing).`);
+
+  if(issues.length){
+    html += `<div class="a-card" style="background:#fce4ec;border:1px solid #f48fb1"><h4>⚠️ Patton Check</h4>
+      <ul style="padding-left:14px">${issues.map(i=>`<li style="margin-bottom:5px;font-size:12px">${i}</li>`).join('')}</ul></div>`;
+  } else if(allStories.length>2){
+    html += `<div class="a-card" style="background:#e8f5e9;border:1px solid #a5d6a7"><h4>✅ Patton Check Passed</h4>
+      <p style="font-size:12px;color:#1b5e20">Horizontal slicing ✓ Walking skeleton ✓ Backbone covered ✓</p></div>`;
   }
 
-  // Suggestions from knowledge — based on empty tasks
-  if(emptyTasks.length > 0){
-    const task = emptyTasks[0];
-    const results = searchKnowledge(task.title, 3);
-    if(results.length > 0){
-      html += `<div class="a-card"><h4>💡 Suggested for "${esc(task.title)}"</h4>
-        ${results.map(r=>`
-          <div class="suggestion-card" onclick="addStory('${task.id}','${esc(r.title)}')">
-            <button class="add-sug-btn" onclick="event.stopPropagation();addStory('${task.id}','${esc(r.title)}')">+ Add</button>
-            <div class="s-title">${esc(r.title.substring(0,60))}${r.title.length>60?'…':''}</div>
-            <div class="s-source">📎 ${r.source}</div>
-          </div>`).join('')}
-      </div>`;
+  // Gaps
+  if(emptyTasks.length){
+    html += `<div class="a-card"><h4>⚠️ Tasks with no stories (${emptyTasks.length})</h4>
+      ${emptyTasks.map(t=>`<div class="gap-item">📌 ${esc(t.title)}</div>`).join('')}</div>`;
+    const results = searchKnowledge(emptyTasks[0].title, 3);
+    if(results.length){
+      html += `<div class="a-card"><h4>💡 Suggested for "${esc(emptyTasks[0].title)}"</h4>
+        ${results.map(r=>`<div class="suggestion-card">
+          <button class="add-sug-btn" onclick="addStory('${emptyTasks[0].id}','${esc(r.title)}')">+ Add</button>
+          <div class="s-title">${esc(r.title.substring(0,60))}${r.title.length>60?'…':''}</div>
+          <div class="s-source">📎 ${r.source}</div></div>`).join('')}</div>`;
     }
   }
 
-  // MVP check
-  if(r1 === 0 && allStories.length > 0){
-    html += `<div class="a-card" style="background:#fff3e0;border:1px solid #ffe082"><h4>⚠️ No MVP stories yet</h4><p style="font-size:12px">Tag your most critical stories as R1 by clicking the release badge on any story card.</p></div>`;
+  // AI suggestions
+  const pending = (STATE.aiSuggestions||[]).filter(s=>!s.dismissed);
+  if(pending.length){
+    html += `<div class="a-card" style="background:#f3f0ff;border:1px solid #c5b8f8">
+      <h4>🤖 AI Suggestions (${pending.length})</h4>
+      ${pending.slice(0,6).map(s=>`<div class="ai-sug-card">
+        <div class="ai-sug-title">${esc(s.suggestion)}</div>
+        <div class="ai-sug-meta">${s.type==='missing-story'?'📝':'🏗️'} ${esc(s.targetActivity||'')}${s.targetTask?' → '+esc(s.targetTask):''}</div>
+        <div class="ai-sug-why">${esc(s.rationale||'')}</div>
+        <div class="ai-btn-row">
+          <button class="ai-accept" onclick="acceptAISug(${(STATE.aiSuggestions||[]).indexOf(s)})">✓ Add</button>
+          <button class="ai-dismiss" onclick="dismissAISug(${(STATE.aiSuggestions||[]).indexOf(s)})">✕</button>
+        </div></div>`).join('')}
+      ${pending.length>6?`<p style="font-size:11px;text-align:center;color:var(--muted)">${pending.length-6} more…</p>`:''}</div>`;
   }
+
+  // Patton tip (rotates by hour)
+  const tip = PATTON.facilitation[Math.floor(Date.now()/3600000) % PATTON.facilitation.length];
+  html += `<div class="a-card" style="background:#fffde7;border:1px solid #ffe082">
+    <h4>💡 Patton Tip</h4><p style="font-size:12px;color:#5d4037">${esc(tip)}</p></div>`;
 
   panel.innerHTML = html;
 }
@@ -712,13 +792,40 @@ function agentRespond(q){
   }
 
   // ── STORY MAPPING GUIDANCE ──
+  if(ql.includes('backbone')||ql.includes('activities')){
+    return `🦴 <strong>The Backbone (Jeff Patton)</strong><br/>
+      The top row of activities tells the complete user story left-to-right — the narrative flow.<br/><br/>
+      "${PATTON.principles[0]}"<br/><br/>
+      Your current backbone: <em>${STATE.activities.map(a=>a.title).join(' → ') || '(no activities yet)'}</em>`;
+  }
+  if(ql.includes('skeleton')||ql.includes('walking')){
+    return `🏗️ <strong>Walking Skeleton (Jeff Patton)</strong><br/>
+      "${PATTON.principles[1]}"<br/><br/>
+      Check: Does your R1 have at least 1 story from EVERY activity?<br/>
+      <ul>${PATTON.mvpChecks.map(c=>`<li>${c}</li>`).join('')}</ul>`;
+  }
+  if(ql.includes('slice')||ql.includes('horizontal')||ql.includes('vertical')){
+    return `✂️ <strong>Slicing (Jeff Patton)</strong><br/>
+      "${PATTON.principles[2]}"<br/><br/>
+      ❌ Anti-pattern: "${PATTON.antiPatterns[0]}"<br/>
+      ✅ Correct: Add one story to EVERY activity before going deep on any one.`;
+  }
+  if(ql.includes('anti') || ql.includes('mistake') || ql.includes('wrong')){
+    return `⚠️ <strong>Story Mapping Anti-Patterns (Jeff Patton)</strong><ul>
+      ${PATTON.antiPatterns.map(a=>`<li>${a}</li>`).join('')}</ul>`;
+  }
+  if(ql.includes('facilit') || ql.includes('workshop') || ql.includes('run a')){
+    return `🎯 <strong>Facilitation Tips (Jeff Patton)</strong><ul>
+      ${PATTON.facilitation.map(f=>`<li>${f}</li>`).join('')}</ul>`;
+  }
   if(ql.includes('how') || ql.includes('what is') || ql.includes('explain')){
-    return `📖 <strong>Story Mapping (Jeff Patton):</strong><br/>
+    return `📖 <strong>Story Mapping (Jeff Patton)</strong><br/>
       1. <strong>Activities</strong> = big goals (top row, left→right = user journey)<br/>
       2. <strong>Tasks</strong> = steps to achieve each activity<br/>
       3. <strong>Stories</strong> = functionality under each task<br/>
       4. <strong>Releases</strong> = horizontal slices (R1=MVP, R2, R3)<br/><br/>
-      The key insight: read across the top = the full user journey. Read down = priority within each task.`;
+      Key insight: read across the top = full user journey. Read down = priority within each task.<br/>
+      <em>"${PATTON.principles[3]}"</em>`;
   }
 
   return `🤔 I didn't find a specific match. Try asking:<br/>
@@ -726,6 +833,8 @@ function agentRespond(q){
       <li>"What are the gaps in this map?"</li>
       <li>"Suggest stories for [task name]"</li>
       <li>"What should be in the MVP?"</li>
+      <li>"Explain the walking skeleton"</li>
+      <li>"What are story mapping anti-patterns?"</li>
       <li>"Tell me about search" (product knowledge)</li>
     </ul>`;
 }
@@ -741,6 +850,194 @@ function addChatMsg(role, html){
 
 // ── UTILS ─────────────────────────────────────────────────
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── PATTON KNOWLEDGE ──────────────────────────────────────
+const PATTON = {
+  principles:[
+    'The backbone (top row of activities) tells the full user story left-to-right — never prioritize one activity over another.',
+    'Walking skeleton = the thinnest possible slice that spans ALL activities end-to-end.',
+    'Slice horizontally across the whole map, never vertically into one activity.',
+    'MVP = a complete working experience for one user in one context — not a set of features.',
+    'Order activities in narrative order — the order you\'d explain the system to someone.',
+    'Tasks are "ribs" hanging off activities — steps a user takes within that activity.',
+    'Stories are written beneath tasks; they represent variations, edge cases, and quality improvements.',
+    'Good maps are built in rooms with the whole team — never by one person at a desk.'
+  ],
+  antiPatterns:[
+    'Vertical slicing: going deep on one activity before any others have stories.',
+    'Overstuffed MVP: putting everything into R1 because the team can\'t say no.',
+    'Missing skeleton: having stories but no thin end-to-end release defined.',
+    'Empty backbone: activities with no tasks — the journey has holes.',
+    'Leaf-bag backlog: flat list of stories with no backbone context.',
+    'Wrong room: building the map without the people who do the actual work.',
+    'Outputs not outcomes: stories describe screens/features, not user value.'
+  ],
+  mvpChecks:[
+    'Does R1 span at least one story from EVERY activity?',
+    'Can a real user complete the core job-to-be-done with only R1?',
+    'Is R1 small enough to ship in one sprint or two?',
+    'Have you removed everything from R1 that doesn\'t break the skeleton if removed?',
+    'Does R1 create a working, testable experience — not just working code?'
+  ],
+  facilitation:[
+    'Start every mapping session with "who is the user?" — write personas on sticky notes.',
+    'Walk the narrative before adding tasks — tell the story out loud first.',
+    'Use the "flat backlog problem" as an opener: show a list, ask who can see the user in it.',
+    'Ask "what happens just before?" and "what happens just after?" to find missing activities.',
+    'Red-dot voting for MVP: each person gets 3 dots, place on the stories they can\'t live without.',
+    'Time-box activity discussions to 5 minutes each — you can always come back.',
+    'End every session with: "What did we learn that we didn\'t know before?"'
+  ]
+};
+
+// ── BULK ADD ──────────────────────────────────────────────
+function toggleBulk(taskId){
+  const area = document.getElementById('bulk-' + taskId);
+  if(!area) return;
+  area.classList.toggle('open');
+  if(area.classList.contains('open')) document.getElementById('bulk-ta-' + taskId).focus();
+}
+
+function bulkAddStories(taskId){
+  const ta = document.getElementById('bulk-ta-' + taskId);
+  if(!ta) return;
+  const lines = ta.value.split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!lines.length){ toggleBulk(taskId); return; }
+  const task = STATE.activities.flatMap(a=>a.tasks).find(t=>t.id===taskId);
+  if(!task) return;
+  lines.forEach(line=>{
+    task.stories.push({id:'s'+Date.now()+Math.random().toString(36).slice(2,6), text:line, release:'1'});
+  });
+  saveState(); renderBoard(); renderAnalysis();
+  addChatMsg('agent', `✅ Added <strong>${lines.length} stories</strong> to "<em>${esc(task.title)}</em>"!`);
+  switchTab('chat');
+}
+
+// ── AI REVIEW ─────────────────────────────────────────────
+function aiReview(){
+  const token = localStorage.getItem('copilot_token');
+  if(!token){ document.getElementById('token-modal').classList.add('open'); return; }
+  runAIReview(token);
+}
+
+function saveToken(){
+  const t = document.getElementById('token-input').value.trim();
+  if(!t) return;
+  localStorage.setItem('copilot_token', t);
+  document.getElementById('token-modal').classList.remove('open');
+  runAIReview(t);
+}
+
+async function runAIReview(token){
+  addChatMsg('agent', '🤖 Running AI Review — this uses GitHub Copilot API…');
+  switchTab('chat');
+  const mapState = {
+    activities: STATE.activities.map(a=>({title:a.title, tasks:a.tasks.map(t=>({title:t.title, stories:t.stories.map(s=>({text:s.text,release:s.release||'1'}))}))})
+    ),
+    context: STATE.context
+  };
+  const systemPrompt = `You are a User Story Mapping expert following Jeff Patton's methodology. Analyse the story map and return ONLY valid JSON (no markdown, no text outside JSON).
+
+Jeff Patton principles to check:
+- Walking skeleton: thin slice across ALL activities in R1
+- Horizontal slicing: R1 should have ~1 story per task, not deep on one activity
+- Backbone: every activity must have tasks
+- MVP = complete working experience, not a feature set
+
+Return JSON: {"suggestions":[{"type":"missing-story"|"missing-task"|"wrong-release"|"split-story","targetActivity":"string","targetTask":"string","suggestion":"string","rationale":"string"}]}
+Limit to 8 suggestions. Be specific and actionable.`;
+  try {
+    const resp = await fetch('https://api.githubcopilot.com/chat/completions', {
+      method:'POST',
+      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+      body:JSON.stringify({model:'gpt-4o',messages:[{role:'system',content:systemPrompt},{role:'user',content:'Story map:\n'+JSON.stringify(mapState,null,2)}]})
+    });
+    if(!resp.ok){ addChatMsg('agent','❌ API error: '+resp.status+'. Check your token.'); return; }
+    const data = await resp.json();
+    const raw = data.choices[0].message.content.trim().replace(/^```json\s*/,'').replace(/```$/,'');
+    const parsed = JSON.parse(raw);
+    STATE.aiSuggestions = (STATE.aiSuggestions||[]).concat(parsed.suggestions||[]);
+    saveState();
+    addChatMsg('agent', `✅ AI Review complete — <strong>${parsed.suggestions.length} suggestions</strong> added. Switch to <strong>Analysis</strong> tab to review.`);
+    renderAnalysis();
+  } catch(e){
+    addChatMsg('agent','❌ AI Review failed: '+e.message);
+  }
+}
+
+function acceptAISug(idx){
+  const s = (STATE.aiSuggestions||[])[idx];
+  if(!s) return;
+  const task = STATE.activities.flatMap(a=>a.tasks).find(t=>t.title===s.targetTask);
+  if(task){
+    task.stories.push({id:'s'+Date.now(), text:s.suggestion, release:'1'});
+    addChatMsg('agent', `✅ Added story to "${esc(s.targetTask)}"`);
+  } else {
+    const act = STATE.activities.find(a=>a.title===s.targetActivity);
+    if(act) act.tasks.push({id:'t'+Date.now(), title:s.suggestion, stories:[]});
+    addChatMsg('agent', `✅ Added task "${esc(s.suggestion)}" to activity "${esc(s.targetActivity||'')}"`);
+  }
+  s.dismissed = true;
+  saveState(); renderBoard(); renderAnalysis();
+}
+
+function dismissAISug(idx){
+  const s = (STATE.aiSuggestions||[])[idx];
+  if(s){ s.dismissed = true; saveState(); renderAnalysis(); }
+}
+
+// ── ACTIVITY CLUSTERING ────────────────────────────────────
+function tokenize(str){ return str.toLowerCase().split(/\W+/).filter(w=>w.length>2); }
+
+function jaccard(a, b){
+  const sa=new Set(a), sb=new Set(b);
+  let inter=0; sa.forEach(x=>{ if(sb.has(x)) inter++; });
+  return inter / (sa.size + sb.size - inter);
+}
+
+function clusterActivities(){
+  if(STATE.activities.length<2){ addChatMsg('agent','Need at least 2 activities to cluster.'); switchTab('chat'); return; }
+  const tkns = STATE.activities.map(a=>tokenize(a.title + ' ' + a.tasks.map(t=>t.title).join(' ')));
+  const n = STATE.activities.length;
+  const THRESH = 0.12;
+  const labels = new Array(n).fill(-1);
+  let clusterCount = 0;
+  for(let i=0;i<n;i++){
+    if(labels[i]>=0) continue;
+    labels[i]=clusterCount;
+    for(let j=i+1;j<n;j++){
+      if(labels[j]<0 && jaccard(tkns[i],tkns[j])>=THRESH) labels[j]=clusterCount;
+    }
+    clusterCount++;
+  }
+  STATE.clusters = {};
+  STATE.activities.forEach((a,i)=>{ STATE.clusters[a.id]=labels[i]; });
+  saveState(); renderBoard(); renderAnalysis();
+  const grouped = {};
+  STATE.activities.forEach((a,i)=>{ (grouped[labels[i]]=grouped[labels[i]]||[]).push(a.title); });
+  const summary = Object.values(grouped).map((names,i)=>`<li><span class="cluster-badge cl${i%5}">C${i+1}</span> ${names.join(' · ')}</li>`).join('');
+  addChatMsg('agent', `🔗 Clustering done!<ul>${summary}</ul>Activities with the same badge share vocabulary — potential to merge or reorder.`);
+  switchTab('chat');
+}
+
+// ── IMPORT FROM PRODUCT DISCOVERY ─────────────────────────
+function importFromDiscovery(){
+  const raw = localStorage.getItem('pdv2_storymap_export') || localStorage.getItem('pdv2_export');
+  if(!raw){ addChatMsg('agent','❌ No Product Discovery export found. Go to Product Discovery v2 and click "🗺️ Send to Story Map".'); switchTab('chat'); return; }
+  try {
+    const pd = JSON.parse(raw);
+    const ctx = pd.context || {};
+    const parts = [];
+    if(ctx.summary) parts.push('Context: ' + ctx.summary);
+    if(pd.problems && pd.problems.length) parts.push('Problems: ' + pd.problems.slice(0,3).map(p=>typeof p==='string'?p:p.statement||p.title||JSON.stringify(p)).join('; '));
+    if(pd.outcomes && pd.outcomes.length) parts.push('Outcomes: ' + pd.outcomes.slice(0,3).map(o=>typeof o==='string'?o:o.title||JSON.stringify(o)).join('; '));
+    if(parts.length) STATE.context = parts.join('\n');
+    document.getElementById('ctx-text').value = STATE.context;
+    saveState(); renderAnalysis();
+    addChatMsg('agent', '✅ Context imported from Product Discovery! The Analysis panel will now include product context in suggestions.');
+    switchTab('chat');
+  } catch(e){ addChatMsg('agent','❌ Failed to parse export: '+e.message); }
+}
 
 // ── INIT ──────────────────────────────────────────────────
 loadState();
