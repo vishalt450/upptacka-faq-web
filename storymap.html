@@ -43,17 +43,18 @@ header .meta{font-size:11px;opacity:.7;}
 .activity-header{background:var(--blue);color:#fff;border-radius:8px 8px 0 0;padding:10px 12px;cursor:grab;position:relative;}
 .activity-header h3{font-size:13px;font-weight:700;margin-bottom:2px;line-height:1.3;}
 .activity-header .act-meta{font-size:10px;opacity:.7;}
-.act-actions{position:absolute;top:6px;right:6px;display:none;gap:4px;}
-.activity-header:hover .act-actions{display:flex;}
-.act-btn{background:rgba(255,255,255,.2);border:none;color:#fff;width:20px;height:20px;border-radius:4px;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;}
-.act-btn:hover{background:rgba(255,255,255,.4);}
+.act-actions{position:absolute;top:6px;right:6px;display:flex;gap:4px;}
+.act-btn{background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.3);color:#fff;width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;}
+.act-btn:hover{background:rgba(255,255,255,.5);}
+.act-btn.del:hover{background:#e53935;border-color:#e53935;}
 
 /* ── TASKS ROW ── */
 .tasks-row{background:var(--blue-light);border-left:2px solid var(--blue);border-right:2px solid var(--blue);padding:6px 6px 0;}
-.task-card{background:var(--white);border:1px solid #b3cde8;border-top:3px solid var(--blue);border-radius:6px;padding:7px 9px;margin-bottom:6px;cursor:grab;position:relative;font-size:12px;font-weight:600;color:var(--blue);}
-.task-card:hover .task-actions{display:flex;}
-.task-actions{position:absolute;top:4px;right:4px;display:none;gap:3px;}
-.t-btn{background:var(--blue-light);border:none;color:var(--blue);width:18px;height:18px;border-radius:3px;cursor:pointer;font-size:10px;}
+.task-card{background:var(--white);border:1px solid #b3cde8;border-top:3px solid var(--blue);border-radius:6px;padding:7px 52px 7px 9px;margin-bottom:6px;cursor:grab;position:relative;font-size:12px;font-weight:600;color:var(--blue);}
+.task-actions{position:absolute;top:4px;right:4px;display:flex;gap:3px;}
+.t-btn{background:#eef2f7;border:1px solid #d0dcea;color:#555;width:20px;height:20px;border-radius:3px;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center;}
+.t-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue);}
+.t-btn.del:hover{background:#e53935;border-color:#e53935;}
 
 /* ── STORIES AREA ── */
 .stories-area{background:rgba(255,255,255,.5);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:6px;min-height:80px;}
@@ -417,7 +418,7 @@ function renderBoard(){
         <div class="act-meta">${act.tasks.length} tasks</div>
         <div class="act-actions">
           <button class="act-btn" onclick="editActivity('${act.id}')" title="Edit">✏️</button>
-          <button class="act-btn" onclick="deleteActivity('${act.id}')" title="Delete">🗑</button>
+          <button class="act-btn del" onclick="deleteActivity('${act.id}')" title="Delete">🗑</button>
         </div>
       </div>
       <div class="tasks-row" id="tasks-${act.id}">
@@ -455,8 +456,8 @@ function renderTask(t, actId){
     <div class="task-card" id="task-${t.id}" data-task-id="${t.id}" data-act-id="${actId}" ondblclick="editTask('${t.id}','${actId}')">
       ${esc(t.title)}
       <div class="task-actions">
-        <button class="t-btn" onclick="editTask('${t.id}','${actId}')">✏</button>
-        <button class="t-btn" onclick="deleteTask('${t.id}','${actId}')">✕</button>
+        <button class="t-btn" onclick="editTask('${t.id}','${actId}')" title="Edit task">✏</button>
+        <button class="t-btn del" onclick="deleteTask('${t.id}','${actId}')" title="Delete task">✕</button>
       </div>
     </div>
     <div class="stories-area" id="stories-${t.id}">
@@ -557,7 +558,7 @@ function openModal(title, val='', body='', showRelease=false, rel=1, cb){
   document.getElementById('modal').classList.add('open');
   setTimeout(()=>document.getElementById('modal-input').focus(),50);
   modalCb = cb;
-  document.getElementById('modal-save').onclick = ()=>{
+  const saveAction = ()=>{
     const v=document.getElementById('modal-input').value.trim();
     if(!v) return;
     const b=document.getElementById('modal-body').value.trim();
@@ -565,6 +566,11 @@ function openModal(title, val='', body='', showRelease=false, rel=1, cb){
     closeModal();
     if(modalCb) modalCb(v,b,r);
     modalCb=null;
+  };
+  document.getElementById('modal-save').onclick = saveAction;
+  document.getElementById('modal-input').onkeydown = (e)=>{
+    if(e.key==='Enter'){ e.preventDefault(); saveAction(); }
+    if(e.key==='Escape'){ closeModal(); }
   };
 }
 function closeModal(){ document.getElementById('modal').classList.remove('open'); }
@@ -599,6 +605,7 @@ function editTask(taskId,actId){
   openModal('Edit Task',task.title,'',false,1,(title)=>{task.title=title;saveState();renderBoard();});
 }
 function deleteTask(taskId,actId){
+  if(!confirm('Delete this task and all its stories?')) return;
   const act=STATE.activities.find(a=>a.id===actId);
   if(act) act.tasks=act.tasks.filter(t=>t.id!==taskId);
   saveState(); renderBoard();
