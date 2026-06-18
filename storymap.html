@@ -163,6 +163,7 @@ header .meta{font-size:11px;opacity:.7;}
   <button class="hdr-btn" onclick="toggleRelease(2)" id="rbtn2">R2</button>
   <button class="hdr-btn" onclick="toggleRelease(3)" id="rbtn3">R3</button>
   <button class="hdr-btn" onclick="exportJSON()">⬇ Export</button>
+  <button class="hdr-btn" onclick="loadExample()" title="Load cake ordering demo">🎂 Demo</button>
   <button class="hdr-btn" onclick="clearMap()" title="Reset map">↺ Reset</button>
   <button class="hdr-btn" onclick="clusterActivities()" title="Group similar activities by Patton principles">🔗 Cluster</button>
   <button class="hdr-btn" style="background:#4527a0;border-color:#6a3de8;" onclick="aiReview()">🤖 AI Review</button>
@@ -600,6 +601,61 @@ function clearMap(){
   STATE=JSON.parse(JSON.stringify(DEFAULT_STATE));
   document.getElementById('ctx-text').value=STATE.context;
   renderBoard(); renderAnalysis();
+}
+function loadExample(){
+  if(!confirm('Load the \uD83C\uDF82 Cake Ordering demo? This will replace the current map.')) return;
+  STATE = {
+    visibleReleases:[1,2,3], aiSuggestions:[], clusters:{},
+    context:'Customer journey: Ordering a cake online — from discovery to post-delivery review.',
+    activities:[
+      {id:'axaji0y',title:'Discover & Browse',tasks:[
+        {id:'t6dpbhs',title:'Search for cakes',stories:[]},
+        {id:'tahxthv',title:'Filter by occasion, flavour & size',stories:[]},
+        {id:'t3a3zmf',title:'View featured & trending cakes',stories:[]},
+        {id:'t8mdd4v',title:'Read reviews & ratings',stories:[]}
+      ]},
+      {id:'a30t9nt',title:'Choose & Customise',tasks:[
+        {id:'t3w5uzb',title:'View cake details & photos',stories:[]},
+        {id:'tikcidk',title:'Select size & servings',stories:[]},
+        {id:'twnnhj7',title:'Pick flavour & filling',stories:[]},
+        {id:'txvg0fn',title:'Add personal message or design',stories:[]},
+        {id:'t9xuy41',title:'Preview customisation',stories:[]}
+      ]},
+      {id:'aibljh7',title:'Add to Cart',tasks:[
+        {id:'t5lxo6q',title:'Add cake to cart',stories:[]},
+        {id:'tjiujv6',title:'Update quantity or options',stories:[]},
+        {id:'toh9sdb',title:'Apply promo / discount code',stories:[]},
+        {id:'tdw2pcn',title:'Save cart for later',stories:[]}
+      ]},
+      {id:'a9t84az',title:'Set Delivery',tasks:[
+        {id:'tytjxep',title:'Choose delivery date',stories:[]},
+        {id:'tq85jsg',title:'Select delivery time slot',stories:[]},
+        {id:'t65kxvf',title:'Enter delivery address',stories:[]},
+        {id:'t1t2tal',title:'Choose delivery or pickup',stories:[]}
+      ]},
+      {id:'aa753lc',title:'Checkout & Pay',tasks:[
+        {id:'t58drc1',title:'Review order summary',stories:[]},
+        {id:'t1ertj5',title:'Enter contact details',stories:[]},
+        {id:'tpht0hl',title:'Select payment method',stories:[]},
+        {id:'t9xpsei',title:'Confirm & place order',stories:[]}
+      ]},
+      {id:'amvihcw',title:'Track Order',tasks:[
+        {id:'ti64ciy',title:'Receive order confirmation email',stories:[]},
+        {id:'the7ur2',title:'View order status page',stories:[]},
+        {id:'t3gdppq',title:'Get baking & dispatch notifications',stories:[]},
+        {id:'t0y9dom',title:'Track live delivery',stories:[]}
+      ]},
+      {id:'a5igqpk',title:'Receive & Review',tasks:[
+        {id:'ti7p5tb',title:'Receive & inspect the cake',stories:[]},
+        {id:'t94874f',title:'Rate experience & quality',stories:[]},
+        {id:'trhocn9',title:'Share photo on social media',stories:[]},
+        {id:'tj2qp89',title:'Reorder or gift to a friend',stories:[]}
+      ]}
+    ]
+  };
+  document.getElementById('ctx-text').value = STATE.context;
+  saveState(); renderBoard(); renderAnalysis();
+  showToast('🎂 Cake ordering demo loaded — 7 activities, 29 tasks!');
 }
 function exportJSON(){
   const blob=new Blob([JSON.stringify(STATE,null,2)],{type:'application/json'});
