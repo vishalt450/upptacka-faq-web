@@ -63,13 +63,14 @@ header .meta{font-size:11px;opacity:.7;}
 .release-label.r2{background:var(--r2);color:#fff;}
 .release-label.r3{background:var(--r3);color:#fff;}
 .story-drop-zone{min-height:32px;border:1px dashed var(--border);border-radius:6px;padding:3px;}
-.story-card{background:var(--white);border-radius:6px;padding:7px 9px 7px 11px;margin-bottom:4px;font-size:11px;cursor:grab;position:relative;border:1px solid var(--border);line-height:1.4;}
+.story-card{background:var(--white);border-radius:6px;padding:7px 54px 7px 11px;margin-bottom:4px;font-size:11px;cursor:grab;position:relative;border:1px solid var(--border);line-height:1.4;}
 .story-card.r1{border-left:3px solid var(--r1);}
 .story-card.r2{border-left:3px solid var(--r2);}
 .story-card.r3{border-left:3px solid var(--r3);}
-.story-card:hover .s-actions{display:flex;}
-.s-actions{position:absolute;top:3px;right:3px;display:none;gap:2px;}
-.s-btn{background:var(--bg);border:none;color:var(--muted);width:16px;height:16px;border-radius:2px;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;}
+.s-actions{position:absolute;top:4px;right:4px;display:flex;gap:3px;}
+.s-btn{background:#eef2f7;border:1px solid #d0dcea;color:#555;width:20px;height:20px;border-radius:4px;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.s-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue);}
+.s-btn.del:hover{background:#e53935;border-color:#e53935;}
 .r-badge{display:inline-block;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;cursor:pointer;margin-right:4px;vertical-align:middle;}
 .r-badge.r1{background:var(--blue-light);color:var(--r1);}
 .r-badge.r2{background:#e8f5e9;color:var(--r2);}
@@ -162,6 +163,7 @@ header .meta{font-size:11px;opacity:.7;}
   <button class="hdr-btn" onclick="toggleRelease(1)" id="rbtn1">R1</button>
   <button class="hdr-btn" onclick="toggleRelease(2)" id="rbtn2">R2</button>
   <button class="hdr-btn" onclick="toggleRelease(3)" id="rbtn3">R3</button>
+  <button class="hdr-btn" style="background:#2e7d32;border-color:#43a047;font-weight:700;" onclick="addActivity()">＋ Activity</button>
   <button class="hdr-btn" onclick="exportJSON()">⬇ Export</button>
   <button class="hdr-btn" onclick="loadExample()" title="Load cake ordering demo">🎂 Demo</button>
   <button class="hdr-btn" onclick="clearMap()" title="Reset map">↺ Reset</button>
@@ -199,12 +201,19 @@ header .meta{font-size:11px;opacity:.7;}
 <!-- TOKEN MODAL -->
 <div class="modal-bg" id="token-modal">
   <div class="modal">
-    <h3>🔑 GitHub Copilot Token</h3>
-    <p class="token-note">AI Review calls the Copilot API — same token as Product Discovery v2.<br/>Get it: <strong>Product Discovery v2 → ⚙ Settings → copy token</strong></p>
-    <input id="token-input" type="password" placeholder="ghp_… or gho_…"/>
+    <h3>🔑 Set up AI Review</h3>
+    <p class="token-note">
+      AI Review uses GitHub Copilot to analyse your map and suggest improvements.<br/><br/>
+      <strong>To get your token:</strong><br/>
+      1. Open a terminal<br/>
+      2. Run: <code style="background:#f0f4fa;padding:2px 6px;border-radius:4px;font-size:12px">gh auth token</code><br/>
+      3. Copy the token that appears and paste below
+    </p>
+    <input id="token-input" type="password" placeholder="Paste your token here (ghp_… or gho_…)" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid #ccc;border-radius:6px;font-size:13px;margin-bottom:4px;"/>
+    <p style="font-size:11px;color:#888;margin-bottom:12px">Token is saved locally in your browser only.</p>
     <div class="modal-btns">
-      <button class="btn-cancel" onclick="document.getElementById('token-modal').classList.remove('open')">Cancel</button>
-      <button class="btn-primary" onclick="saveToken()">Save &amp; Run Review</button>
+      <button class="btn-cancel" onclick="document.getElementById('token-modal').classList.remove('open')">Cancel — use 📋 Review instead</button>
+      <button class="btn-primary" onclick="saveToken()">Save &amp; Run AI Review</button>
     </div>
   </div>
 </div>
@@ -479,8 +488,8 @@ function renderStory(s){
   return `<div class="story-card r${s.release||1}" id="story-${s.id}" data-story-id="${s.id}">
     <span class="r-badge r${s.release||1}" onclick="cycleRelease('${s.id}')" title="Click to change release">R${s.release||1}</span>${esc(s.text)}
     <div class="s-actions">
-      <button class="s-btn" onclick="editStory('${s.id}')">✏</button>
-      <button class="s-btn" onclick="deleteStory('${s.id}')">✕</button>
+      <button class="s-btn" onclick="editStory('${s.id}')" title="Edit">✏</button>
+      <button class="s-btn del" onclick="deleteStory('${s.id}')" title="Delete">✕</button>
     </div>
   </div>`;
 }
@@ -609,6 +618,7 @@ function editStory(sid){
   });
 }
 function deleteStory(sid){
+  if(!confirm('Delete this story?')) return;
   STATE.activities.forEach(a=>a.tasks.forEach(t=>{t.stories=t.stories.filter(s=>s.id!==sid);}));
   saveState(); renderBoard();
 }
