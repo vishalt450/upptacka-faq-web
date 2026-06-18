@@ -85,25 +85,14 @@ header .meta{font-size:11px;opacity:.7;}
 .add-activity-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--white);}
 
 /* ── AGENT SIDEBAR ── */
-#agent{width:340px;flex-shrink:0;background:var(--white);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+#agent{width:320px;flex-shrink:0;background:var(--white);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
 #agent.collapsed{width:0;border:none;}
 .agent-header{background:#1a2e4a;color:#fff;padding:12px 16px;font-size:13px;font-weight:700;flex-shrink:0;display:flex;align-items:center;gap:8px;}
 .agent-header span{flex:1;}
-.agent-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
-.agent-tab{flex:1;padding:8px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;}
-.agent-tab.active{color:var(--blue);border-bottom-color:var(--blue);}
 #analysis-panel{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;}
-#chat-panel{flex:1;overflow:hidden;display:none;flex-direction:column;}
-#chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;}
-.msg{padding:8px 11px;border-radius:8px;font-size:12px;line-height:1.5;max-width:90%;}
-.msg.user{background:var(--blue);color:#fff;align-self:flex-end;border-radius:8px 8px 2px 8px;}
-.msg.agent{background:#f0f4fa;color:var(--text);align-self:flex-start;border-radius:8px 8px 8px 2px;}
-.msg.agent ul{padding-left:16px;margin-top:4px;}
-.msg.agent li{margin-bottom:3px;}
-.chat-input-row{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;}
-.chat-input-row input{flex:1;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;}
-.chat-input-row input:focus{outline:none;border-color:var(--blue);}
-.chat-send-btn{background:var(--blue);color:#fff;border:none;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:12px;font-weight:600;}
+/* ── STATUS TOAST ── */
+#status-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a2e4a;color:#fff;padding:9px 20px;border-radius:20px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .3s;z-index:999;}
+#status-toast.show{opacity:1;}
 
 /* ── ANALYSIS CARDS ── */
 .a-card{background:var(--bg);border-radius:8px;padding:11px 13px;font-size:12px;}
@@ -197,21 +186,13 @@ header .meta{font-size:11px;opacity:.7;}
 
   <!-- AGENT -->
   <div id="agent">
-    <div class="agent-header">🤖 <span>Uppa — Story Agent</span></div>
-    <div class="agent-tabs">
-      <div class="agent-tab active" onclick="switchTab('analysis')">💡 Analysis</div>
-      <div class="agent-tab" onclick="switchTab('chat')">💬 Chat</div>
-    </div>
+    <div class="agent-header">💡 <span>Analysis Panel</span></div>
     <div id="analysis-panel"></div>
-    <div id="chat-panel">
-      <div id="chat-messages"></div>
-      <div class="chat-input-row">
-        <input id="chat-input" type="text" placeholder="Ask about the map or product…" onkeydown="if(event.key==='Enter')sendChat()"/>
-        <button class="chat-send-btn" onclick="sendChat()">Send</button>
-      </div>
-    </div>
   </div>
 </div>
+
+<!-- STATUS TOAST -->
+<div id="status-toast"></div>
 
 <!-- TOKEN MODAL -->
 <div class="modal-bg" id="token-modal">
@@ -442,7 +423,6 @@ function renderTask(t, actId){
       ${esc(t.title)}
       <div class="task-actions">
         <button class="t-btn" onclick="editTask('${t.id}','${actId}')">✏</button>
-        <button class="t-btn" onclick="suggestForTask('${t.id}')">💡</button>
         <button class="t-btn" onclick="deleteTask('${t.id}','${actId}')">✕</button>
       </div>
     </div>
@@ -714,138 +694,17 @@ function renderAnalysis(){
   panel.innerHTML = html;
 }
 
-// ── AGENT CHAT ────────────────────────────────────────────
-function switchTab(tab){
-  document.querySelectorAll('.agent-tab').forEach((t,i)=>t.classList.toggle('active', (i===0&&tab==='analysis')||(i===1&&tab==='chat')));
-  document.getElementById('analysis-panel').style.display = tab==='analysis'?'flex':'none';
-  document.getElementById('chat-panel').style.display = tab==='chat'?'flex':'none';
-}
+// ── ANALYSIS PANEL ────────────────────────────────────────
 
-function suggestForTask(taskId){
-  const task = STATE.activities.flatMap(a=>a.tasks).find(t=>t.id===taskId);
-  if(!task) return;
-  switchTab('chat');
-  sendAgentMessage(`Suggest stories for the task: "${task.title}"`);
-}
-
-function sendChat(){
-  const input = document.getElementById('chat-input');
-  const q = input.value.trim();
-  if(!q) return;
-  input.value='';
-  sendAgentMessage(q);
-}
-
-function sendAgentMessage(q){
-  addChatMsg('user', q);
-  setTimeout(()=>addChatMsg('agent', agentRespond(q)), 300);
-}
-
-function agentRespond(q){
-  const ql = q.toLowerCase();
-  const allTasks = STATE.activities.flatMap(a=>a.tasks);
-  const allStories = allTasks.flatMap(t=>t.stories);
-  const ctx = STATE.context || '';
-
-  // ── MAP ANALYSIS QUESTIONS ──
-  if(ql.includes('gap') || ql.includes('missing') || ql.includes('empty')){
-    const empty = allTasks.filter(t=>t.stories.length===0);
-    if(empty.length===0) return '✅ No gaps found! All tasks have at least one story. The map looks well covered.';
-    return `⚠️ Found <strong>${empty.length} task(s) with no stories:</strong><ul>${empty.map(t=>`<li><strong>${esc(t.title)}</strong></li>`).join('')}</ul>Click 💡 on any task card to get story suggestions from the product knowledge base.`;
-  }
-  if(ql.includes('mvp') || ql.includes('release 1') || ql.includes('r1')){
-    const r1 = allStories.filter(s=>(parseInt(s.release)||1)===1);
-    if(r1.length===0) return '⚠️ No stories are tagged R1 yet. To define your MVP, click the release badge on a story card to cycle it to R1. A good MVP covers one full user journey end-to-end — thinly, not deeply.';
-    return `📦 <strong>R1 — MVP has ${r1.length} stories:</strong><ul>${r1.slice(0,8).map(s=>`<li>${esc(s.text.substring(0,50))}${s.text.length>50?'…':''}</li>`).join('')}</ul>${r1.length>8?`<em>…and ${r1.length-8} more.</em>`:''}`;
-  }
-  if(ql.includes('summary') || ql.includes('overview')){
-    const r1=allStories.filter(s=>(parseInt(s.release)||1)===1).length;
-    const r2=allStories.filter(s=>parseInt(s.release)===2).length;
-    const r3=allStories.filter(s=>parseInt(s.release)===3).length;
-    return `🗺️ <strong>Map Summary</strong><br/>${STATE.activities.length} activities, ${allTasks.length} tasks, ${allStories.length} stories.<br/>R1: ${r1} · R2: ${r2} · R3: ${r3}<br/><br/>Activities: ${STATE.activities.map(a=>a.title).join(' → ')}`;
-  }
-  if(ql.includes('invest') || ql.includes('good story') || ql.includes('well written')){
-    return `📋 <strong>INVEST criteria for a good story:</strong><ul>
-      <li><strong>I</strong>ndependent — can be developed alone</li>
-      <li><strong>N</strong>egotiable — details can change</li>
-      <li><strong>V</strong>aluable — delivers value to the user</li>
-      <li><strong>E</strong>stimable — team can size it</li>
-      <li><strong>S</strong>mall — fits in a sprint</li>
-      <li><strong>T</strong>estable — can write acceptance criteria</li></ul>
-      Format: <em>"As a [user], I want [goal] so that [reason]"</em>`;
-  }
-  if(ql.includes('suggest') || ql.includes('stories for')){
-    const taskMatch = allTasks.find(t => ql.includes(t.title.toLowerCase()));
-    const searchQ = taskMatch ? taskMatch.title : q.replace(/suggest.*for|stories for/gi,'').trim();
-    const results = searchKnowledge(searchQ, 5);
-    if(results.length===0) return `🔍 No matches found in the knowledge base for "<strong>${esc(searchQ)}</strong>". Try a more specific term.`;
-    const taskForAdd = taskMatch || allTasks.find(t=>t.stories.length===0);
-    return `💡 <strong>From knowledge base for "${esc(searchQ)}":</strong><ul>
-      ${results.map(r=>`<li><strong>${esc(r.title.substring(0,55))}${r.title.length>55?'…':''}</strong> <em>(${r.source})</em></li>`).join('')}
-      </ul>${taskForAdd?`Click 💡 on "<strong>${esc(taskForAdd.title)}</strong>" to add these directly to the board.`:''}`;
-  }
-
-  // ── PRODUCT KNOWLEDGE SEARCH ──
-  const results = searchKnowledge(q, 4);
-  if(results.length > 0){
-    return `🔍 Found in product knowledge:<ul>${results.map(r=>`<li><strong>${esc(r.title.substring(0,60))}${r.title.length>60?'…':''}</strong> <em>(${r.source})</em></li>`).join('')}</ul>`;
-  }
-
-  // ── STORY MAPPING GUIDANCE ──
-  if(ql.includes('backbone')||ql.includes('activities')){
-    return `🦴 <strong>The Backbone (Jeff Patton)</strong><br/>
-      The top row of activities tells the complete user story left-to-right — the narrative flow.<br/><br/>
-      "${PATTON.principles[0]}"<br/><br/>
-      Your current backbone: <em>${STATE.activities.map(a=>a.title).join(' → ') || '(no activities yet)'}</em>`;
-  }
-  if(ql.includes('skeleton')||ql.includes('walking')){
-    return `🏗️ <strong>Walking Skeleton (Jeff Patton)</strong><br/>
-      "${PATTON.principles[1]}"<br/><br/>
-      Check: Does your R1 have at least 1 story from EVERY activity?<br/>
-      <ul>${PATTON.mvpChecks.map(c=>`<li>${c}</li>`).join('')}</ul>`;
-  }
-  if(ql.includes('slice')||ql.includes('horizontal')||ql.includes('vertical')){
-    return `✂️ <strong>Slicing (Jeff Patton)</strong><br/>
-      "${PATTON.principles[2]}"<br/><br/>
-      ❌ Anti-pattern: "${PATTON.antiPatterns[0]}"<br/>
-      ✅ Correct: Add one story to EVERY activity before going deep on any one.`;
-  }
-  if(ql.includes('anti') || ql.includes('mistake') || ql.includes('wrong')){
-    return `⚠️ <strong>Story Mapping Anti-Patterns (Jeff Patton)</strong><ul>
-      ${PATTON.antiPatterns.map(a=>`<li>${a}</li>`).join('')}</ul>`;
-  }
-  if(ql.includes('facilit') || ql.includes('workshop') || ql.includes('run a')){
-    return `🎯 <strong>Facilitation Tips (Jeff Patton)</strong><ul>
-      ${PATTON.facilitation.map(f=>`<li>${f}</li>`).join('')}</ul>`;
-  }
-  if(ql.includes('how') || ql.includes('what is') || ql.includes('explain')){
-    return `📖 <strong>Story Mapping (Jeff Patton)</strong><br/>
-      1. <strong>Activities</strong> = big goals (top row, left→right = user journey)<br/>
-      2. <strong>Tasks</strong> = steps to achieve each activity<br/>
-      3. <strong>Stories</strong> = functionality under each task<br/>
-      4. <strong>Releases</strong> = horizontal slices (R1=MVP, R2, R3)<br/><br/>
-      Key insight: read across the top = full user journey. Read down = priority within each task.<br/>
-      <em>"${PATTON.principles[3]}"</em>`;
-  }
-
-  return `🤔 I didn't find a specific match. Try asking:<br/>
-    <ul>
-      <li>"What are the gaps in this map?"</li>
-      <li>"Suggest stories for [task name]"</li>
-      <li>"What should be in the MVP?"</li>
-      <li>"Explain the walking skeleton"</li>
-      <li>"What are story mapping anti-patterns?"</li>
-      <li>"Tell me about search" (product knowledge)</li>
-    </ul>`;
-}
-
-function addChatMsg(role, html){
-  const msgs = document.getElementById('chat-messages');
-  const div = document.createElement('div');
-  div.className = 'msg ' + role;
-  div.innerHTML = html;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
+// ── STATUS TOAST ──────────────────────────────────────────
+let _toastTimer;
+function showToast(msg){
+  const t = document.getElementById('status-toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(()=>t.classList.remove('show'), 3000);
 }
 
 // ── UTILS ─────────────────────────────────────────────────
@@ -909,8 +768,7 @@ function bulkAddStories(taskId){
     task.stories.push({id:'s'+Date.now()+Math.random().toString(36).slice(2,6), text:line, release:'1'});
   });
   saveState(); renderBoard(); renderAnalysis();
-  addChatMsg('agent', `✅ Added <strong>${lines.length} stories</strong> to "<em>${esc(task.title)}</em>"!`);
-  switchTab('chat');
+  showToast('✅ Added ' + lines.length + ' stories to ' + task.title);
 }
 
 // ── AI REVIEW ─────────────────────────────────────────────
@@ -929,8 +787,7 @@ function saveToken(){
 }
 
 async function runAIReview(token){
-  addChatMsg('agent', '🤖 Running AI Review — this uses GitHub Copilot API…');
-  switchTab('chat');
+  showToast('🤖 Running AI Review via Copilot API…');
   const mapState = {
     activities: STATE.activities.map(a=>({title:a.title, tasks:a.tasks.map(t=>({title:t.title, stories:t.stories.map(s=>({text:s.text,release:s.release||'1'}))}))})
     ),
@@ -952,16 +809,16 @@ Limit to 8 suggestions. Be specific and actionable.`;
       headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
       body:JSON.stringify({model:'gpt-4o',messages:[{role:'system',content:systemPrompt},{role:'user',content:'Story map:\n'+JSON.stringify(mapState,null,2)}]})
     });
-    if(!resp.ok){ addChatMsg('agent','❌ API error: '+resp.status+'. Check your token.'); return; }
+    if(!resp.ok){ showToast('❌ API error: '+resp.status+'. Check your token.'); return; }
     const data = await resp.json();
     const raw = data.choices[0].message.content.trim().replace(/^```json\s*/,'').replace(/```$/,'');
     const parsed = JSON.parse(raw);
     STATE.aiSuggestions = (STATE.aiSuggestions||[]).concat(parsed.suggestions||[]);
     saveState();
-    addChatMsg('agent', `✅ AI Review complete — <strong>${parsed.suggestions.length} suggestions</strong> added. Switch to <strong>Analysis</strong> tab to review.`);
+    showToast('✅ AI Review done — ' + parsed.suggestions.length + ' suggestions in Analysis panel');
     renderAnalysis();
   } catch(e){
-    addChatMsg('agent','❌ AI Review failed: '+e.message);
+    showToast('❌ AI Review failed: '+e.message);
   }
 }
 
@@ -971,11 +828,11 @@ function acceptAISug(idx){
   const task = STATE.activities.flatMap(a=>a.tasks).find(t=>t.title===s.targetTask);
   if(task){
     task.stories.push({id:'s'+Date.now(), text:s.suggestion, release:'1'});
-    addChatMsg('agent', `✅ Added story to "${esc(s.targetTask)}"`);
+    showToast('✅ Added story to ' + (s.targetTask||''));
   } else {
     const act = STATE.activities.find(a=>a.title===s.targetActivity);
     if(act) act.tasks.push({id:'t'+Date.now(), title:s.suggestion, stories:[]});
-    addChatMsg('agent', `✅ Added task "${esc(s.suggestion)}" to activity "${esc(s.targetActivity||'')}"`);
+    showToast('✅ Added task to ' + (s.targetActivity||''));
   }
   s.dismissed = true;
   saveState(); renderBoard(); renderAnalysis();
@@ -996,7 +853,7 @@ function jaccard(a, b){
 }
 
 function clusterActivities(){
-  if(STATE.activities.length<2){ addChatMsg('agent','Need at least 2 activities to cluster.'); switchTab('chat'); return; }
+  if(STATE.activities.length<2){ showToast('Need at least 2 activities to cluster.'); return; }
   const tkns = STATE.activities.map(a=>tokenize(a.title + ' ' + a.tasks.map(t=>t.title).join(' ')));
   const n = STATE.activities.length;
   const THRESH = 0.12;
@@ -1016,14 +873,13 @@ function clusterActivities(){
   const grouped = {};
   STATE.activities.forEach((a,i)=>{ (grouped[labels[i]]=grouped[labels[i]]||[]).push(a.title); });
   const summary = Object.values(grouped).map((names,i)=>`<li><span class="cluster-badge cl${i%5}">C${i+1}</span> ${names.join(' · ')}</li>`).join('');
-  addChatMsg('agent', `🔗 Clustering done!<ul>${summary}</ul>Activities with the same badge share vocabulary — potential to merge or reorder.`);
-  switchTab('chat');
+  showToast('🔗 Clustering done! See badges on activities.');
 }
 
 // ── IMPORT FROM PRODUCT DISCOVERY ─────────────────────────
 function importFromDiscovery(){
   const raw = localStorage.getItem('pdv2_storymap_export') || localStorage.getItem('pdv2_export');
-  if(!raw){ addChatMsg('agent','❌ No Product Discovery export found. Go to Product Discovery v2 and click "🗺️ Send to Story Map".'); switchTab('chat'); return; }
+  if(!raw){ showToast('❌ No Product Discovery export found. Open Product Discovery v2 and click Send to Story Map.'); return; }
   try {
     const pd = JSON.parse(raw);
     const ctx = pd.context || {};
@@ -1034,9 +890,8 @@ function importFromDiscovery(){
     if(parts.length) STATE.context = parts.join('\n');
     document.getElementById('ctx-text').value = STATE.context;
     saveState(); renderAnalysis();
-    addChatMsg('agent', '✅ Context imported from Product Discovery! The Analysis panel will now include product context in suggestions.');
-    switchTab('chat');
-  } catch(e){ addChatMsg('agent','❌ Failed to parse export: '+e.message); }
+    showToast('✅ Context imported from Product Discovery!');
+  } catch(e){ showToast('❌ Failed to parse export: '+e.message); }
 }
 
 // ── INIT ──────────────────────────────────────────────────
@@ -1050,8 +905,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const btn=document.getElementById('rbtn'+r);
     if(btn) btn.classList.toggle('active', STATE.visibleReleases.includes(r));
   });
-  // initial chat greeting
-  addChatMsg('agent', `👋 Hi! I'm Uppa, your story mapping agent.<br/>I can search <strong>${QA.length + FEATURES.length + HANDBOOK.length}</strong> from the Uppt\u00e4cka knowledge base to suggest stories, find gaps, and help your team build the map.<br/><br/>Try: <em>"What are the gaps?"</em> or <em>"Suggest stories for Search"</em>`);
 });
 </script>
 </body>
