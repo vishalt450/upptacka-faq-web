@@ -1339,7 +1339,10 @@ async function aiReview(){
   // 2. Try auto-fetch from local token server (bash token-server.sh)
   showToast('🔑 Checking for local token server…');
   try {
-    const res = await fetch('http://localhost:9977', {signal: AbortSignal.timeout(1500)});
+    const ctrl = new AbortController();
+    const _t = setTimeout(()=>ctrl.abort(), 1500);
+    const res = await fetch('http://localhost:9977', {signal: ctrl.signal});
+    clearTimeout(_t);
     if(res.ok){
       const data = await res.json();
       if(data.token && data.token.length > 10){
@@ -1486,27 +1489,26 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const btn=document.getElementById('rbtn'+r);
     if(btn) btn.classList.toggle('active', STATE.visibleReleases.includes(r));
   });
+
+  // ── ITERATION BAR INIT ──
+  if(!STATE.chatHistory) STATE.chatHistory = [];
+  renderIterHistory();
+  const iterInp = document.getElementById('iter-input');
+  if(iterInp){
+    iterInp.addEventListener('keydown', e=>{
+      if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendIter(); }
+    });
+    iterInp.addEventListener('input', ()=>{
+      iterInp.style.height='38px';
+      iterInp.style.height = Math.min(iterInp.scrollHeight,90)+'px';
+    });
+  }
 });
 </script>
 
 <script>
-// ── ITERATION ENGINE (persistent input bar) ───────────────
+// ── ITERATION ENGINE ──────────────────────────────────────
 if(!STATE.chatHistory) STATE.chatHistory = [];
-
-// Wire up Enter key + auto-resize on page load
-document.addEventListener('DOMContentLoaded', ()=>{
-  const inp = document.getElementById('iter-input');
-  if(!inp) return;
-  inp.addEventListener('keydown', e=>{
-    if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendIter(); }
-  });
-  inp.addEventListener('input', ()=>{
-    inp.style.height='38px';
-    inp.style.height = Math.min(inp.scrollHeight,90)+'px';
-  });
-  // Render saved history on load
-  renderIterHistory();
-});
 
 function renderIterHistory(){
   const box = document.getElementById('iter-history');
