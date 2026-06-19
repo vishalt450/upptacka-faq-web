@@ -152,6 +152,13 @@ header .meta{font-size:11px;opacity:.7;}
 .bulk-btn:hover{border-color:var(--blue);color:var(--blue);}
 /* ── TOKEN MODAL ── */
 .token-note{font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.5;}
+/* ── CHOICE MODAL ── */
+.choice-modal{display:flex;gap:12px;margin-top:12px;}
+.choice-card{flex:1;border:2px solid var(--border);border-radius:10px;padding:16px 12px;cursor:pointer;text-align:center;transition:border-color .15s,background .15s;}
+.choice-card:hover{border-color:var(--blue);background:var(--blue-light);}
+.choice-card .choice-icon{font-size:28px;margin-bottom:6px;}
+.choice-card .choice-label{font-weight:700;font-size:13px;color:var(--text);}
+.choice-card .choice-sub{font-size:11px;color:var(--muted);margin-top:4px;}
 </style>
 </head>
 <body>
@@ -218,6 +225,29 @@ header .meta{font-size:11px;opacity:.7;}
     <div class="modal-btns">
       <button class="btn-cancel" onclick="document.getElementById('token-modal').classList.remove('open')">Cancel — use 📋 Review instead</button>
       <button class="btn-primary" onclick="saveToken()">Save &amp; Run AI Review</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACTIVITY CHOICE MODAL -->
+<div class="modal-bg" id="activity-choice-modal">
+  <div class="modal">
+    <h3>➕ Add Activities</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:4px">How would you like to add activities to this map?</p>
+    <div class="choice-modal">
+      <div class="choice-card" onclick="closeActivityChoice(); addActivityManual()">
+        <div class="choice-icon">✍️</div>
+        <div class="choice-label">I'll fill it</div>
+        <div class="choice-sub">Add one activity at a time with your own title & description</div>
+      </div>
+      <div class="choice-card" onclick="closeActivityChoice(); aiSuggestActivities()">
+        <div class="choice-icon">✨</div>
+        <div class="choice-label">AI suggests</div>
+        <div class="choice-sub">AI reads your Context and proposes a full activity backbone</div>
+      </div>
+    </div>
+    <div style="text-align:right;margin-top:14px">
+      <button class="btn-cancel" onclick="closeActivityChoice()">Cancel</button>
     </div>
   </div>
 </div>
@@ -605,16 +635,113 @@ function closeModal(){ document.getElementById('modal').classList.remove('open')
 
 // ── CRUD ──────────────────────────────────────────────────
 function addActivity(){
+  document.getElementById('activity-choice-modal').classList.add('open');
+}
+function closeActivityChoice(){
+  document.getElementById('activity-choice-modal').classList.remove('open');
+}
+function addActivityManual(){
   openModal('New Activity','','',false,1,(title,desc)=>{
     const newAct = {id:uid(),title,desc,tasks:[]};
     STATE.activities.push(newAct);
     saveState(); renderBoard();
     const wrap = document.getElementById('board-wrap');
     if(wrap) setTimeout(()=>{ wrap.scrollLeft = wrap.scrollWidth; }, 50);
-    // Auto-suggest tasks based on title + description
     if(title || desc) suggestTasksForActivity(newAct.id);
     else showToast('✅ Activity "' + title + '" added! Click + Task to add tasks.');
   });
+}
+async function aiSuggestActivities(){
+  const ctx = STATE.context || '';
+  if(!ctx.trim()){
+    showToast('⚠️ Please add a Context first (📋 Context button)');
+    return;
+  }
+  showToast('✨ AI is generating activities from your context…');
+
+  // Try Copilot API
+  const token = localStorage.getItem('copilot_token');
+  if(token){
+    try{
+      const res = await fetch('https://api.githubcopilot.com/chat/completions',{
+        method:'POST',
+        headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'gpt-4o',
+          messages:[
+            {role:'system',content:'You are a User Story Mapping expert (Jeff Patton). Given a product context, return ONLY valid JSON — no markdown, no text outside JSON.'},
+            {role:'user',content:`Product context: "${ctx}"\n\nGenerate 5-7 high-level user activities (the backbone) for a story map. Each activity should have 3-5 tasks.\n\nReturn JSON: {"activities":[{"title":"...","desc":"...","tasks":[{"title":"...","desc":"..."}]}]}`}
+          ]
+        })
+      });
+      if(res.ok){
+        const d = await res.json();
+        const raw = d.choices?.[0]?.message?.content||'';
+        const json = raw.replace(/```json|```/g,'').trim();
+        const parsed = JSON.parse(json);
+        if(parsed.activities) { applyAISuggestedActivities(parsed.activities); return; }
+      }
+    } catch(e){ /* fall through to local */ }
+  }
+
+  // Local keyword fallback
+  const c = ctx.toLowerCase();
+  let acts = [];
+  if(c.includes('bus')||c.includes('travel')||c.includes('pass')||c.includes('transit')){
+    acts = [
+      {title:'Register & Profile',desc:'User creates account with personal info',tasks:[{title:'Sign up with name & email'},{title:'Set profile & preferences'},{title:'Verify identity'}]},
+      {title:'Browse Passes',desc:'Explore available travel pass options',tasks:[{title:'View pass types & prices'},{title:'Filter by zone or duration'},{title:'Compare pass options'}]},
+      {title:'Buy Pass',desc:'Purchase a travel pass',tasks:[{title:'Select pass & validity period'},{title:'Enter passenger details'},{title:'Pay for pass'},{title:'Receive pass confirmation'}]},
+      {title:'Manage Pass',desc:'View and manage owned passes',tasks:[{title:'View active passes & expiry'},{title:'Renew expiring pass'},{title:'Transfer or share pass'},{title:'View travel history'}]},
+      {title:'Travel & Validate',desc:'Use pass during travel',tasks:[{title:'Show / tap pass at boarding'},{title:'Validate pass at gate'},{title:'Check remaining validity'},{title:'Get journey receipts'}]},
+      {title:'Support & Refund',desc:'Handle issues and cancellations',tasks:[{title:'Report lost or stolen pass'},{title:'Request refund'},{title:'Contact support'},{title:'Leave feedback'}]}
+    ];
+  } else {
+    // Generic fallback
+    acts = [
+      {title:'Discover',desc:'User finds the product',tasks:[{title:'Search & browse'},{title:'View details'},{title:'Read reviews'}]},
+      {title:'Sign Up',desc:'User creates an account',tasks:[{title:'Register with details'},{title:'Verify account'},{title:'Set preferences'}]},
+      {title:'Core Action',desc:'Main user task',tasks:[{title:'Perform primary action'},{title:'Customise options'},{title:'Confirm'}]},
+      {title:'Manage',desc:'User manages their items',tasks:[{title:'View dashboard'},{title:'Edit or update'},{title:'Delete or cancel'}]},
+      {title:'Support',desc:'Help and issue resolution',tasks:[{title:'Contact support'},{title:'Report issue'},{title:'Get refund'}]}
+    ];
+  }
+  applyAISuggestedActivities(acts);
+}
+function applyAISuggestedActivities(acts){
+  // Show as suggestions in analysis panel for user to accept/reject
+  STATE.aiSuggestions = acts.map((a,i)=>({
+    id:'asugg_'+i,
+    type:'activity',
+    title: a.title,
+    desc: a.desc||'',
+    tasks: a.tasks||[],
+    label:`Activity ${i+1}/${acts.length}`
+  }));
+  saveState(); renderAnalysis();
+  document.getElementById('analysis-panel').classList.add('open');
+  showToast('✨ AI suggested ' + acts.length + ' activities — review in the panel →');
+}
+function acceptActivitySugg(id){
+  const s = STATE.aiSuggestions.find(x=>x.id===id);
+  if(!s) return;
+  const tasks = (s.tasks||[]).map(t=>({id:uid(), title:t.title||t, desc:t.desc||'', stories:[]}));
+  STATE.activities.push({id:uid(), title:s.title, desc:s.desc||'', tasks});
+  STATE.aiSuggestions = STATE.aiSuggestions.filter(x=>x.id!==id);
+  saveState(); renderBoard(); renderAnalysis();
+  const wrap = document.getElementById('board-wrap');
+  if(wrap) setTimeout(()=>{ wrap.scrollLeft = wrap.scrollWidth; }, 50);
+}
+function acceptAllActivitySuggs(){
+  STATE.aiSuggestions.filter(s=>s.type==='activity').forEach(s=>{
+    const tasks = (s.tasks||[]).map(t=>({id:uid(), title:t.title||t, desc:t.desc||'', stories:[]}));
+    STATE.activities.push({id:uid(), title:s.title, desc:s.desc||'', tasks});
+  });
+  STATE.aiSuggestions = STATE.aiSuggestions.filter(s=>s.type!=='activity');
+  saveState(); renderBoard(); renderAnalysis();
+  const wrap = document.getElementById('board-wrap');
+  if(wrap) setTimeout(()=>{ wrap.scrollLeft = wrap.scrollWidth; }, 50);
+  showToast('✅ All activities added!');
 }
 function editActivity(id){
   const act=STATE.activities.find(a=>a.id===id);
@@ -1084,17 +1211,37 @@ function renderAnalysis(){
   // AI suggestions
   const pending = (STATE.aiSuggestions||[]).filter(s=>!s.dismissed);
   if(pending.length){
-    html += `<div class="a-card" style="background:#f3f0ff;border:1px solid #c5b8f8">
-      <h4>🤖 AI Suggestions (${pending.length})</h4>
-      ${pending.slice(0,6).map(s=>`<div class="ai-sug-card">
-        <div class="ai-sug-title">${esc(s.suggestion)}</div>
-        <div class="ai-sug-meta">${s.type==='missing-story'?'📝':'🏗️'} ${esc(s.targetActivity||'')}${s.targetTask?' → '+esc(s.targetTask):''}</div>
-        <div class="ai-sug-why">${esc(s.rationale||'')}</div>
-        <div class="ai-btn-row">
-          <button class="ai-accept" onclick="acceptAISug(${(STATE.aiSuggestions||[]).indexOf(s)})">✓ Add</button>
-          <button class="ai-dismiss" onclick="dismissAISug(${(STATE.aiSuggestions||[]).indexOf(s)})">✕</button>
-        </div></div>`).join('')}
-      ${pending.length>6?`<p style="font-size:11px;text-align:center;color:var(--muted)">${pending.length-6} more…</p>`:''}</div>`;
+    const actSuggs = pending.filter(s=>s.type==='activity');
+    const storySuggs = pending.filter(s=>s.type!=='activity');
+
+    if(actSuggs.length){
+      html += `<div class="a-card" style="background:#e8f5e9;border:1px solid #a5d6a7">
+        <h4>✨ AI Activity Suggestions (${actSuggs.length})</h4>
+        <button style="width:100%;margin-bottom:8px;background:#2e7d32;color:#fff;border:none;border-radius:5px;padding:7px;font-size:12px;font-weight:700;cursor:pointer;" onclick="acceptAllActivitySuggs()">✓ Add All Activities</button>
+        ${actSuggs.map(s=>`<div class="ai-sug-card">
+          <div class="ai-sug-title">🏃 ${esc(s.title)}</div>
+          ${s.desc?`<div class="ai-sug-why">${esc(s.desc)}</div>`:''}
+          ${s.tasks&&s.tasks.length?`<div class="ai-sug-meta" style="margin-top:4px">Tasks: ${s.tasks.map(t=>esc(t.title||t)).join(' · ')}</div>`:''}
+          <div class="ai-btn-row">
+            <button class="ai-accept" onclick="acceptActivitySugg('${s.id}')">✓ Add</button>
+            <button class="ai-dismiss" onclick="dismissActivitySugg('${s.id}')">✕</button>
+          </div></div>`).join('')}
+      </div>`;
+    }
+
+    if(storySuggs.length){
+      html += `<div class="a-card" style="background:#f3f0ff;border:1px solid #c5b8f8">
+        <h4>🤖 AI Suggestions (${storySuggs.length})</h4>
+        ${storySuggs.slice(0,6).map(s=>`<div class="ai-sug-card">
+          <div class="ai-sug-title">${esc(s.suggestion)}</div>
+          <div class="ai-sug-meta">${s.type==='missing-story'?'📝':'🏗️'} ${esc(s.targetActivity||'')}${s.targetTask?' → '+esc(s.targetTask):''}</div>
+          <div class="ai-sug-why">${esc(s.rationale||'')}</div>
+          <div class="ai-btn-row">
+            <button class="ai-accept" onclick="acceptAISug(${(STATE.aiSuggestions||[]).indexOf(s)})">✓ Add</button>
+            <button class="ai-dismiss" onclick="dismissAISug(${(STATE.aiSuggestions||[]).indexOf(s)})">✕</button>
+          </div></div>`).join('')}
+        ${storySuggs.length>6?`<p style="font-size:11px;text-align:center;color:var(--muted)">${storySuggs.length-6} more…</p>`:''}</div>`;
+    }
   }
 
   // Patton tip (rotates by hour)
@@ -1269,6 +1416,10 @@ function acceptAISug(idx){
 
 function dismissAISug(idx){
   const s = (STATE.aiSuggestions||[])[idx];
+  if(s){ s.dismissed = true; saveState(); renderAnalysis(); }
+}
+function dismissActivitySugg(id){
+  const s = (STATE.aiSuggestions||[]).find(x=>x.id===id);
   if(s){ s.dismissed = true; saveState(); renderAnalysis(); }
 }
 
