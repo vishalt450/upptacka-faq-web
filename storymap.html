@@ -1567,7 +1567,17 @@ Rules:
   ];
 
   let reply = null;
-  const token = localStorage.getItem('copilot_token');
+  // Auto-fetch token from server if not cached
+  let token = localStorage.getItem('copilot_token');
+  if(!token){
+    try{
+      const ctrl = new AbortController();
+      const _t = setTimeout(()=>ctrl.abort(), 1500);
+      const tr = await fetch('http://localhost:9977', {signal: ctrl.signal});
+      clearTimeout(_t);
+      if(tr.ok){ const td=await tr.json(); if(td.token){ token=td.token; localStorage.setItem('copilot_token',token); } }
+    } catch(e){ /* server not running */ }
+  }
   if(token){
     try{
       const res = await fetch('https://api.githubcopilot.com/chat/completions',{
@@ -1576,6 +1586,7 @@ Rules:
         body: JSON.stringify({model:'gpt-4o', messages, max_tokens:600})
       });
       if(res.ok){ const d=await res.json(); reply=d.choices?.[0]?.message?.content||null; }
+      else if(res.status===401){ localStorage.removeItem('copilot_token'); reply=null; }
     } catch(e){ reply=null; }
   }
   if(!reply) reply = localIterFallback(text);
@@ -1678,6 +1689,17 @@ function buildMapSummary(){
 
 function localIterFallback(text){
   const t=text.toLowerCase(), acts=STATE.activities;
+
+  // Context/stakeholder input — save it and suggest next steps
+  if(t.includes('stakeholder')||t.includes('user is')||t.includes('users are')||t.includes('teacher')||t.includes('student')||t.includes('passenger')||t.includes('as per')||t.includes('the goal')||t.includes('the app')||t.includes('persona')){
+    const newCtx = (STATE.context ? STATE.context+'\n' : '') + text;
+    STATE.context = newCtx;
+    const ctxEl = document.getElementById('ctx-text');
+    if(ctxEl) ctxEl.value = newCtx;
+    saveState();
+    return `✅ Context saved! I've added your input to the map context.\n\nNext: click "+ Activity" → "✨ AI suggests" to regenerate activities based on this, or say "add [activity name]" to add specific activities for these stakeholders.`;
+  }
+
   if(t.includes('remove')||t.includes('delete')){
     const word=text.split(' ').find(w=>w.length>4&&!['remove','delete','the','activity','task'].includes(w.toLowerCase()))||'';
     const found=acts.find(a=>a.title.toLowerCase().includes(word.toLowerCase()));
@@ -1685,23 +1707,32 @@ function localIterFallback(text){
     return 'I couldn\'t find that activity. Try: "remove [exact name]".';
   }
   if(t.includes('rename')||t.includes('update')||t.includes('change')){
-    return 'I\'m in offline mode. For rename/update commands, start the token server for full AI support.';
+    return 'Token server is not reachable. For rename/update, restart it: bash ~/repos/Uppa-chatbot/token-server.sh';
   }
   if(t.includes('add')||t.includes('create')||t.includes('new')){
     const words=text.replace(/add|create|new|an|a|activity|the/gi,'').trim().split(/\s+/).filter(w=>w.length>2);
     const title=words.slice(0,3).join(' ')||'New Activity';
-    return `[ACTION: {"type":"add_activity","title":"${title}","desc":"${text}","tasks":[{"title":"View ${title}"},{"title":"Manage ${title}"},{"title":"Confirm ${title}"}]}] Added "${title}" with 3 default tasks.`;
+    return `[ACTION: {"type":"add_activity","title":"${title}","desc":"${text}","tasks":[{"title":"View ${title}"},{"title":"Manage ${title}"},{"title":"Confirm ${title}"}]}] Adding "${title}" with 3 default tasks.`;
   }
   if(t.includes('missing')||t.includes('what')||t.includes('gap')||t.includes('suggest')){
     const common=['Register','Browse','Buy','Manage','Track','Support'];
     const missing=common.filter(c=>!acts.some(a=>a.title.toLowerCase().includes(c.toLowerCase())));
-    return missing.length ? 'You might be missing: '+missing.join(', ')+'. Say "add [name]" to include one.' : 'Your map looks fairly complete. Consider adding edge-case tasks for error handling.';
+    return missing.length ? 'You might be missing: '+missing.join(', ')+'. Say "add [name]" to include one.' : 'Your map looks complete. Consider adding edge-case tasks for error handling.';
   }
   if(t.includes('review')||t.includes('r1')||t.includes('mvp')){
     const r1=acts.flatMap(a=>a.tasks).flatMap(t=>t.stories).filter(s=>(s.release||1)===1).length;
     return `R1 has ${r1} stories across ${acts.length} activities. ${r1<acts.length?'Some activities lack R1 stories — add at least one per activity for a walking skeleton.':'Walking skeleton looks complete!'}`;
   }
-  return `Got it: "${text}". Start the token server (bash ~/repos/Uppa-chatbot/token-server.sh) for full AI. Offline mode supports: add, remove, what's missing, review R1.`;
+  // Generic context — save it
+  if(text.length > 30){
+    const newCtx = (STATE.context ? STATE.context+'\n' : '') + text;
+    STATE.context = newCtx;
+    const ctxEl = document.getElementById('ctx-text');
+    if(ctxEl) ctxEl.value = newCtx;
+    saveState();
+    return `✅ Context noted and saved to the map. Token server not reachable for full AI — restart it: bash ~/repos/Uppa-chatbot/token-server.sh\n\nOffline commands: "add [name]", "remove [name]", "what's missing", "review R1".`;
+  }
+  return `Offline mode — token server not reachable. Restart: bash ~/repos/Uppa-chatbot/token-server.sh\nOffline supports: add, remove, what's missing, review R1.`;
 }
 </script>
 </body>
