@@ -345,55 +345,11 @@ function searchKnowledge(query, topN=5){
 // ── STATE ─────────────────────────────────────────────────
 const RELEASES = ['R1 — MVP', 'R2', 'R3'];
 const DEFAULT_STATE = {
-  context: 'Customer journey: Ordering a cake online — from discovery to post-delivery review.',
+  context: '',
   visibleReleases:[1,2,3],
   releases: RELEASES,
   aiSuggestions:[], clusters:{},
-  activities: [
-    { id:'a1', title:'Discover & Browse', tasks:[
-      { id:'t1', title:'Search for cakes', stories:[] },
-      { id:'t2', title:'Filter by occasion, flavour & size', stories:[] },
-      { id:'t3', title:'View featured & trending cakes', stories:[] },
-      { id:'t4', title:'Read reviews & ratings', stories:[] }
-    ]},
-    { id:'a2', title:'Choose & Customise', tasks:[
-      { id:'t5', title:'View cake details & photos', stories:[] },
-      { id:'t6', title:'Select size & servings', stories:[] },
-      { id:'t7', title:'Pick flavour & filling', stories:[] },
-      { id:'t8', title:'Add personal message or design', stories:[] },
-      { id:'t9', title:'Preview customisation', stories:[] }
-    ]},
-    { id:'a3', title:'Add to Cart', tasks:[
-      { id:'t10', title:'Add cake to cart', stories:[] },
-      { id:'t11', title:'Update quantity or options', stories:[] },
-      { id:'t12', title:'Apply promo / discount code', stories:[] },
-      { id:'t13', title:'Save cart for later', stories:[] }
-    ]},
-    { id:'a4', title:'Set Delivery', tasks:[
-      { id:'t14', title:'Choose delivery date', stories:[] },
-      { id:'t15', title:'Select delivery time slot', stories:[] },
-      { id:'t16', title:'Enter delivery address', stories:[] },
-      { id:'t17', title:'Choose delivery or pickup', stories:[] }
-    ]},
-    { id:'a5', title:'Checkout & Pay', tasks:[
-      { id:'t18', title:'Review order summary', stories:[] },
-      { id:'t19', title:'Enter contact details', stories:[] },
-      { id:'t20', title:'Select payment method', stories:[] },
-      { id:'t21', title:'Confirm & place order', stories:[] }
-    ]},
-    { id:'a6', title:'Track Order', tasks:[
-      { id:'t22', title:'Receive order confirmation email', stories:[] },
-      { id:'t23', title:'View order status page', stories:[] },
-      { id:'t24', title:'Get baking & dispatch notifications', stories:[] },
-      { id:'t25', title:'Track live delivery', stories:[] }
-    ]},
-    { id:'a7', title:'Receive & Review', tasks:[
-      { id:'t26', title:'Receive & inspect the cake', stories:[] },
-      { id:'t27', title:'Rate experience & quality', stories:[] },
-      { id:'t28', title:'Share photo on social media', stories:[] },
-      { id:'t29', title:'Reorder or gift to a friend', stories:[] }
-    ]}
-  ]
+  activities: []
 };
 
 let STATE = JSON.parse(JSON.stringify(DEFAULT_STATE));
@@ -449,6 +405,20 @@ function toggleRelease(r){
 function renderBoard(){
   const board = document.getElementById('board');
   board.innerHTML = '';
+
+  if(!STATE.activities.length){
+    board.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:260px;color:#90a4ae;text-align:center;gap:12px;padding:32px;">
+      <div style="font-size:48px">🗺️</div>
+      <div style="font-size:18px;font-weight:700;color:#546e7a">Your map is empty</div>
+      <div style="font-size:13px;max-width:340px;line-height:1.6">
+        1. Click <strong>📋 Context</strong> to describe your product<br/>
+        2. Click <strong>＋ Activity</strong> → choose <em>✍️ Manual</em> or <em>✨ AI suggests</em><br/>
+        3. Add tasks and user stories to each activity
+      </div>
+      <button onclick="addActivity()" style="margin-top:8px;background:#2e7d32;color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;">＋ Add First Activity</button>
+    </div>`;
+    updateStats(); return;
+  }
 
   STATE.activities.forEach(act => {
     const col = document.createElement('div');
@@ -797,11 +767,12 @@ function cycleRelease(sid){
   saveState(); renderBoard();
 }
 function clearMap(){
-  if(!confirm('Reset map to default Uppt\u00e4cka template?')) return;
+  if(!confirm('Clear the entire map and start fresh?')) return;
   localStorage.removeItem('uppa_storymap');
-  STATE=JSON.parse(JSON.stringify(DEFAULT_STATE));
-  document.getElementById('ctx-text').value=STATE.context;
+  STATE = JSON.parse(JSON.stringify(DEFAULT_STATE));
+  document.getElementById('ctx-text').value = '';
   renderBoard(); renderAnalysis();
+  showToast('🗑️ Map cleared — add your context, then click + Activity');
 }
 function loadExample(){
   if(!confirm('Load the \uD83C\uDF82 Cake Ordering demo? This will replace the current map.')) return;
