@@ -159,7 +159,30 @@ header .meta{font-size:11px;opacity:.7;}
 .choice-card .choice-icon{font-size:28px;margin-bottom:6px;}
 .choice-card .choice-label{font-weight:700;font-size:13px;color:var(--text);}
 .choice-card .choice-sub{font-size:11px;color:var(--muted);margin-top:4px;}
-</style>
+/* ── CHAT PANEL ── */
+#chat-fab{position:fixed;bottom:24px;right:28px;background:#1a2e4a;color:#fff;border:none;border-radius:50px;padding:12px 20px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25);z-index:800;display:flex;align-items:center;gap:7px;transition:background .15s;}
+#chat-fab:hover{background:#0058a3;}
+#chat-fab .chat-badge{background:#e53935;color:#fff;border-radius:10px;font-size:10px;padding:1px 6px;font-weight:700;display:none;}
+#chat-fab .chat-badge.show{display:inline;}
+#chat-panel{position:fixed;bottom:0;right:0;width:380px;max-width:100vw;background:#fff;border-top:1px solid var(--border);border-left:1px solid var(--border);box-shadow:0 -4px 24px rgba(0,0,0,.13);z-index:900;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .25s ease;border-radius:12px 12px 0 0;overflow:hidden;}
+#chat-panel.open{transform:translateY(0);}
+#chat-panel-header{background:#1a2e4a;color:#fff;padding:12px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0;cursor:pointer;}
+#chat-panel-header span{flex:1;font-size:13px;font-weight:700;}
+#chat-panel-header .chat-close{background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:6px;padding:3px 10px;cursor:pointer;font-size:12px;}
+#chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:220px;max-height:320px;}
+.chat-msg{max-width:86%;padding:8px 12px;border-radius:12px;font-size:12px;line-height:1.5;}
+.chat-msg.user{background:#e3f2fd;color:#0d2137;align-self:flex-end;border-bottom-right-radius:3px;}
+.chat-msg.agent{background:#f3f0ff;color:#1a1a2e;align-self:flex-start;border-bottom-left-radius:3px;}
+.chat-msg.agent.thinking{opacity:.6;font-style:italic;}
+.chat-suggestions{display:flex;flex-direction:column;gap:5px;margin-top:6px;}
+.chat-sug-btn{background:#f0f4ff;border:1px solid #c5d5f8;border-radius:6px;padding:6px 10px;font-size:11px;text-align:left;cursor:pointer;color:#1a2e4a;}
+.chat-sug-btn:hover{background:#e3eaff;border-color:#0058a3;}
+#chat-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);flex-shrink:0;}
+#chat-input{flex:1;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit;resize:none;height:38px;max-height:100px;overflow-y:auto;}
+#chat-input:focus{outline:none;border-color:var(--blue);}
+#chat-send{background:#1a2e4a;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;font-weight:700;}
+#chat-send:hover{background:#0058a3;}
+
 </head>
 <body>
 
@@ -178,6 +201,7 @@ header .meta{font-size:11px;opacity:.7;}
   <button class="hdr-btn" onclick="clusterActivities()" title="Group similar activities">🔗 Cluster</button>
   <button class="hdr-btn" style="background:#1565c0;border-color:#1976d2;font-weight:700;" onclick="fullReview()">📋 Review</button>
   <button class="hdr-btn" style="background:#4527a0;border-color:#6a3de8;" onclick="aiReview()">🤖 AI Review</button>
+  <button class="hdr-btn" style="background:#006064;border-color:#00838f;" onclick="toggleChat()">💬 Chat</button>
   <span><span class="save-dot" id="savedot"></span><span style="font-size:11px;opacity:.7" id="savelabel">Saved</span></span>
 </header>
 
@@ -367,6 +391,7 @@ function loadState(){
       if(!STATE.releases) STATE.releases = RELEASES;
       if(!STATE.visibleReleases) STATE.visibleReleases = [1,2,3];
       if(!STATE.aiSuggestions) STATE.aiSuggestions = [];
+      if(!STATE.chatHistory) STATE.chatHistory = [];
       if(!STATE.clusters) STATE.clusters = {};
     }
   }catch(e){ console.error('loadState failed:', e); }
@@ -1457,6 +1482,231 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if(btn) btn.classList.toggle('active', STATE.visibleReleases.includes(r));
   });
 });
+<!-- CHAT PANEL -->
+<div id="chat-panel">
+  <div id="chat-panel-header" onclick="toggleChat()">
+    <span>💬 Map Assistant — ask me anything about your story map</span>
+    <button class="chat-close">✕ Close</button>
+  </div>
+  <div id="chat-messages">
+    <div class="chat-msg agent">
+      👋 Hi! I can help you improve this story map.<br/>
+      Try saying things like:<br/>
+      <div class="chat-suggestions" style="margin-top:8px;">
+        <button class="chat-sug-btn" onclick="sendChatPrompt('What activities am I missing?')">What activities am I missing?</button>
+        <button class="chat-sug-btn" onclick="sendChatPrompt('Suggest tasks for my checkout flow')">Suggest tasks for my checkout flow</button>
+        <button class="chat-sug-btn" onclick="sendChatPrompt('Add a loyalty rewards activity')">Add a loyalty rewards activity</button>
+        <button class="chat-sug-btn" onclick="sendChatPrompt('Review my R1 stories — is the walking skeleton complete?')">Review my R1 — is walking skeleton complete?</button>
+      </div>
+    </div>
+  </div>
+  <div id="chat-input-row">
+    <textarea id="chat-input" placeholder="Tell me more context, ask for suggestions, or ask me to add activities…" rows="1"></textarea>
+    <button id="chat-send" onclick="sendChat()">Send</button>
+  </div>
+</div>
+
+<script>
+// ── CHAT ENGINE ───────────────────────────────────────────
+if(!STATE.chatHistory) STATE.chatHistory = [];
+
+function toggleChat(){
+  const panel = document.getElementById('chat-panel');
+  panel.classList.toggle('open');
+  if(panel.classList.contains('open')){
+    setTimeout(()=>document.getElementById('chat-input').focus(), 250);
+    scrollChatToBottom();
+  }
+}
+
+function scrollChatToBottom(){
+  const msgs = document.getElementById('chat-messages');
+  if(msgs) msgs.scrollTop = msgs.scrollHeight;
+}
+
+function sendChatPrompt(text){
+  document.getElementById('chat-input').value = text;
+  sendChat();
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  const inp = document.getElementById('chat-input');
+  if(inp){
+    inp.addEventListener('keydown', e=>{
+      if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendChat(); }
+    });
+    // Auto-resize textarea
+    inp.addEventListener('input', ()=>{
+      inp.style.height = '38px';
+      inp.style.height = Math.min(inp.scrollHeight, 100) + 'px';
+    });
+  }
+});
+
+function appendChatMsg(role, html, isThinking=false){
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + role + (isThinking ? ' thinking' : '');
+  div.innerHTML = html;
+  msgs.appendChild(div);
+  scrollChatToBottom();
+  return div;
+}
+
+async function sendChat(){
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if(!text) return;
+  inp.value = ''; inp.style.height = '38px';
+
+  // Show user message
+  appendChatMsg('user', esc(text).replace(/\n/g,'<br/>'));
+  if(!STATE.chatHistory) STATE.chatHistory = [];
+  STATE.chatHistory.push({role:'user', content: text});
+
+  // Show thinking
+  const thinking = appendChatMsg('agent', '⏳ Thinking…', true);
+
+  // Build map summary for context
+  const mapSummary = buildMapSummary();
+  const systemPrompt = `You are a User Story Mapping expert assistant (Jeff Patton methodology) helping a Product Owner improve their story map interactively.
+
+Current map state:
+${mapSummary}
+
+Your job:
+- Answer questions about the map
+- Suggest missing activities, tasks, or stories
+- Accept additional product context the user provides and apply it to improve the map
+- When you suggest adding something to the map, format it as a JSON action block like:
+  [ACTION: {"type":"add_activity","title":"...","desc":"...","tasks":[{"title":"..."},{"title":"..."}]}]
+  or [ACTION: {"type":"add_task","activity":"<activity title>","title":"...","desc":"..."}]
+  or [ACTION: {"type":"add_story","activity":"<activity title>","task":"<task title>","text":"...","release":1}]
+- You can include multiple ACTION blocks in one response
+- Keep responses concise (under 150 words)
+- Use plain language, no markdown headers`;
+
+  const messages = [
+    {role:'system', content: systemPrompt},
+    ...STATE.chatHistory.slice(-10) // last 10 turns for context
+  ];
+
+  let reply = null;
+
+  // Try Copilot API
+  const token = localStorage.getItem('copilot_token');
+  if(token){
+    try{
+      const res = await fetch('https://api.githubcopilot.com/chat/completions',{
+        method:'POST',
+        headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+        body: JSON.stringify({model:'gpt-4o', messages, max_tokens:500})
+      });
+      if(res.ok){
+        const d = await res.json();
+        reply = d.choices?.[0]?.message?.content || null;
+      }
+    } catch(e){ reply = null; }
+  }
+
+  // Local fallback
+  if(!reply) reply = localChatFallback(text, mapSummary);
+
+  STATE.chatHistory.push({role:'assistant', content: reply});
+  saveState();
+
+  // Parse and apply ACTION blocks
+  const actions = [];
+  const displayReply = reply.replace(/\[ACTION:\s*(\{[^}]+(?:\{[^}]*\}[^}]*)?\})\]/g, (match, json)=>{
+    try{ actions.push(JSON.parse(json)); } catch(e){}
+    return '';
+  }).trim();
+
+  thinking.remove();
+  const replyHtml = esc(displayReply).replace(/\n/g,'<br/>');
+
+  if(actions.length){
+    const actSummary = actions.map(a=>{
+      if(a.type==='add_activity') return `➕ Activity: <strong>${esc(a.title)}</strong>${a.tasks&&a.tasks.length?' ('+a.tasks.length+' tasks)':''}`;
+      if(a.type==='add_task') return `➕ Task: <strong>${esc(a.title)}</strong> → ${esc(a.activity)}`;
+      if(a.type==='add_story') return `➕ Story: <strong>${esc(a.text)}</strong> in ${esc(a.task)}`;
+      return '';
+    }).filter(Boolean).join('<br/>');
+
+    appendChatMsg('agent', replyHtml + (replyHtml?'<br/><br/>':'') +
+      `<div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:7px;padding:8px 10px;margin-top:6px;">
+        <div style="font-size:11px;font-weight:700;color:#2e7d32;margin-bottom:5px;">📋 Suggested changes:</div>
+        <div style="font-size:11px;margin-bottom:8px;">${actSummary}</div>
+        <div style="display:flex;gap:6px;">
+          <button onclick="applyAllChatActions(${JSON.stringify(actions).replace(/"/g,'&quot;')})" style="background:#2e7d32;color:#fff;border:none;border-radius:5px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;">✓ Apply All</button>
+          <button onclick="this.closest('.chat-msg').querySelector('[onclick^=applyAll]').parentNode.style.display='none'" style="background:#eee;border:1px solid #ccc;border-radius:5px;padding:5px 10px;font-size:11px;cursor:pointer;">✕ Dismiss</button>
+        </div>
+      </div>`
+    );
+  } else {
+    appendChatMsg('agent', replyHtml || '🤔 I\'m not sure — try rephrasing or adding more context.');
+  }
+}
+
+function applyAllChatActions(actions){
+  let added = 0;
+  actions.forEach(a=>{
+    if(a.type === 'add_activity'){
+      const tasks = (a.tasks||[]).map(t=>({id:uid(),title:t.title||t,desc:t.desc||'',stories:[]}));
+      STATE.activities.push({id:uid(),title:a.title,desc:a.desc||'',tasks});
+      added++;
+    } else if(a.type === 'add_task'){
+      const act = STATE.activities.find(x=>x.title.toLowerCase().includes(a.activity.toLowerCase()));
+      if(act){ act.tasks.push({id:uid(),title:a.title,desc:a.desc||'',stories:[]}); added++; }
+    } else if(a.type === 'add_story'){
+      const act = STATE.activities.find(x=>x.title.toLowerCase().includes(a.activity.toLowerCase()));
+      const task = act && act.tasks.find(t=>t.title.toLowerCase().includes(a.task.toLowerCase()));
+      if(task){ task.stories.push({id:uid(),text:a.text,desc:'',release:a.release||1}); added++; }
+    }
+  });
+  saveState(); renderBoard(); renderAnalysis();
+  showToast('✅ Applied ' + added + ' change' + (added!==1?'s':'') + ' to the map!');
+  const wrap = document.getElementById('board-wrap');
+  if(wrap) setTimeout(()=>{ wrap.scrollLeft = wrap.scrollWidth; }, 100);
+}
+
+function buildMapSummary(){
+  const lines = [];
+  lines.push('Context: ' + (STATE.context||'(none set)'));
+  lines.push('Activities (' + STATE.activities.length + '):');
+  STATE.activities.forEach(a=>{
+    lines.push('  - ' + a.title + (a.desc?' ('+a.desc+')':'') + ' [' + a.tasks.length + ' tasks]');
+    a.tasks.forEach(t=>{
+      const stories = t.stories.length ? ' → ' + t.stories.length + ' stories' : '';
+      lines.push('    · ' + t.title + stories);
+    });
+  });
+  return lines.join('\n');
+}
+
+function localChatFallback(text, mapSummary){
+  const t = text.toLowerCase();
+  const acts = STATE.activities;
+  if(t.includes('missing') || t.includes('what') || t.includes('gap')){
+    const common = ['Register','Browse','Buy','Manage','Track','Support','Profile','Notification'];
+    const missing = common.filter(c => !acts.some(a => a.title.toLowerCase().includes(c.toLowerCase())));
+    if(missing.length) return 'Based on your map, you might be missing: ' + missing.slice(0,4).join(', ') + '. Want me to add any of these? Just say "add [name]".';
+    return 'Your map looks fairly complete! Consider adding error/edge-case tasks to each activity for robustness.';
+  }
+  if(t.includes('add') || t.includes('create')){
+    const words = text.split(' ').filter(w=>w.length>3);
+    const title = words.slice(-3).join(' ');
+    return `Sure! I'll add "${title}" to the map. [ACTION: {"type":"add_activity","title":"${title}","desc":"${text}","tasks":[{"title":"View ${title}"},{"title":"Manage ${title}"},{"title":"Confirm ${title}"}]}]`;
+  }
+  if(t.includes('review') || t.includes('r1') || t.includes('mvp')){
+    const r1count = acts.flatMap(a=>a.tasks).flatMap(t=>t.stories).filter(s=>(s.release||1)==1).length;
+    return `Your R1 has ${r1count} stories across ${acts.length} activities. A healthy walking skeleton has 1 story per activity in R1. ${r1count < acts.length ? 'You have some gaps — try adding at least one R1 story per activity.' : 'Looks good!'}`;
+  }
+  if(t.includes('context') || t.includes('product') || t.includes('app') || t.includes('bus') || t.includes('travel')){
+    return 'Thanks for the context! I\'ve noted it. Click "+ Activity" → "✨ AI suggests" to regenerate activities based on your updated context, or ask me to add specific activities.';
+  }
+  return `Got it — "${text}". I'm running in offline mode (no token). Run token-server.sh for full AI responses, or try: "add [activity name]", "what's missing", or "review R1".`;
+}
 </script>
 </body>
 </html>
