@@ -1526,84 +1526,106 @@ function renderIterHistory(){
 
 function setIterStatus(msg){ const s=document.getElementById('iter-status'); if(s) s.textContent=msg; }
 
-// Story patterns for auto-fill based on task title keywords
+// Jeff Patton-style story patterns: thin slices, specific persona, clear outcome
+// Format: "As a [specific persona], I can [action] so that [outcome]"
 const STORY_PATTERNS = {
   'search|browse|discover|find|explore': [
-    {text:'As a user, I can search by keyword so I find what I need quickly', release:1},
-    {text:'As a user, I can filter results by category so I narrow down options', release:1},
-    {text:'As a user, I can see search suggestions as I type so I save time', release:2}
+    {text:'As a first-time visitor, I can search by keyword so that I quickly find what I am looking for without browsing everything', release:1},
+    {text:'As a returning user, I can filter results by category and price so that I narrow down options to what matters to me', release:1},
+    {text:'As a user on mobile, I can see auto-suggestions as I type so that I find results even with typos', release:2},
+    {text:'As a user, I can save a search so that I can revisit it later without retyping', release:3}
   ],
   'register|sign up|create account|onboard': [
-    {text:'As a new user, I can register with my name and email so I create an account', release:1},
-    {text:'As a new user, I can set a password so my account is secure', release:1},
-    {text:'As a new user, I can verify my email so my account is confirmed', release:2}
+    {text:'As a new user, I can register with my name and email so that I can access the service', release:1},
+    {text:'As a new user, I can create a secure password meeting the requirements so that my account is protected', release:1},
+    {text:'As a new user, I can sign up using my existing Google or social account so that I skip manual registration', release:2}
   ],
   'verify|confirm|validate': [
-    {text:'As a user, I can verify my identity so the system trusts me', release:1},
-    {text:'As a user, I can resend the verification link so I can recover if it expires', release:2}
+    {text:'As a new user, I can receive a verification email and click the link so that my account is confirmed and activated', release:1},
+    {text:'As a user, I can request a new verification link if the first one expired so that I can still complete registration', release:1},
+    {text:'As an admin, I can see which accounts are verified so that I manage user quality', release:3}
   ],
   'login|sign in|authenticate': [
-    {text:'As a user, I can log in with email and password so I access my account', release:1},
-    {text:'As a user, I can reset my password so I can recover my account', release:1},
-    {text:'As a user, I can stay logged in so I don\'t need to log in every time', release:2}
+    {text:'As a registered user, I can log in with my email and password so that I access my personal account', release:1},
+    {text:'As a user who forgot their password, I can reset it via email so that I regain access without contacting support', release:1},
+    {text:'As a frequent user, I can stay logged in on trusted devices so that I avoid logging in every visit', release:2}
   ],
   'profile|account|settings|preference': [
-    {text:'As a user, I can view my profile so I see my stored information', release:1},
-    {text:'As a user, I can update my details so my information stays current', release:1},
-    {text:'As a user, I can set my preferences so the app suits my needs', release:2}
+    {text:'As a logged-in user, I can view my profile with all stored personal information so that I verify it is correct', release:1},
+    {text:'As a user, I can update my name, contact details, and photo so that my profile stays current', release:1},
+    {text:'As a user, I can set language and notification preferences so that the app behaves the way I expect', release:2}
   ],
   'buy|purchase|order|checkout|pay': [
-    {text:'As a user, I can select an item and proceed to payment so I complete my purchase', release:1},
-    {text:'As a user, I can choose a payment method so I pay how I prefer', release:1},
-    {text:'As a user, I can receive a confirmation so I know my order is placed', release:1}
+    {text:'As a user ready to buy, I can review my selection and total before paying so that I confirm before committing', release:1},
+    {text:'As a user, I can pay using card or digital wallet so that I complete the transaction with my preferred method', release:1},
+    {text:'As a user, I can receive an order confirmation with reference number so that I have proof of purchase', release:1},
+    {text:'As a returning user, I can use saved payment details so that I check out faster', release:2}
   ],
   'view|detail|information|info': [
-    {text:'As a user, I can view full details so I have all the information I need', release:1},
-    {text:'As a user, I can see images and descriptions so I understand what I\'m choosing', release:2}
+    {text:'As a user, I can view the full details of an item including description and images so that I make an informed decision', release:1},
+    {text:'As a user, I can see availability and estimated delivery time so that I plan accordingly', release:1},
+    {text:'As a user, I can read ratings and reviews left by others so that I trust the quality before choosing', release:2}
   ],
   'manage|dashboard|overview': [
-    {text:'As a user, I can view my dashboard so I see all my active items', release:1},
-    {text:'As a user, I can filter and sort my items so I find what I need', release:2}
+    {text:'As a logged-in user, I can view a dashboard showing all my active items and their status so that I have a clear overview', release:1},
+    {text:'As a user, I can sort and filter my items by date or status so that I find what I need quickly', release:2},
+    {text:'As a user, I can export or download a summary of my items so that I have records offline', release:3}
   ],
   'edit|update|change|modify': [
-    {text:'As a user, I can edit my item so I keep information up to date', release:1},
-    {text:'As a user, I can save changes and see confirmation so I know it worked', release:1}
+    {text:'As a user, I can edit my item details and save the changes so that my information stays accurate', release:1},
+    {text:'As a user, I can see a confirmation message after saving so that I know the update was successful', release:1},
+    {text:'As a user, I can see the history of changes made so that I can revert if needed', release:3}
   ],
   'delete|cancel|remove': [
-    {text:'As a user, I can cancel or delete so I remove what I no longer need', release:1},
-    {text:'As a user, I am asked to confirm before deleting so I avoid accidents', release:1}
+    {text:'As a user, I can cancel or delete an item I no longer need so that my account stays clean', release:1},
+    {text:'As a user, I am shown a confirmation dialog before permanent deletion so that I avoid accidental loss', release:1},
+    {text:'As a user, I can restore a recently deleted item within 24 hours so that I recover from mistakes', release:2}
   ],
   'track|status|progress|history': [
-    {text:'As a user, I can track the status of my item so I stay informed', release:1},
-    {text:'As a user, I receive notifications on status changes so I don\'t have to check manually', release:2}
+    {text:'As a user, I can view the real-time status of my item so that I know where things stand without contacting support', release:1},
+    {text:'As a user, I can see a timeline of status changes so that I understand the full history', release:2},
+    {text:'As a user, I receive a push notification when the status changes so that I stay informed without checking manually', release:2}
   ],
   'support|help|contact|report|refund': [
-    {text:'As a user, I can contact support so I get help when something goes wrong', release:1},
-    {text:'As a user, I can report an issue so it gets investigated', release:2},
-    {text:'As a user, I can request a refund so I recover money for faulty service', release:2}
+    {text:'As a user experiencing an issue, I can contact support via a form so that I get help without leaving the app', release:1},
+    {text:'As a user, I can report a problem with a specific item so that it gets investigated promptly', release:1},
+    {text:'As a user, I can request a refund and track its status so that I know when to expect resolution', release:2},
+    {text:'As a user, I can find answers in a self-service FAQ so that I resolve common issues without waiting for support', release:2}
   ],
   'notify|notification|alert|reminder': [
-    {text:'As a user, I receive notifications so I stay updated on important events', release:1},
-    {text:'As a user, I can control which notifications I receive so I avoid spam', release:2}
+    {text:'As a user, I receive in-app notifications for key events so that I stay informed in real time', release:1},
+    {text:'As a user, I can control which types of notifications I receive so that I only see what matters to me', release:2},
+    {text:'As a user, I receive reminders before expiry or deadlines so that I take action in time', release:2}
   ],
   'pass|ticket|card|validity|travel|transit|bus': [
-    {text:'As a passenger, I can view my pass details and validity so I know it\'s active', release:1},
-    {text:'As a passenger, I can show my pass for validation so I can board', release:1},
-    {text:'As a passenger, I can renew my pass before it expires so service continues', release:2}
+    {text:'As a passenger, I can view my active pass with validity dates and zones so that I know it is ready to use', release:1},
+    {text:'As a passenger, I can show my digital pass on my phone for validation so that I board without a physical card', release:1},
+    {text:'As a passenger, I receive a reminder 7 days before my pass expires so that I renew in time', release:2},
+    {text:'As a passenger, I can view my travel history so that I track usage and costs', release:3}
   ]
 };
 
-function getStoriesForTask(taskTitle, activityTitle){
+// Check if a story text already exists in a task (dedup by normalized text)
+function storyExists(task, newText){
+  const norm = t => t.toLowerCase().replace(/\s+/g,' ').trim();
+  return task.stories.some(s => norm(s.text) === norm(newText));
+}
+
+// Get stories for a task, deduped against existing stories
+function getStoriesForTask(taskTitle, activityTitle, existingTask=null){
   const combined = (taskTitle + ' ' + activityTitle).toLowerCase();
+  let candidates = null;
   for(const [pattern, stories] of Object.entries(STORY_PATTERNS)){
     if(pattern.split('|').some(kw => combined.includes(kw))){
-      return stories.map(s=>({id:uid(), text:s.text, desc:'', release:s.release}));
+      candidates = stories; break;
     }
   }
-  // Generic fallback
-  return [
-    {id:uid(), text:`As a user, I can ${taskTitle.toLowerCase()} so I complete my goal`, desc:'', release:1}
-  ];
+  if(!candidates){
+    candidates = [{text:`As a user, I can ${taskTitle.toLowerCase()} so that I achieve my goal with the product`, release:1}];
+  }
+  return candidates
+    .filter(s => !existingTask || !storyExists(existingTask, s.text))
+    .map(s => ({id:uid(), text:s.text, desc:'', release:s.release}));
 }
 
 async function fillAllStories(targetActivityTitle=null){
@@ -1611,19 +1633,31 @@ async function fillAllStories(targetActivityTitle=null){
   let totalAdded = 0;
 
   if(token){
-    // AI fill — one activity at a time to avoid huge JSON
-    setIterStatus('✨ AI filling stories…');
+    setIterStatus('✨ AI filling stories (Jeff Patton format)…');
     for(const act of STATE.activities){
       if(targetActivityTitle && !act.title.toLowerCase().includes(targetActivityTitle.toLowerCase())) continue;
       for(const task of act.tasks){
-        if(task.stories.length > 0) continue; // skip already filled
         try{
           const res = await fetch('https://api.githubcopilot.com/chat/completions',{
             method:'POST',
             headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
-            body: JSON.stringify({model:'gpt-4o', max_tokens:300, messages:[
-              {role:'system', content:'You are a User Story Mapping expert. Return ONLY a JSON array — no markdown, no explanation. Each item: {"text":"As a [role], I can [action] so that [benefit]","release":1}. Release 1=MVP, 2=next, 3=later.'},
-              {role:'user', content:`Product context: ${STATE.context||'general app'}\nActivity: "${act.title}"\nTask: "${task.title}"\n\nGenerate 2-3 user stories for this task. Return JSON array only.`}
+            body: JSON.stringify({model:'gpt-4o', max_tokens:400, messages:[
+              {role:'system', content:`You are a User Story Mapping expert following Jeff Patton's methodology.
+Return ONLY a valid JSON array — no markdown, no explanation outside the array.
+Each story must follow the exact format: "As a [specific persona], I can [specific action] so that [clear outcome/benefit]"
+Rules:
+- Use a specific persona (not just "user") matching the product context
+- Each story is a thin, independently valuable slice
+- Release 1 = MVP walking skeleton (must-have), Release 2 = enrichment, Release 3 = delight/edge cases
+- 2-3 stories per task maximum
+- No duplicate meaning across stories
+Return format: [{"text":"As a ...","release":1},{"text":"As a ...","release":2}]`},
+              {role:'user', content:`Product context: ${STATE.context||'general app'}
+Activity: "${act.title}" — ${act.desc||''}
+Task: "${task.title}" — ${task.desc||''}
+Existing stories (avoid duplicating these): ${task.stories.map(s=>s.text).join(' | ')||'none'}
+
+Generate 2-3 non-duplicate user stories for this task. JSON array only.`}
             ]})
           });
           if(res.ok){
@@ -1631,22 +1665,27 @@ async function fillAllStories(targetActivityTitle=null){
             const raw = (d.choices?.[0]?.message?.content||'').replace(/```json|```/g,'').trim();
             const parsed = JSON.parse(raw);
             if(Array.isArray(parsed)){
-              parsed.forEach(s=>{ task.stories.push({id:uid(),text:s.text,desc:s.desc||'',release:s.release||1}); totalAdded++; });
+              parsed.forEach(s=>{
+                if(!storyExists(task, s.text)){
+                  task.stories.push({id:uid(),text:s.text,desc:s.desc||'',release:s.release||1});
+                  totalAdded++;
+                }
+              });
             }
           }
-        } catch(e){ /* fallback for this task */
-          getStoriesForTask(task.title, act.title).forEach(s=>{task.stories.push(s); totalAdded++;});
+        } catch(e){
+          // Pattern fallback with dedup
+          getStoriesForTask(task.title, act.title, task).forEach(s=>{task.stories.push(s); totalAdded++;});
         }
-        setIterStatus(`✨ Filling stories… ${totalAdded} added so far`);
+        setIterStatus(`✨ Filling stories… ${totalAdded} added`);
       }
     }
   } else {
-    // Local pattern fill
+    // Local pattern fill with dedup
     STATE.activities.forEach(act=>{
       if(targetActivityTitle && !act.title.toLowerCase().includes(targetActivityTitle.toLowerCase())) return;
       act.tasks.forEach(task=>{
-        if(task.stories.length > 0) return;
-        getStoriesForTask(task.title, act.title).forEach(s=>{task.stories.push(s); totalAdded++;});
+        getStoriesForTask(task.title, act.title, task).forEach(s=>{task.stories.push(s); totalAdded++;});
       });
     });
   }
