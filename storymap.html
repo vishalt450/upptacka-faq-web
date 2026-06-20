@@ -214,6 +214,25 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
 #iter-send:hover{background:#1976d2;}
 #iter-send:disabled{opacity:.5;cursor:not-allowed;}
 
+
+/* ── OUTCOMES PANEL ── */
+#outcomes-panel{background:var(--white);border-bottom:2px solid #7c3aed;padding:12px 20px;flex-shrink:0;display:none;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+#outcomes-panel.open{display:block;}
+.outcome-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.outcome-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
+.outcome-title-inp{border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;width:160px;color:var(--text);font-family:inherit;}
+.outcome-stmt-inp{flex:1;border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;color:var(--text);font-family:inherit;}
+.outcome-title-inp:focus,.outcome-stmt-inp:focus{outline:none;border-color:#7c3aed;}
+.out-btn{background:#7c3aed;color:#fff;border:none;border-radius:6px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;}
+.out-btn:hover{background:#6d28d9;}
+.out-btn.sec{background:transparent;border:1.5px solid #7c3aed;color:#7c3aed;}
+.out-btn.sec:hover{background:#f5f3ff;}
+.outcome-tag{display:inline-block;font-size:9px;font-weight:800;padding:1px 5px;border-radius:4px;margin-right:2px;vertical-align:middle;}
+.pe-card{background:#f5f3ff;border:1px solid #ddd6fe;border-radius:8px;padding:9px 12px;margin-top:6px;}
+.pe-card h5{font-size:11px;font-weight:700;color:#6d28d9;margin-bottom:3px;}
+.pe-card p{font-size:11px;color:var(--text);line-height:1.5;}
+.pe-badge{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;background:#ede9fe;color:#6d28d9;vertical-align:middle;}
+
 </style>
 </head>
 <body>
@@ -225,6 +244,7 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
   <span class="meta" id="map-stats"></span>
   <span class="header-divider"></span>
   <button class="hdr-btn" onclick="toggleCtx()" title="Set product context">📋 Context</button>
+  <button class="hdr-btn" onclick="toggleOutcomes()" title="Define target outcomes (Jeff Patton method)">🎯 Outcomes</button>
   <button class="hdr-btn active" onclick="toggleRelease(1)" id="rbtn1">R1</button>
   <button class="hdr-btn" onclick="toggleRelease(2)" id="rbtn2">R2</button>
   <button class="hdr-btn" onclick="toggleRelease(3)" id="rbtn3">R3</button>
@@ -262,6 +282,20 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
     </div>
   </div>
   <div id="attach-list"></div>
+</div>
+
+<!-- OUTCOMES PANEL -->
+<div id="outcomes-panel">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+    <div class="ctx-label" style="color:#7c3aed;margin:0;">🎯 Target Outcomes — agree with pdex, then AI slices the map (Jeff Patton method)</div>
+    <div style="display:flex;gap:6px;">
+      <button class="out-btn sec" onclick="addOutcome()">＋ Outcome</button>
+      <button class="out-btn" onclick="analyzeOutcomes()">🤖 Analyze &amp; Slice</button>
+      <button class="out-btn sec" id="promote-btn" style="display:none" onclick="promoteOutcomeStories()">⬆ Promote to R1</button>
+    </div>
+  </div>
+  <div id="outcomes-list"></div>
+  <div id="portfolio-result"></div>
 </div>
 
 <!-- MAIN -->
@@ -436,7 +470,7 @@ const DEFAULT_STATE = {
   visibleReleases:[1,2,3],
   releases: RELEASES,
   aiSuggestions:[], clusters:{},
-  attachments:[],
+  attachments:[], outcomes:[], portfolioEpics:[],
   activities: []
 };
 
@@ -458,6 +492,8 @@ function loadState(){
       if(!STATE.chatHistory) STATE.chatHistory = [];
       if(!STATE.clusters) STATE.clusters = {};
       if(!STATE.attachments) STATE.attachments = [];
+      if(!STATE.outcomes) STATE.outcomes = [];
+      if(!STATE.portfolioEpics) STATE.portfolioEpics = [];
     }
   }catch(e){ console.error('loadState failed:', e); }
 }
@@ -518,7 +554,7 @@ function renderBoard(){
 
     col.innerHTML = `
       <div class="activity-header" ondblclick="editActivity('${act.id}')">
-        <h3>${esc(act.title)}${(STATE.clusters&&STATE.clusters[act.id]!==undefined)?`<span class="cluster-badge cl${STATE.clusters[act.id]%5}">C${STATE.clusters[act.id]+1}</span>`:''}</h3>
+        <h3>${esc(act.title)}${(STATE.clusters&&STATE.clusters[act.id]!==undefined)?`<span class="cluster-badge cl${STATE.clusters[act.id]%5}">C${STATE.clusters[act.id]+1}</span>`:''} ${(()=>{const pe=(STATE.portfolioEpics||[]).find(p=>(p.activityIds||[]).includes(act.id));return pe?`<span class="pe-badge" title="${esc(pe.name)}">📦 ${esc(pe.name.substring(0,16))}</span>`:'';})()} </h3>
         <div class="act-meta">${act.tasks.length} tasks${act.desc?` · <span style="font-weight:400;font-style:italic;opacity:.9">${esc(act.desc.substring(0,60))}${act.desc.length>60?'…':''}</span>`:''}</div>
         <div class="act-actions">
           <button class="act-btn" onclick="suggestTasksForActivity('${act.id}')" title="AI: suggest tasks">✨</button>
@@ -597,8 +633,15 @@ function renderTask(t, actId){
 }
 
 function renderStory(s){
+  const outTags = (STATE.outcomes||[]).filter(o=>(o.linkedStoryIds||[]).includes(s.id))
+    .map((o,_,arr)=>{
+      const idx=(STATE.outcomes||[]).indexOf(o);
+      const c=OUTCOME_COLORS[idx%OUTCOME_COLORS.length];
+      const bg=OUTCOME_LIGHT[idx%OUTCOME_LIGHT.length];
+      return `<span class="outcome-tag" style="background:${bg};color:${c};border:1px solid ${c}40" title="${esc(o.title||'Outcome')}">${esc((o.title||'O'+(idx+1)).substring(0,4))}</span>`;
+    }).join('');
   return `<div class="story-card r${s.release||1}" id="story-${s.id}" data-story-id="${s.id}">
-    <span class="r-badge r${s.release||1}" onclick="cycleRelease('${s.id}')" title="Click to change release">R${s.release||1}</span>${esc(s.text)}${s.desc?`<div style="font-size:10px;color:#888;margin-top:2px;font-style:italic;">${esc(s.desc.substring(0,70))}${s.desc.length>70?'…':''}</div>`:''}
+    <span class="r-badge r${s.release||1}" onclick="cycleRelease('${s.id}')" title="Click to change release">R${s.release||1}</span>${outTags}${esc(s.text)}${s.desc?`<div style="font-size:10px;color:#888;margin-top:2px;font-style:italic;">${esc(s.desc.substring(0,70))}${s.desc.length>70?'…':''}</div>`:''}
     <div class="s-actions">
       <button class="s-btn" onclick="editStory('${s.id}')" title="Edit">✏</button>
       <button class="s-btn del" onclick="deleteStory('${s.id}')" title="Delete">✕</button>
@@ -1557,6 +1600,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
   renderBoard();
   renderAnalysis();
   renderAttachments();
+  renderOutcomePanel();
+  renderPortfolioEpics();
   // init release buttons
   [1,2,3].forEach(r=>{
     const btn=document.getElementById('rbtn'+r);
@@ -1831,6 +1876,121 @@ function buildMessagesWithAttachments(systemPrompt, userText, extraHistory=[]){
     ? [{type:'text',text:userText},...images.map(img=>({type:'image_url',image_url:{url:img.content}}))]
     : userText;
   return [{role:'system',content:sys},...extraHistory,{role:'user',content:userContent}];
+}
+
+
+// ── OUTCOMES (Jeff Patton) ─────────────────────────────────
+const OUTCOME_COLORS = ['#7c3aed','#0284c7','#059669','#d97706','#dc2626'];
+const OUTCOME_LIGHT  = ['#f5f3ff','#e0f2fe','#dcfce7','#fef3c7','#fee2e2'];
+
+function toggleOutcomes(){
+  const p=document.getElementById('outcomes-panel');
+  p.classList.toggle('open');
+  if(p.classList.contains('open') && !(STATE.outcomes||[]).length) addOutcome();
+  renderOutcomePanel();
+  renderPortfolioEpics();
+}
+function addOutcome(){
+  if(!STATE.outcomes) STATE.outcomes=[];
+  STATE.outcomes.push({id:uid(), title:'', statement:'', linkedStoryIds:[], linkedTaskIds:[], sliceSummary:''});
+  renderOutcomePanel();
+}
+function removeOutcome(id){
+  STATE.outcomes=(STATE.outcomes||[]).filter(o=>o.id!==id);
+  renderOutcomePanel();
+  renderBoard();
+}
+function renderOutcomePanel(){
+  const list=document.getElementById('outcomes-list');
+  if(!list) return;
+  list.innerHTML=(STATE.outcomes||[]).map((o,i)=>`
+    <div class="outcome-row">
+      <div class="outcome-dot" style="background:${OUTCOME_COLORS[i%OUTCOME_COLORS.length]}"></div>
+      <input class="outcome-title-inp" placeholder="Short name (e.g. Staff Nav)" value="${esc(o.title)}"
+             oninput="(STATE.outcomes.find(x=>x.id==='${o.id}')||{}).title=this.value">
+      <input class="outcome-stmt-inp" placeholder="After R1, [user] can [do X], resulting in [Y]…" value="${esc(o.statement)}"
+             oninput="(STATE.outcomes.find(x=>x.id==='${o.id}')||{}).statement=this.value">
+      ${o.sliceSummary?`<span style="font-size:10px;color:#7c3aed;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;" title="${esc(o.sliceSummary)}">✓ ${esc(o.sliceSummary.substring(0,50))}</span>`:''}
+      <button style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:17px;flex-shrink:0;" onclick="removeOutcome('${o.id}')">×</button>
+    </div>`).join('');
+}
+function renderPortfolioEpics(){
+  const el=document.getElementById('portfolio-result');
+  if(!el) return;
+  const pes=STATE.portfolioEpics||[];
+  if(!pes.length){el.innerHTML='';return;}
+  el.innerHTML='<div style="margin-top:10px;"><div class="ctx-label" style="color:#7c3aed;margin-bottom:6px;">📦 Portfolio Epic Suggestions (from your map)</div>'+
+    pes.map(pe=>{
+      const acts=STATE.activities.filter(a=>(pe.activityIds||[]).includes(a.id));
+      return `<div class="pe-card">
+        <h5>📦 ${esc(pe.name)}</h5>
+        <p><strong>Covers:</strong> ${acts.length?acts.map(a=>esc(a.title)).join(' · '):'(activities on map)'}</p>
+        <p style="margin-top:3px;color:var(--muted)">${esc(pe.rationale||'')}</p>
+        ${pe.outcomeAlignment?`<p style="margin-top:3px"><span class="pe-badge">→ ${esc(pe.outcomeAlignment)}</span></p>`:''}
+      </div>`;
+    }).join('')+'</div>';
+}
+async function analyzeOutcomes(){
+  if(!STATE.activities.length){showToast('⚠️ Build your map first — no activities yet.');return;}
+  const defined=(STATE.outcomes||[]).filter(o=>o.statement.trim());
+  if(!defined.length){showToast('⚠️ Write at least one outcome statement first.');return;}
+  const token=await getTokenSilent();
+  if(!token){showToast('⚠️ Token server not running. Run bash token-server.sh');return;}
+  showToast('🔍 AI analyzing outcomes using Jeff Patton slice method…');
+  const mapData={activities:STATE.activities.map(a=>({
+    id:a.id,title:a.title,desc:a.desc||'',
+    tasks:a.tasks.map(t=>({id:t.id,title:t.title,
+      stories:t.stories.map(s=>({id:s.id,text:s.text,release:s.release||1}))}))
+  }))};
+  const systemPrompt=`You are a User Story Mapping expert (Jeff Patton methodology).
+For each outcome, identify the MINIMUM set of stories that form a horizontal slice across ALL activities — the "walking skeleton" that achieves the outcome.
+Also suggest Portfolio Epics by grouping related activities under a business theme.
+Return ONLY valid JSON (no markdown fences):
+{
+  "outcomeLinks":[{"outcomeId":"string","linkedStoryIds":["id",...],"linkedTaskIds":["id",...],"sliceSummary":"1 sentence on what this slice enables"}],
+  "portfolioEpics":[{"name":"short name","activityIds":["id",...],"rationale":"why these form a portfolio epic","outcomeAlignment":"which outcome this primarily serves"}]
+}`;
+  const userMsg=`Outcomes:
+${defined.map((o,i)=>`${i+1}. id="${o.id}" name="${o.title}" statement: ${o.statement}`).join('\n')}\n\nStory Map:
+${JSON.stringify(mapData,null,2)}`;
+  try{
+    const resp=await fetch('https://api.githubcopilot.com/chat/completions',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+      body:JSON.stringify({model:'gpt-4o',messages:buildMessagesWithAttachments(systemPrompt,userMsg),max_tokens:1500})
+    });
+    if(!resp.ok){showToast('❌ API error: '+resp.status);if(resp.status===401)localStorage.removeItem('copilot_token');return;}
+    const data=await resp.json();
+    const raw=(data.choices[0].message.content||'').replace(/^```json\s*/,'').replace(/\s*```$/,'').trim();
+    const result=JSON.parse(raw);
+    (result.outcomeLinks||[]).forEach(link=>{
+      const o=STATE.outcomes.find(x=>x.id===link.outcomeId);
+      if(o){o.linkedStoryIds=link.linkedStoryIds||[];o.linkedTaskIds=link.linkedTaskIds||[];o.sliceSummary=link.sliceSummary||'';}
+    });
+    STATE.portfolioEpics=result.portfolioEpics||[];
+    saveState();
+    renderBoard();
+    renderOutcomePanel();
+    renderPortfolioEpics();
+    const promoteBtn=document.getElementById('promote-btn');
+    if(promoteBtn) promoteBtn.style.display='inline-block';
+    const totalTagged=(STATE.outcomes||[]).reduce((n,o)=>n+(o.linkedStoryIds||[]).length,0);
+    showToast(`✅ Done — ${totalTagged} stories tagged across ${(STATE.portfolioEpics||[]).length} portfolio epics`);
+  }catch(e){showToast('❌ Analysis failed: '+e.message);console.error(e);}
+}
+function promoteOutcomeStories(){
+  let promoted=0;
+  (STATE.outcomes||[]).forEach(o=>{
+    (o.linkedStoryIds||[]).forEach(sid=>{
+      STATE.activities.forEach(a=>a.tasks.forEach(t=>{
+        const s=t.stories.find(x=>x.id===sid);
+        if(s&&parseInt(s.release)!==1){s.release=1;promoted++;}
+      }));
+    });
+  });
+  if(!promoted){showToast('ℹ️ All tagged stories are already in R1.');return;}
+  saveState();renderBoard();
+  showToast('⬆️ '+promoted+' stories promoted to R1!');
 }
 
 async function getTokenSilent(){
