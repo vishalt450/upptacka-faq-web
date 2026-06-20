@@ -216,18 +216,23 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
 
 
 /* ── OUTCOMES PANEL ── */
-#outcomes-panel{background:var(--white);border-bottom:2px solid #7c3aed;padding:12px 20px;flex-shrink:0;display:none;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+#outcomes-panel{background:var(--white);border-bottom:2px solid #7c3aed;padding:10px 20px;flex-shrink:0;display:none;box-shadow:0 2px 8px rgba(0,0,0,.06);}
 #outcomes-panel.open{display:block;}
-.outcome-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
-.outcome-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
-.outcome-title-inp{border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;width:160px;color:var(--text);font-family:inherit;}
-.outcome-stmt-inp{flex:1;border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;color:var(--text);font-family:inherit;}
+#outcomes-list{max-height:110px;overflow-y:auto;}
+.outcome-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.outcome-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.outcome-title-inp{border:1px solid var(--border);border-radius:6px;padding:4px 9px;font-size:12px;font-weight:600;width:140px;color:var(--text);font-family:inherit;flex-shrink:0;}
+.outcome-stmt-inp{flex:1;min-width:0;border:1px solid var(--border);border-radius:6px;padding:4px 9px;font-size:12px;color:var(--text);font-family:inherit;}
 .outcome-title-inp:focus,.outcome-stmt-inp:focus{outline:none;border-color:#7c3aed;}
+.outcome-slice-summary{font-size:10px;color:#7c3aed;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;}
 .out-btn{background:#7c3aed;color:#fff;border:none;border-radius:6px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;}
 .out-btn:hover{background:#6d28d9;}
 .out-btn.sec{background:transparent;border:1.5px solid #7c3aed;color:#7c3aed;}
 .out-btn.sec:hover{background:#f5f3ff;}
+/* Outcome highlight on story cards */
+.story-card.outcome-hi{position:relative;}
 .outcome-tag{display:inline-block;font-size:9px;font-weight:800;padding:1px 5px;border-radius:4px;margin-right:2px;vertical-align:middle;}
+/* Portfolio epics in sidebar */
 .pe-card{background:#f5f3ff;border:1px solid #ddd6fe;border-radius:8px;padding:9px 12px;margin-top:6px;}
 .pe-card h5{font-size:11px;font-weight:700;color:#6d28d9;margin-bottom:3px;}
 .pe-card p{font-size:11px;color:var(--text);line-height:1.5;}
@@ -287,7 +292,7 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
 <!-- OUTCOMES PANEL -->
 <div id="outcomes-panel">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-    <div class="ctx-label" style="color:#7c3aed;margin:0;">🎯 Target Outcomes — agree with pdex, then AI slices the map (Jeff Patton method)</div>
+    <div class="ctx-label" style="color:#7c3aed;margin:0;">🎯 Target Outcomes — agree with pdex, AI highlights the slice on the map below</div>
     <div style="display:flex;gap:6px;">
       <button class="out-btn sec" onclick="addOutcome()">＋ Outcome</button>
       <button class="out-btn" onclick="analyzeOutcomes()">🤖 Analyze &amp; Slice</button>
@@ -295,7 +300,6 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
     </div>
   </div>
   <div id="outcomes-list"></div>
-  <div id="portfolio-result"></div>
 </div>
 
 <!-- MAIN -->
@@ -633,14 +637,19 @@ function renderTask(t, actId){
 }
 
 function renderStory(s){
-  const outTags = (STATE.outcomes||[]).filter(o=>(o.linkedStoryIds||[]).includes(s.id))
-    .map((o,_,arr)=>{
-      const idx=(STATE.outcomes||[]).indexOf(o);
-      const c=OUTCOME_COLORS[idx%OUTCOME_COLORS.length];
-      const bg=OUTCOME_LIGHT[idx%OUTCOME_LIGHT.length];
-      return `<span class="outcome-tag" style="background:${bg};color:${c};border:1px solid ${c}40" title="${esc(o.title||'Outcome')}">${esc((o.title||'O'+(idx+1)).substring(0,4))}</span>`;
-    }).join('');
-  return `<div class="story-card r${s.release||1}" id="story-${s.id}" data-story-id="${s.id}">
+  const taggedOutcomes = (STATE.outcomes||[]).filter(o=>(o.linkedStoryIds||[]).includes(s.id));
+  const firstTag = taggedOutcomes[0];
+  const tagIdx = firstTag ? (STATE.outcomes||[]).indexOf(firstTag) : -1;
+  const hiColor = tagIdx>=0 ? OUTCOME_COLORS[tagIdx%OUTCOME_COLORS.length] : null;
+  const hiBg    = tagIdx>=0 ? OUTCOME_LIGHT[tagIdx%OUTCOME_LIGHT.length]   : null;
+  const outTags = taggedOutcomes.map((o,_,__)=>{
+    const idx=(STATE.outcomes||[]).indexOf(o);
+    const c=OUTCOME_COLORS[idx%OUTCOME_COLORS.length];
+    const bg=OUTCOME_LIGHT[idx%OUTCOME_LIGHT.length];
+    return `<span class="outcome-tag" style="background:${bg};color:${c};border:1px solid ${c}55" title="${esc(o.title||'Outcome')}">${esc((o.title||'O'+(idx+1)).substring(0,5))}</span>`;
+  }).join('');
+  const hiStyle = hiColor ? `background:${hiBg};box-shadow:0 0 0 2px ${hiColor};border-color:${hiColor}40;` : '';
+  return `<div class="story-card r${s.release||1}${hiColor?' outcome-hi':''}" id="story-${s.id}" data-story-id="${s.id}" style="${hiStyle}">
     <span class="r-badge r${s.release||1}" onclick="cycleRelease('${s.id}')" title="Click to change release">R${s.release||1}</span>${outTags}${esc(s.text)}${s.desc?`<div style="font-size:10px;color:#888;margin-top:2px;font-style:italic;">${esc(s.desc.substring(0,70))}${s.desc.length>70?'…':''}</div>`:''}
     <div class="s-actions">
       <button class="s-btn" onclick="editStory('${s.id}')" title="Edit">✏</button>
@@ -1276,6 +1285,38 @@ function renderAnalysis(){
   const emptyTasks = allTasks.filter(t=>t.stories.length===0);
   let html = '';
 
+  // ── Outcomes & Portfolio Epics (shown at top when present) ──
+  const activeOutcomes = (STATE.outcomes||[]).filter(o=>(o.linkedStoryIds||[]).length>0);
+  const pes = STATE.portfolioEpics||[];
+  if(activeOutcomes.length || pes.length){
+    html += `<div class="a-card" style="border:1px solid #ddd6fe;background:#faf5ff;">
+      <h4 style="color:#6d28d9;">🎯 Outcome Slices</h4>`;
+    activeOutcomes.forEach((o,i)=>{
+      const idx=(STATE.outcomes||[]).indexOf(o);
+      const c=OUTCOME_COLORS[idx%OUTCOME_COLORS.length];
+      const bg=OUTCOME_LIGHT[idx%OUTCOME_LIGHT.length];
+      html+=`<div style="margin-bottom:6px;padding:6px 8px;border-radius:6px;background:${bg};border:1px solid ${c}40;">
+        <div style="font-size:11px;font-weight:700;color:${c};margin-bottom:2px;">${esc(o.title||'Outcome '+(idx+1))}</div>
+        <div style="font-size:10px;color:#555;">${esc(o.sliceSummary||o.statement||'')}</div>
+        <div style="font-size:10px;margin-top:3px;color:${c};font-weight:600;">${(o.linkedStoryIds||[]).length} stories highlighted on map</div>
+      </div>`;
+    });
+    if(pes.length){
+      html+=`<div style="margin-top:6px;"><div style="font-size:10px;font-weight:700;color:#6d28d9;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">📦 Portfolio Epics</div>`;
+      pes.forEach(pe=>{
+        const acts=STATE.activities.filter(a=>(pe.activityIds||[]).includes(a.id));
+        html+=`<div class="pe-card" style="margin-top:4px;">
+          <h5>📦 ${esc(pe.name)}</h5>
+          <p><strong>Covers:</strong> ${acts.length?acts.map(a=>esc(a.title)).join(' · '):'see map'}</p>
+          <p style="color:var(--muted)">${esc(pe.rationale||'')}</p>
+          ${pe.outcomeAlignment?`<span class="pe-badge">→ ${esc(pe.outcomeAlignment)}</span>`:''}
+        </div>`;
+      });
+      html+='</div>';
+    }
+    html+='</div>';
+  }
+
   // Map health
   html += `<div class="a-card"><h4>📊 Map Health</h4>
     <div class="a-stat"><span>Activities</span><span class="val">${STATE.activities.length}</span></div>
@@ -1910,25 +1951,13 @@ function renderOutcomePanel(){
              oninput="(STATE.outcomes.find(x=>x.id==='${o.id}')||{}).title=this.value">
       <input class="outcome-stmt-inp" placeholder="After R1, [user] can [do X], resulting in [Y]…" value="${esc(o.statement)}"
              oninput="(STATE.outcomes.find(x=>x.id==='${o.id}')||{}).statement=this.value">
-      ${o.sliceSummary?`<span style="font-size:10px;color:#7c3aed;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;" title="${esc(o.sliceSummary)}">✓ ${esc(o.sliceSummary.substring(0,50))}</span>`:''}
+      ${(o.linkedStoryIds||[]).length?`<span class="outcome-slice-summary" title="${esc(o.sliceSummary||'')}">✓ ${(o.linkedStoryIds||[]).length} stories tagged</span>`:''}
       <button style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:17px;flex-shrink:0;" onclick="removeOutcome('${o.id}')">×</button>
     </div>`).join('');
 }
 function renderPortfolioEpics(){
-  const el=document.getElementById('portfolio-result');
-  if(!el) return;
-  const pes=STATE.portfolioEpics||[];
-  if(!pes.length){el.innerHTML='';return;}
-  el.innerHTML='<div style="margin-top:10px;"><div class="ctx-label" style="color:#7c3aed;margin-bottom:6px;">📦 Portfolio Epic Suggestions (from your map)</div>'+
-    pes.map(pe=>{
-      const acts=STATE.activities.filter(a=>(pe.activityIds||[]).includes(a.id));
-      return `<div class="pe-card">
-        <h5>📦 ${esc(pe.name)}</h5>
-        <p><strong>Covers:</strong> ${acts.length?acts.map(a=>esc(a.title)).join(' · '):'(activities on map)'}</p>
-        <p style="margin-top:3px;color:var(--muted)">${esc(pe.rationale||'')}</p>
-        ${pe.outcomeAlignment?`<p style="margin-top:3px"><span class="pe-badge">→ ${esc(pe.outcomeAlignment)}</span></p>`:''}
-      </div>`;
-    }).join('')+'</div>';
+  // Portfolio epics live in the Analysis Panel sidebar, not the outcomes panel
+  renderAnalysis();
 }
 async function analyzeOutcomes(){
   if(!STATE.activities.length){showToast('⚠️ Build your map first — no activities yet.');return;}
