@@ -229,8 +229,9 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
 .out-btn:hover{background:#6d28d9;}
 .out-btn.sec{background:transparent;border:1.5px solid #7c3aed;color:#7c3aed;}
 .out-btn.sec:hover{background:#f5f3ff;}
-/* Outcome highlight on story cards */
-.story-card.outcome-hi{position:relative;}
+/* Outcome slice band at top of stories area */
+.outcome-slice-band{background:#f5f3ff;border:1.5px solid #c4b5fd;border-radius:8px;padding:5px 6px;margin-bottom:5px;}
+.outcome-slice-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#7c3aed;margin-bottom:4px;display:flex;align-items:center;gap:4px;}
 .outcome-tag{display:inline-block;font-size:9px;font-weight:800;padding:1px 5px;border-radius:4px;margin-right:2px;vertical-align:middle;}
 /* Portfolio epics in sidebar */
 .pe-card{background:#f5f3ff;border:1px solid #ddd6fe;border-radius:8px;padding:9px 12px;margin-top:6px;}
@@ -602,17 +603,18 @@ function renderBoard(){
 }
 
 function renderTask(t, actId){
-  // Sort stories: R1 first, then R2, R3; within R1 outcome-tagged stories come first
   const outcomeIds = new Set((STATE.outcomes||[]).flatMap(o=>o.linkedStoryIds||[]));
-  const sorted = [...t.stories].sort((a,b)=>{
-    const ra=parseInt(a.release)||1, rb=parseInt(b.release)||1;
-    if(ra!==rb) return ra-rb;
-    if(ra===1){ // within R1: outcome-tagged first
-      const ao=outcomeIds.has(a.id), bo=outcomeIds.has(b.id);
-      if(ao&&!bo) return -1; if(!ao&&bo) return 1;
-    }
-    return 0;
-  });
+  const outcomeStories = t.stories.filter(s=>outcomeIds.has(s.id));
+  const otherStories   = t.stories.filter(s=>!outcomeIds.has(s.id));
+  // Sort other stories R1 → R2 → R3
+  otherStories.sort((a,b)=>(parseInt(a.release)||1)-(parseInt(b.release)||1));
+
+  const outcomeband = outcomeStories.length ? `
+    <div class="outcome-slice-band">
+      <div class="outcome-slice-label">🎯 Outcome Slice</div>
+      ${outcomeStories.map(s=>renderStory(s)).join('')}
+    </div>` : '';
+
   return `
     <div class="task-card" id="task-${t.id}" data-task-id="${t.id}" data-act-id="${actId}" ondblclick="editTask('${t.id}','${actId}')">
       ${esc(t.title)}${t.desc?`<div style="font-size:10px;font-weight:400;color:#888;margin-top:2px;white-space:normal;">${esc(t.desc.substring(0,80))}${t.desc.length>80?'…':''}</div>`:''}
@@ -622,8 +624,9 @@ function renderTask(t, actId){
       </div>
     </div>
     <div class="stories-area" id="stories-${t.id}">
+      ${outcomeband}
       ${[1,2,3].filter(r=>STATE.visibleReleases.includes(r)).map(r=>{
-        const rs = sorted.filter(s=>(parseInt(s.release)||1)===r);
+        const rs = otherStories.filter(s=>(parseInt(s.release)||1)===r);
         return rs.length>0 ? `
           <div class="release-band">
             <div class="release-label r${r}">${(STATE.releases||RELEASES)[r-1]}</div>
