@@ -2008,18 +2008,19 @@ ${JSON.stringify(mapData,null,2)}`;
   }catch(e){showToast('❌ Analysis failed: '+e.message);console.error(e);}
 }
 function promoteOutcomeStories(){
+  const allLinkedIds = new Set((STATE.outcomes||[]).flatMap(o=>o.linkedStoryIds||[]));
+  if(!allLinkedIds.size){showToast('ℹ️ No tagged stories. Run Analyze & Slice first.');return;}
   let promoted=0;
-  (STATE.outcomes||[]).forEach(o=>{
-    (o.linkedStoryIds||[]).forEach(sid=>{
-      STATE.activities.forEach(a=>a.tasks.forEach(t=>{
-        const s=t.stories.find(x=>x.id===sid);
-        if(s&&parseInt(s.release)!==1){s.release=1;promoted++;}
-      }));
-    });
-  });
-  if(!promoted){showToast('ℹ️ All tagged stories are already in R1.');return;}
+  STATE.activities.forEach(a=>a.tasks.forEach(t=>{
+    const toPromote = t.stories.filter(s=>allLinkedIds.has(s.id));
+    const others    = t.stories.filter(s=>!allLinkedIds.has(s.id));
+    toPromote.forEach(s=>{ if(parseInt(s.release)!==1){s.release=1;promoted++;} });
+    // Move outcome stories to the top of the list so they appear first in R1 band
+    t.stories = [...toPromote, ...others];
+  }));
+  if(!promoted){showToast('ℹ️ Tagged stories are already in R1 at the top.');return;}
   saveState();renderBoard();
-  showToast('⬆️ '+promoted+' stories promoted to R1!');
+  showToast('⬆️ '+promoted+' stories moved to R1 — top layer!');
 }
 
 async function getTokenSilent(){
