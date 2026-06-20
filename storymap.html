@@ -602,7 +602,17 @@ function renderBoard(){
 }
 
 function renderTask(t, actId){
-  const stories = t.stories.filter(s => STATE.visibleReleases.includes(parseInt(s.release)||1));
+  // Sort stories: R1 first, then R2, R3; within R1 outcome-tagged stories come first
+  const outcomeIds = new Set((STATE.outcomes||[]).flatMap(o=>o.linkedStoryIds||[]));
+  const sorted = [...t.stories].sort((a,b)=>{
+    const ra=parseInt(a.release)||1, rb=parseInt(b.release)||1;
+    if(ra!==rb) return ra-rb;
+    if(ra===1){ // within R1: outcome-tagged first
+      const ao=outcomeIds.has(a.id), bo=outcomeIds.has(b.id);
+      if(ao&&!bo) return -1; if(!ao&&bo) return 1;
+    }
+    return 0;
+  });
   return `
     <div class="task-card" id="task-${t.id}" data-task-id="${t.id}" data-act-id="${actId}" ondblclick="editTask('${t.id}','${actId}')">
       ${esc(t.title)}${t.desc?`<div style="font-size:10px;font-weight:400;color:#888;margin-top:2px;white-space:normal;">${esc(t.desc.substring(0,80))}${t.desc.length>80?'…':''}</div>`:''}
@@ -613,7 +623,7 @@ function renderTask(t, actId){
     </div>
     <div class="stories-area" id="stories-${t.id}">
       ${[1,2,3].filter(r=>STATE.visibleReleases.includes(r)).map(r=>{
-        const rs = t.stories.filter(s=>(parseInt(s.release)||1)===r);
+        const rs = sorted.filter(s=>(parseInt(s.release)||1)===r);
         return rs.length>0 ? `
           <div class="release-band">
             <div class="release-label r${r}">${(STATE.releases||RELEASES)[r-1]}</div>
