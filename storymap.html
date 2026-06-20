@@ -1985,12 +1985,16 @@ async function analyzeOutcomes(){
       stories:t.stories.map(s=>({id:s.id,text:s.text,release:s.release||1}))}))
   }))};
   const systemPrompt=`You are a User Story Mapping expert (Jeff Patton methodology).
-For each outcome, identify the MINIMUM set of stories that form a horizontal slice across ALL activities — the "walking skeleton" that achieves the outcome.
-Also suggest Portfolio Epics by grouping related activities under a business theme.
+For each outcome, walk the backbone LEFT to RIGHT. For each activity:
+1. Find an EXISTING story that enables this outcome → add its id to linkedStoryIds
+2. If NO suitable story exists in that activity → CREATE one in newStories (Patton format: "As a [specific persona], I can [action] so that [outcome]")
+The goal is a complete horizontal slice — every activity must contribute at least one story to the outcome.
+Also suggest Portfolio Epics grouping related activities.
 Return ONLY valid JSON (no markdown fences):
 {
-  "outcomeLinks":[{"outcomeId":"string","linkedStoryIds":["id",...],"linkedTaskIds":["id",...],"sliceSummary":"1 sentence on what this slice enables"}],
-  "portfolioEpics":[{"name":"short name","activityIds":["id",...],"rationale":"why these form a portfolio epic","outcomeAlignment":"which outcome this primarily serves"}]
+  "outcomeLinks":[{"outcomeId":"string","linkedStoryIds":["existing-id",...],"linkedTaskIds":["task-id",...],"sliceSummary":"1 sentence"}],
+  "newStories":[{"outcomeId":"string","taskId":"string","activityTitle":"string","taskTitle":"string","text":"As a [persona], I can [action] so that [outcome]","release":1,"reason":"why this story was missing"}],
+  "portfolioEpics":[{"name":"short name","activityIds":["id",...],"rationale":"string","outcomeAlignment":"string"}]
 }`;
   const userMsg=`Outcomes:
 ${defined.map((o,i)=>`${i+1}. id="${o.id}" name="${o.title}" statement: ${o.statement}`).join('\n')}\n\nStory Map:
@@ -2005,10 +2009,32 @@ ${JSON.stringify(mapData,null,2)}`;
     const data=await resp.json();
     const raw=(data.choices[0].message.content||'').replace(/^```json\s*/,'').replace(/\s*```$/,'').trim();
     const result=JSON.parse(raw);
+
+    // 1. Apply outcome links (existing stories)
     (result.outcomeLinks||[]).forEach(link=>{
       const o=STATE.outcomes.find(x=>x.id===link.outcomeId);
       if(o){o.linkedStoryIds=link.linkedStoryIds||[];o.linkedTaskIds=link.linkedTaskIds||[];o.sliceSummary=link.sliceSummary||'';}
     });
+
+    // 2. Create missing stories AI identified as gaps
+    let created=0;
+    (result.newStories||[]).forEach(ns=>{
+      // Find the task by ID or by activity+task title fallback
+      let task=null;
+      STATE.activities.forEach(a=>a.tasks.forEach(t=>{if(t.id===ns.taskId)task=t;}));
+      if(!task) STATE.activities.forEach(a=>{
+        if(a.title.toLowerCase().includes((ns.activityTitle||'').toLowerCase().substring(0,8)))
+          a.tasks.forEach(t=>{if(!task&&t.title.toLowerCase().includes((ns.taskTitle||'').toLowerCase().substring(0,8)))task=t;});
+      });
+      if(!task) return;
+      const newStory={id:uid(),text:ns.text,desc:ns.reason||'',release:ns.release||1};
+      task.stories.push(newStory);
+      // Tag it with the outcome
+      const o=STATE.outcomes.find(x=>x.id===ns.outcomeId);
+      if(o){if(!o.linkedStoryIds)o.linkedStoryIds=[];o.linkedStoryIds.push(newStory.id);}
+      created++;
+    });
+
     STATE.portfolioEpics=result.portfolioEpics||[];
     saveState();
     renderBoard();
@@ -2017,7 +2043,7 @@ ${JSON.stringify(mapData,null,2)}`;
     const promoteBtn=document.getElementById('promote-btn');
     if(promoteBtn) promoteBtn.style.display='inline-block';
     const totalTagged=(STATE.outcomes||[]).reduce((n,o)=>n+(o.linkedStoryIds||[]).length,0);
-    showToast(`✅ Done — ${totalTagged} stories tagged across ${(STATE.portfolioEpics||[]).length} portfolio epics`);
+    showToast(`✅ Done — ${totalTagged} stories in slice (${created} new stories created to fill gaps)`);
   }catch(e){showToast('❌ Analysis failed: '+e.message);console.error(e);}
 }
 function promoteOutcomeStories(){
