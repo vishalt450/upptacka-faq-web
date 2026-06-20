@@ -1526,6 +1526,158 @@ function renderIterHistory(){
 
 function setIterStatus(msg){ const s=document.getElementById('iter-status'); if(s) s.textContent=msg; }
 
+// Story patterns for auto-fill based on task title keywords
+const STORY_PATTERNS = {
+  'search|browse|discover|find|explore': [
+    {text:'As a user, I can search by keyword so I find what I need quickly', release:1},
+    {text:'As a user, I can filter results by category so I narrow down options', release:1},
+    {text:'As a user, I can see search suggestions as I type so I save time', release:2}
+  ],
+  'register|sign up|create account|onboard': [
+    {text:'As a new user, I can register with my name and email so I create an account', release:1},
+    {text:'As a new user, I can set a password so my account is secure', release:1},
+    {text:'As a new user, I can verify my email so my account is confirmed', release:2}
+  ],
+  'verify|confirm|validate': [
+    {text:'As a user, I can verify my identity so the system trusts me', release:1},
+    {text:'As a user, I can resend the verification link so I can recover if it expires', release:2}
+  ],
+  'login|sign in|authenticate': [
+    {text:'As a user, I can log in with email and password so I access my account', release:1},
+    {text:'As a user, I can reset my password so I can recover my account', release:1},
+    {text:'As a user, I can stay logged in so I don\'t need to log in every time', release:2}
+  ],
+  'profile|account|settings|preference': [
+    {text:'As a user, I can view my profile so I see my stored information', release:1},
+    {text:'As a user, I can update my details so my information stays current', release:1},
+    {text:'As a user, I can set my preferences so the app suits my needs', release:2}
+  ],
+  'buy|purchase|order|checkout|pay': [
+    {text:'As a user, I can select an item and proceed to payment so I complete my purchase', release:1},
+    {text:'As a user, I can choose a payment method so I pay how I prefer', release:1},
+    {text:'As a user, I can receive a confirmation so I know my order is placed', release:1}
+  ],
+  'view|detail|information|info': [
+    {text:'As a user, I can view full details so I have all the information I need', release:1},
+    {text:'As a user, I can see images and descriptions so I understand what I\'m choosing', release:2}
+  ],
+  'manage|dashboard|overview': [
+    {text:'As a user, I can view my dashboard so I see all my active items', release:1},
+    {text:'As a user, I can filter and sort my items so I find what I need', release:2}
+  ],
+  'edit|update|change|modify': [
+    {text:'As a user, I can edit my item so I keep information up to date', release:1},
+    {text:'As a user, I can save changes and see confirmation so I know it worked', release:1}
+  ],
+  'delete|cancel|remove': [
+    {text:'As a user, I can cancel or delete so I remove what I no longer need', release:1},
+    {text:'As a user, I am asked to confirm before deleting so I avoid accidents', release:1}
+  ],
+  'track|status|progress|history': [
+    {text:'As a user, I can track the status of my item so I stay informed', release:1},
+    {text:'As a user, I receive notifications on status changes so I don\'t have to check manually', release:2}
+  ],
+  'support|help|contact|report|refund': [
+    {text:'As a user, I can contact support so I get help when something goes wrong', release:1},
+    {text:'As a user, I can report an issue so it gets investigated', release:2},
+    {text:'As a user, I can request a refund so I recover money for faulty service', release:2}
+  ],
+  'notify|notification|alert|reminder': [
+    {text:'As a user, I receive notifications so I stay updated on important events', release:1},
+    {text:'As a user, I can control which notifications I receive so I avoid spam', release:2}
+  ],
+  'pass|ticket|card|validity|travel|transit|bus': [
+    {text:'As a passenger, I can view my pass details and validity so I know it\'s active', release:1},
+    {text:'As a passenger, I can show my pass for validation so I can board', release:1},
+    {text:'As a passenger, I can renew my pass before it expires so service continues', release:2}
+  ]
+};
+
+function getStoriesForTask(taskTitle, activityTitle){
+  const combined = (taskTitle + ' ' + activityTitle).toLowerCase();
+  for(const [pattern, stories] of Object.entries(STORY_PATTERNS)){
+    if(pattern.split('|').some(kw => combined.includes(kw))){
+      return stories.map(s=>({id:uid(), text:s.text, desc:'', release:s.release}));
+    }
+  }
+  // Generic fallback
+  return [
+    {id:uid(), text:`As a user, I can ${taskTitle.toLowerCase()} so I complete my goal`, desc:'', release:1}
+  ];
+}
+
+async function fillAllStories(targetActivityTitle=null){
+  const token = await getTokenSilent();
+  let totalAdded = 0;
+
+  if(token){
+    // AI fill — one activity at a time to avoid huge JSON
+    setIterStatus('✨ AI filling stories…');
+    for(const act of STATE.activities){
+      if(targetActivityTitle && !act.title.toLowerCase().includes(targetActivityTitle.toLowerCase())) continue;
+      for(const task of act.tasks){
+        if(task.stories.length > 0) continue; // skip already filled
+        try{
+          const res = await fetch('https://api.githubcopilot.com/chat/completions',{
+            method:'POST',
+            headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+            body: JSON.stringify({model:'gpt-4o', max_tokens:300, messages:[
+              {role:'system', content:'You are a User Story Mapping expert. Return ONLY a JSON array — no markdown, no explanation. Each item: {"text":"As a [role], I can [action] so that [benefit]","release":1}. Release 1=MVP, 2=next, 3=later.'},
+              {role:'user', content:`Product context: ${STATE.context||'general app'}\nActivity: "${act.title}"\nTask: "${task.title}"\n\nGenerate 2-3 user stories for this task. Return JSON array only.`}
+            ]})
+          });
+          if(res.ok){
+            const d = await res.json();
+            const raw = (d.choices?.[0]?.message?.content||'').replace(/```json|```/g,'').trim();
+            const parsed = JSON.parse(raw);
+            if(Array.isArray(parsed)){
+              parsed.forEach(s=>{ task.stories.push({id:uid(),text:s.text,desc:s.desc||'',release:s.release||1}); totalAdded++; });
+            }
+          }
+        } catch(e){ /* fallback for this task */
+          getStoriesForTask(task.title, act.title).forEach(s=>{task.stories.push(s); totalAdded++;});
+        }
+        setIterStatus(`✨ Filling stories… ${totalAdded} added so far`);
+      }
+    }
+  } else {
+    // Local pattern fill
+    STATE.activities.forEach(act=>{
+      if(targetActivityTitle && !act.title.toLowerCase().includes(targetActivityTitle.toLowerCase())) return;
+      act.tasks.forEach(task=>{
+        if(task.stories.length > 0) return;
+        getStoriesForTask(task.title, act.title).forEach(s=>{task.stories.push(s); totalAdded++;});
+      });
+    });
+  }
+
+  saveState(); renderBoard(); renderAnalysis();
+  setIterStatus('Ready — type anytime to keep refining');
+  const msg = `✅ Added ${totalAdded} user stories across the map.`;
+  STATE.chatHistory.push({role:'assistant', content: msg});
+  saveState();
+  const box = document.getElementById('iter-history');
+  const div = document.createElement('div');
+  div.className = 'iter-entry agent';
+  div.innerHTML = msg;
+  if(box){ box.appendChild(div); box.scrollTop=box.scrollHeight; }
+  showToast('✅ '+totalAdded+' stories added!');
+}
+
+async function getTokenSilent(){
+  let token = localStorage.getItem('copilot_token');
+  if(!token){
+    try{
+      const ctrl = new AbortController();
+      const _t = setTimeout(()=>ctrl.abort(), 1500);
+      const r = await fetch('http://localhost:9977',{signal:ctrl.signal});
+      clearTimeout(_t);
+      if(r.ok){ const d=await r.json(); if(d.token){token=d.token;localStorage.setItem('copilot_token',token);} }
+    } catch(e){}
+  }
+  return token;
+}
+
 async function sendIter(){
   const inp = document.getElementById('iter-input');
   const btn = document.getElementById('iter-send');
@@ -1536,6 +1688,20 @@ async function sendIter(){
   btn.disabled=true; btn.textContent='…';
 
   if(!STATE.chatHistory) STATE.chatHistory=[];
+
+  // Detect fill-stories intent before sending to AI
+  const tl = text.toLowerCase();
+  if((tl.includes('fill') || tl.includes('generate') || tl.includes('write') || tl.includes('create') || tl.includes('add')) &&
+     (tl.includes('stor') || tl.includes('user stor'))){
+    STATE.chatHistory.push({role:'user', content:text});
+    renderIterHistory();
+    setIterStatus('✨ Filling stories…');
+    // Check if targeting specific activity
+    const actMatch = STATE.activities.find(a => tl.includes(a.title.toLowerCase()));
+    await fillAllStories(actMatch ? actMatch.title : null);
+    btn.disabled=false; btn.textContent='↵ Send';
+    return;
+  }
   STATE.chatHistory.push({role:'user', content:text});
   setIterStatus('⏳ Processing…');
   renderIterHistory();
@@ -1567,17 +1733,7 @@ Rules:
   ];
 
   let reply = null;
-  // Auto-fetch token from server if not cached
-  let token = localStorage.getItem('copilot_token');
-  if(!token){
-    try{
-      const ctrl = new AbortController();
-      const _t = setTimeout(()=>ctrl.abort(), 1500);
-      const tr = await fetch('http://localhost:9977', {signal: ctrl.signal});
-      clearTimeout(_t);
-      if(tr.ok){ const td=await tr.json(); if(td.token){ token=td.token; localStorage.setItem('copilot_token',token); } }
-    } catch(e){ /* server not running */ }
-  }
+  const token = await getTokenSilent();
   if(token){
     try{
       const res = await fetch('https://api.githubcopilot.com/chat/completions',{
