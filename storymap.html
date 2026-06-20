@@ -48,6 +48,21 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
 #ctx-panel textarea{flex:1;border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;resize:none;height:60px;color:var(--text);}
 #ctx-panel textarea:focus{outline:none;border-color:var(--blue);}
 .ctx-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:5px;}
+/* attachments */
+.attach-zone{width:130px;flex-shrink:0;border:1.5px dashed var(--border);border-radius:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:11px;color:var(--muted);padding:6px 4px;transition:all .15s;background:var(--bg);gap:2px;}
+.attach-zone:hover,.attach-zone.drag{border-color:var(--blue);color:var(--blue);background:var(--blue-light);}
+.attach-zone .az-icon{font-size:18px;line-height:1;}
+#attach-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.attach-thumb{position:relative;border-radius:8px;border:1px solid var(--border);background:var(--white);display:flex;align-items:center;gap:6px;padding:5px 8px;font-size:11px;color:var(--text);box-shadow:var(--shadow);}
+.attach-thumb img{width:36px;height:36px;object-fit:cover;border-radius:5px;flex-shrink:0;}
+.attach-icon{font-size:24px;flex-shrink:0;line-height:1;}
+.attach-info{display:flex;flex-direction:column;gap:2px;}
+.attach-name{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:600;}
+.attach-badge{font-size:9px;padding:1px 5px;border-radius:4px;font-weight:700;display:inline-block;}
+.attach-badge.img{background:#e3f2fd;color:#1565c0;}
+.attach-badge.txt{background:#f3e5f5;color:#6a1b9a;}
+.attach-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:0 2px;flex-shrink:0;line-height:1;}
+.attach-del:hover{color:#e53935;}
 
 /* ── MAIN LAYOUT ── */
 #main{display:flex;flex:1;overflow:hidden;}
@@ -233,10 +248,20 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
 
 <!-- CONTEXT PANEL -->
 <div id="ctx-panel">
-  <div class="ctx-label">Problem Statement &amp; Context (read by the agent)</div>
+  <div class="ctx-label">Problem Statement &amp; Context (read by the AI)</div>
   <div class="ctx-row">
     <textarea id="ctx-text" placeholder="Describe the product, user, and problem you are mapping..." oninput="saveState()"></textarea>
+    <div class="attach-zone" id="attach-zone"
+         onclick="document.getElementById('file-input').click()"
+         ondragover="event.preventDefault();this.classList.add('drag')"
+         ondragleave="this.classList.remove('drag')"
+         ondrop="this.classList.remove('drag');handleFileDrop(event)">
+      <input type="file" id="file-input" accept="image/*,.txt,.md,.csv" multiple style="display:none" onchange="handleFileUpload(this.files);this.value=''">
+      <span class="az-icon">📎</span>
+      <span>Attach files<br><small style="opacity:.7">Images · txt · md · csv</small></span>
+    </div>
   </div>
+  <div id="attach-list"></div>
 </div>
 
 <!-- MAIN -->
@@ -411,6 +436,7 @@ const DEFAULT_STATE = {
   visibleReleases:[1,2,3],
   releases: RELEASES,
   aiSuggestions:[], clusters:{},
+  attachments:[],
   activities: []
 };
 
@@ -431,6 +457,7 @@ function loadState(){
       if(!STATE.aiSuggestions) STATE.aiSuggestions = [];
       if(!STATE.chatHistory) STATE.chatHistory = [];
       if(!STATE.clusters) STATE.clusters = {};
+      if(!STATE.attachments) STATE.attachments = [];
     }
   }catch(e){ console.error('loadState failed:', e); }
 }
@@ -443,6 +470,7 @@ function saveState(){
   if(dot){ dot.style.background='#4caf50'; lbl.textContent='Saved'; }
   updateStats();
   renderAnalysis();
+  renderAttachments();
 }
 function updateStats(){
   let tasks=0,stories=0;
@@ -1431,7 +1459,7 @@ Limit to 8 suggestions. Be specific and actionable.`;
     const resp = await fetch('https://api.githubcopilot.com/chat/completions', {
       method:'POST',
       headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
-      body:JSON.stringify({model:'gpt-4o',messages:[{role:'system',content:systemPrompt},{role:'user',content:'Story map:\n'+JSON.stringify(mapState,null,2)}]})
+      body:JSON.stringify({model:'gpt-4o',messages:buildMessagesWithAttachments(systemPrompt,'Story map:\n'+JSON.stringify(mapState,null,2))})
     });
     if(!resp.ok){ showToast('❌ API error: '+resp.status+'. Check your token.'); return; }
     const data = await resp.json();
@@ -1528,6 +1556,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('ctx-text').value = STATE.context || DEFAULT_STATE.context;
   renderBoard();
   renderAnalysis();
+  renderAttachments();
   // init release buttons
   [1,2,3].forEach(r=>{
     const btn=document.getElementById('rbtn'+r);
@@ -1694,7 +1723,8 @@ Rules:
 - Release 1 = MVP walking skeleton (must-have), Release 2 = enrichment, Release 3 = delight/edge cases
 - 2-3 stories per task maximum
 - No duplicate meaning across stories
-Return format: [{"text":"As a ...","release":1},{"text":"As a ...","release":2}]`},
+Return format: [{"text":"As a ...","release":1},{"text":"As a ...","release":2}]
+${(STATE.attachments||[]).filter(a=>!a.isImage).map(f=>`\n--- Attached: ${f.name} ---\n${(f.content||'').substring(0,20000)}`).join('\n')}`},
               {role:'user', content:`Product context: ${STATE.context||'general app'}
 Activity: "${act.title}" — ${act.desc||''}
 Task: "${task.title}" — ${task.desc||''}
@@ -1744,6 +1774,63 @@ Generate 2-3 non-duplicate user stories for this task. JSON array only.`}
   div.innerHTML = msg;
   if(box){ box.appendChild(div); box.scrollTop=box.scrollHeight; }
   showToast('✅ '+totalAdded+' stories added!');
+}
+
+// ── ATTACHMENTS ──────────────────────────────────────────
+function handleFileDrop(e){
+  e.preventDefault();
+  handleFileUpload(e.dataTransfer.files);
+}
+function handleFileUpload(files){
+  if(!files||!files.length) return;
+  if(!STATE.attachments) STATE.attachments=[];
+  const MAX=6;
+  if(STATE.attachments.length>=MAX){ showToast('⚠️ Max '+MAX+' attachments. Remove one first.'); return; }
+  Array.from(files).slice(0, MAX - STATE.attachments.length).forEach(file=>{
+    const reader = new FileReader();
+    const isImage = file.type.startsWith('image/');
+    reader.onload = ev=>{
+      STATE.attachments.push({id:uid(), name:file.name, mime:file.type, isImage, content:ev.target.result});
+      saveState();
+      showToast('📎 "'+file.name+'" attached');
+    };
+    if(isImage) reader.readAsDataURL(file);
+    else reader.readAsText(file);
+  });
+}
+function removeAttachment(id){
+  STATE.attachments=(STATE.attachments||[]).filter(a=>a.id!==id);
+  saveState();
+}
+function renderAttachments(){
+  const list=document.getElementById('attach-list');
+  if(!list) return;
+  const atts=STATE.attachments||[];
+  if(!atts.length){list.innerHTML='';return;}
+  list.innerHTML=atts.map(a=>`
+    <div class="attach-thumb">
+      ${a.isImage?`<img src="${a.content}" alt="${esc(a.name)}">`:'<span class="attach-icon">📄</span>'}
+      <div class="attach-info">
+        <span class="attach-name" title="${esc(a.name)}">${esc(a.name)}</span>
+        <span class="attach-badge ${a.isImage?'img':'txt'}">${a.isImage?'Image':'Text'}</span>
+      </div>
+      <button class="attach-del" onclick="removeAttachment('${a.id}')" title="Remove">×</button>
+    </div>`).join('');
+}
+// Build messages array with attachments injected (images as vision blocks, text files in system prompt)
+function buildMessagesWithAttachments(systemPrompt, userText, extraHistory=[]){
+  const atts = STATE.attachments||[];
+  const images = atts.filter(a=>a.isImage);
+  const textFiles = atts.filter(a=>!a.isImage);
+  let sys = systemPrompt;
+  if(textFiles.length){
+    sys += '\n\n## Attached Documents (use as additional context):\n' +
+      textFiles.map(f=>`--- ${f.name} ---\n${(f.content||'').substring(0,40000)}`).join('\n\n');
+  }
+  const userContent = images.length
+    ? [{type:'text',text:userText},...images.map(img=>({type:'image_url',image_url:{url:img.content}}))]
+    : userText;
+  return [{role:'system',content:sys},...extraHistory,{role:'user',content:userContent}];
 }
 
 async function getTokenSilent(){
@@ -1809,10 +1896,7 @@ Rules:
 - After ACTION blocks, give a short plain-text explanation (max 60 words)
 - Never output markdown headers or bullet points — plain text only`;
 
-  const messages = [
-    {role:'system', content: systemPrompt},
-    ...STATE.chatHistory.slice(-10)
-  ];
+  const messages = buildMessagesWithAttachments(systemPrompt, text, STATE.chatHistory.slice(-10,-1));
 
   let reply = null;
   const token = await getTokenSilent();
