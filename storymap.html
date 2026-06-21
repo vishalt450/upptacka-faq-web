@@ -125,11 +125,21 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
 .add-activity-btn:hover{border-color:var(--blue);color:var(--blue);background:#f0f6ff;}
 
 /* ── AGENT SIDEBAR ── */
-#agent{width:300px;flex-shrink:0;background:var(--white);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;box-shadow:-2px 0 8px rgba(0,0,0,.04);}
-#agent.collapsed{width:0;border:none;}
-.agent-header{background:#1a2e4a;color:#fff;padding:11px 16px;font-size:12px;font-weight:700;flex-shrink:0;display:flex;align-items:center;gap:8px;letter-spacing:.04em;}
-.agent-header span{flex:1;}
-#analysis-panel{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;}
+#agent{width:300px;flex-shrink:0;background:var(--white);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;box-shadow:-2px 0 8px rgba(0,0,0,.04);transition:width .22s cubic-bezier(.4,0,.2,1);}
+#agent.collapsed{width:36px;}
+#agent.collapsed #analysis-panel,#agent.collapsed #iter-bar{display:none;}
+#agent.collapsed .agent-header-label{display:none;}
+#agent.collapsed .agent-header{justify-content:center;padding:12px 4px;}
+.agent-header{background:#1a2e4a;color:#fff;padding:10px 14px;font-size:12px;font-weight:700;flex-shrink:0;display:flex;align-items:center;gap:8px;letter-spacing:.04em;cursor:default;}
+.agent-header-label{flex:1;}
+.sidebar-toggle{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:15px;padding:0 2px;flex-shrink:0;line-height:1;transition:color .15s;}
+.sidebar-toggle:hover{color:#fff;}
+/* Sidebar reopen tab — visible when collapsed */
+#sidebar-tab{display:none;position:absolute;right:0;top:50%;transform:translateY(-50%);background:#1a2e4a;color:#fff;writing-mode:vertical-rl;text-orientation:mixed;padding:12px 8px;font-size:10px;font-weight:700;letter-spacing:.06em;cursor:pointer;border-radius:8px 0 0 8px;box-shadow:-2px 0 8px rgba(0,0,0,.15);z-index:10;user-select:none;}
+#sidebar-tab:hover{background:#0d1e35;}
+#main{position:relative;}
+#agent.collapsed+#sidebar-tab,#agent.collapsed ~ #sidebar-tab{display:block;}
+#analysis-panel{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:6px;}
 /* ── STATUS TOAST ── */
 #status-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a2e4a;color:#fff;padding:9px 20px;border-radius:20px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .3s;z-index:999;}
 #status-toast.show{opacity:1;}
@@ -197,10 +207,15 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
 .choice-card .choice-icon{font-size:28px;margin-bottom:6px;}
 .choice-card .choice-label{font-weight:700;font-size:13px;color:var(--text);}
 .choice-card .choice-sub{font-size:11px;color:var(--muted);margin-top:4px;}
-/* ── ITERATION BAR (persistent) ── */
+/* ── ITERATION BAR (collapsible) ── */
 #iter-bar{background:#1a2e4a;border-top:2px solid #0058a3;padding:0;display:flex;flex-direction:column;flex-shrink:0;}
-#iter-bar-header{padding:8px 14px 4px;color:#90caf9;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:6px;}
+#iter-bar-header{padding:8px 12px 6px;color:#90caf9;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;}
+#iter-bar-header:hover{background:rgba(255,255,255,.04);}
 #iter-bar-header .iter-status{flex:1;font-size:10px;color:#607d8b;font-weight:400;text-transform:none;letter-spacing:0;}
+.iter-toggle-btn{background:none;border:none;color:#546e7a;font-size:12px;cursor:pointer;padding:0;flex-shrink:0;transition:transform .2s;}
+#iter-bar.chat-open .iter-toggle-btn{transform:rotate(180deg);}
+#iter-body{display:none;overflow:hidden;}
+#iter-bar.chat-open #iter-body{display:flex;flex-direction:column;}
 #iter-history{max-height:160px;overflow-y:auto;padding:0 12px 6px;display:flex;flex-direction:column;gap:5px;}
 .iter-entry{font-size:11px;padding:6px 10px;border-radius:7px;line-height:1.45;}
 .iter-entry.user{background:#0d2137;color:#90caf9;align-self:flex-end;max-width:90%;}
@@ -323,21 +338,28 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
 
   <!-- AGENT -->
   <div id="agent">
-    <div class="agent-header">💡 <span>Analysis Panel</span></div>
+    <div class="agent-header">
+      💡 <span class="agent-header-label">Analysis Panel</span>
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Collapse panel">◀</button>
+    </div>
     <div id="analysis-panel"></div>
-    <!-- ITERATION BAR — always visible -->
+    <!-- IMPROVE MAP — collapsible chat -->
     <div id="iter-bar">
-      <div id="iter-bar-header">
+      <div id="iter-bar-header" onclick="toggleChat()">
         💬 Improve Map
-        <span class="iter-status" id="iter-status">Type to add, remove, or refine anything</span>
+        <span class="iter-status" id="iter-status">Click to open chat</span>
+        <button class="iter-toggle-btn" title="Toggle chat">▲</button>
       </div>
-      <div id="iter-history"></div>
-      <div id="iter-input-row">
-        <textarea id="iter-input" placeholder="e.g. Add a loyalty rewards activity… Remove the social sharing task… What am I missing for a bus pass app?" rows="1"></textarea>
-        <button id="iter-send" onclick="sendIter()">↵ Send</button>
+      <div id="iter-body">
+        <div id="iter-history"></div>
+        <div id="iter-input-row">
+          <textarea id="iter-input" placeholder="e.g. Add a loyalty rewards activity… Remove the social sharing task…" rows="1"></textarea>
+          <button id="iter-send" onclick="sendIter()">↵ Send</button>
+        </div>
       </div>
     </div>
   </div>
+  <div id="sidebar-tab" onclick="toggleSidebar()" title="Open Analysis Panel">Analysis ▶</div>
 </div>
 
 <!-- STATUS TOAST -->
@@ -1006,7 +1028,22 @@ function toggleCtx(){
   const out=document.getElementById('outcomes-panel');
   const opening = !ctx.classList.contains('open');
   ctx.classList.toggle('open');
-  if(opening) out.classList.remove('open'); // close outcomes when context opens
+  if(opening) out.classList.remove('open');
+}
+function toggleSidebar(){
+  const agent=document.getElementById('agent');
+  const tab=document.getElementById('sidebar-tab');
+  const collapsed=agent.classList.toggle('collapsed');
+  const btn=agent.querySelector('.sidebar-toggle');
+  if(btn) btn.textContent=collapsed?'▶':'◀';
+  if(tab) tab.style.display=collapsed?'block':'none';
+}
+function toggleChat(){
+  const bar=document.getElementById('iter-bar');
+  const open=bar.classList.toggle('chat-open');
+  const status=document.getElementById('iter-status');
+  if(status) status.textContent=open?'Type to add, remove, or refine anything':'Click to open chat';
+  if(open){ const inp=document.getElementById('iter-input'); if(inp) setTimeout(()=>inp.focus(),150); }
 }
 function toggleMoreMenu(){
   const dd = document.getElementById('hdr-dropdown');
@@ -1330,17 +1367,25 @@ function renderAnalysis(){
       </div>`;
     });
     if(pes.length){
-      html+=`<div style="margin-top:6px;"><div style="font-size:10px;font-weight:700;color:#6d28d9;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">📦 Portfolio Epics</div>`;
-      pes.forEach(pe=>{
+      html+=`<div style="margin-top:6px;">
+        <div style="font-size:10px;font-weight:700;color:#6d28d9;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">📦 Portfolio Epics</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;">`;
+      pes.forEach((pe,pi)=>{
         const acts=STATE.activities.filter(a=>(pe.activityIds||[]).includes(a.id));
-        html+=`<div class="pe-card" style="margin-top:4px;">
-          <h5>📦 ${esc(pe.name)}</h5>
-          <p><strong>Covers:</strong> ${acts.length?acts.map(a=>esc(a.title)).join(' · '):'see map'}</p>
-          <p style="color:var(--muted)">${esc(pe.rationale||'')}</p>
-          ${pe.outcomeAlignment?`<span class="pe-badge">→ ${esc(pe.outcomeAlignment)}</span>`:''}
+        html+=`<div style="position:relative;">
+          <button onclick="this.nextSibling.style.display=this.nextSibling.style.display==='block'?'none':'block'"
+            style="background:#ede9fe;color:#6d28d9;border:1px solid #c4b5fd;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">
+            📦 ${esc(pe.name)}
+          </button>
+          <div style="display:none;position:absolute;bottom:calc(100% + 6px);left:0;background:var(--white);border:1px solid #ddd6fe;border-radius:10px;padding:10px 12px;min-width:200px;max-width:260px;z-index:50;box-shadow:var(--shadow-md);font-size:11px;">
+            <div style="font-weight:700;color:#6d28d9;margin-bottom:4px;">📦 ${esc(pe.name)}</div>
+            <div style="color:var(--muted);margin-bottom:3px;">${acts.map(a=>esc(a.title)).join(' · ')||'—'}</div>
+            <div style="color:var(--text);line-height:1.5;">${esc(pe.rationale||'')}</div>
+            ${pe.outcomeAlignment?`<div style="margin-top:4px;"><span class="pe-badge">→ ${esc(pe.outcomeAlignment)}</span></div>`:''}
+          </div>
         </div>`;
       });
-      html+='</div>';
+      html+='</div></div>';
     }
     html+='</div>';
   }
@@ -2099,6 +2144,9 @@ async function sendIter(){
   const btn = document.getElementById('iter-send');
   const text = inp.value.trim();
   if(!text) return;
+  // Ensure chat is open
+  const bar=document.getElementById('iter-bar');
+  if(bar && !bar.classList.contains('chat-open')) toggleChat();
 
   inp.value=''; inp.style.height='38px';
   btn.disabled=true; btn.textContent='…';
