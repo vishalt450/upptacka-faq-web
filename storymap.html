@@ -265,6 +265,22 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
 /* Smoother activity header */
 .activity-header{transition:box-shadow .15s;}
 .activity-col:hover .activity-header{box-shadow:0 4px 12px rgba(0,0,0,.15);}
+
+/* ── GLOBAL OUTCOME STRIP ── */
+#outcome-global-strip{display:none;background:linear-gradient(90deg,#2d1b69 0%,#1a1040 100%);border-bottom:2px solid #7c3aed;padding:0;flex-shrink:0;}
+#outcome-global-strip.visible{display:block;}
+.ogs-header{display:flex;align-items:center;gap:8px;padding:6px 16px 4px;cursor:pointer;user-select:none;}
+.ogs-title{color:#d8b4fe;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;}
+.ogs-count{background:#7c3aed;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;}
+.ogs-toggle{background:none;border:none;color:#7c59a4;font-size:11px;cursor:pointer;margin-left:auto;padding:0 4px;}
+#ogs-body{padding:0 12px 10px;overflow-x:auto;white-space:nowrap;scrollbar-width:thin;scrollbar-color:#7c3aed #1a1040;}
+#ogs-body.hidden{display:none;}
+.ogs-act-group{display:inline-flex;flex-direction:column;gap:4px;vertical-align:top;min-width:120px;max-width:220px;margin-right:8px;white-space:normal;}
+.ogs-act-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#7c59a4;padding-bottom:3px;border-bottom:1px solid #3d2470;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ogs-chip{display:block;font-size:11px;color:#e9d5ff;background:rgba(124,58,237,.25);border:1px solid rgba(124,58,237,.5);border-radius:6px;padding:4px 8px;cursor:pointer;line-height:1.4;white-space:normal;transition:background .12s;}
+.ogs-chip:hover{background:rgba(124,58,237,.45);color:#fff;}
+.ogs-chip .ogs-outcome-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;vertical-align:middle;flex-shrink:0;}
+.ogs-chip .ogs-task-label{font-size:9px;color:#a78bfa;display:block;margin-bottom:1px;}
 </style>
 </head>
 <body>
@@ -327,6 +343,17 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
     </div>
   </div>
   <div id="outcomes-list"></div>
+</div>
+
+<!-- GLOBAL OUTCOME STRIP -->
+<div id="outcome-global-strip">
+  <div class="ogs-header" onclick="toggleOGS()">
+    <span class="ogs-title">🎯 Walking Skeleton</span>
+    <span class="ogs-count" id="ogs-count">0 stories</span>
+    <span style="color:#7c59a4;font-size:10px;margin-left:4px;" id="ogs-subtitle"></span>
+    <button class="ogs-toggle" id="ogs-toggle-btn" title="Collapse">▲</button>
+  </div>
+  <div id="ogs-body"></div>
 </div>
 
 <!-- MAIN -->
@@ -545,6 +572,7 @@ function saveState(){
   updateStats();
   renderAnalysis();
   renderAttachments();
+  renderOutcomeStrip();
 }
 function updateStats(){
   let tasks=0,stories=0;
@@ -633,7 +661,64 @@ function renderBoard(){
   }
 
   updateStats();
+  renderOutcomeStrip();
 }
+
+function renderOutcomeStrip(){
+  const strip = document.getElementById('outcome-global-strip');
+  const body  = document.getElementById('ogs-body');
+  const cnt   = document.getElementById('ogs-count');
+  const sub   = document.getElementById('ogs-subtitle');
+  if(!strip||!body) return;
+
+  const outcomes = STATE.outcomes||[];
+  const taggedIds = new Set(outcomes.flatMap(o=>o.linkedStoryIds||[]));
+  if(!taggedIds.size){ strip.classList.remove('visible'); return; }
+
+  // Build: activityTitle → [{story, task, outcomeIdx}]
+  const groups = [];
+  STATE.activities.forEach(act=>{
+    const chips = [];
+    act.tasks.forEach(t=>{
+      t.stories.filter(s=>taggedIds.has(s.id)).forEach(s=>{
+        const oIdx = outcomes.findIndex(o=>(o.linkedStoryIds||[]).includes(s.id));
+        chips.push({story:s, task:t, oIdx});
+      });
+    });
+    if(chips.length) groups.push({act, chips});
+  });
+
+  const totalStories = groups.reduce((n,g)=>n+g.chips.length,0);
+  cnt.textContent = totalStories + ' stor' + (totalStories===1?'y':'ies');
+  sub.textContent = groups.length + ' activit' + (groups.length===1?'y':'ies') + ' · Jeff Patton slice';
+  strip.classList.add('visible');
+
+  body.innerHTML = groups.map(g=>{
+    const chips = g.chips.map(({story,task,oIdx})=>{
+      const c = oIdx>=0 ? OUTCOME_COLORS[oIdx%OUTCOME_COLORS.length] : '#7c3aed';
+      const o = oIdx>=0 ? outcomes[oIdx] : null;
+      const oLabel = o ? (o.title||'O'+(oIdx+1)).substring(0,8) : '';
+      return `<div class="ogs-chip" onclick="document.getElementById('story-${story.id}')?.scrollIntoView({behavior:'smooth',block:'center'})" title="${esc(story.text)}">
+        <span class="ogs-task-label">${esc(task.title.substring(0,28))}${task.title.length>28?'…':''}</span>
+        <span class="ogs-outcome-dot" style="background:${c}" title="${esc(oLabel)}"></span>${esc(story.text.substring(0,60))}${story.text.length>60?'…':''}
+      </div>`;
+    }).join('');
+    return `<div class="ogs-act-group">
+      <div class="ogs-act-label" title="${esc(g.act.title)}">${esc(g.act.title)}</div>
+      ${chips}
+    </div>`;
+  }).join('');
+}
+
+let _ogsOpen = true;
+function toggleOGS(){
+  _ogsOpen = !_ogsOpen;
+  const body = document.getElementById('ogs-body');
+  const btn  = document.getElementById('ogs-toggle-btn');
+  if(body) body.classList.toggle('hidden', !_ogsOpen);
+  if(btn)  btn.textContent = _ogsOpen ? '▲' : '▼';
+}
+
 
 function renderTask(t, actId){
   const outcomeIds = new Set((STATE.outcomes||[]).flatMap(o=>o.linkedStoryIds||[]));
