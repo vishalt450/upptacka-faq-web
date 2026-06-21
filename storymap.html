@@ -543,6 +543,45 @@ let STATE = JSON.parse(JSON.stringify(DEFAULT_STATE));
 let idCounter = 100;
 const uid = () => 'id' + (++idCounter);
 
+// ── PRODUCT DISCOVERY HANDOFF ─────────────────────────────
+// Reads v3_story_map_context written by Product Discovery Studio finaliseSolution()
+function loadDiscoveryContext(){
+  try{
+    const raw = localStorage.getItem('v3_story_map_context');
+    if(!raw) return;
+    const ctx = JSON.parse(raw);
+    localStorage.removeItem('v3_story_map_context'); // consume once
+
+    // Build context string from epic + problems + solution
+    const problems = (ctx.problems||[]).filter(p=>p.agreed||p.selected).map(p=>p.text||p.title||'').filter(Boolean);
+    const solution = ctx.selectedSolution||{};
+    const contextParts = [
+      ctx.epicKey ? `Epic: ${ctx.epicKey} — ${ctx.epicTitle||''}` : ctx.epicTitle||'',
+      problems.length ? `Problems:\n${problems.map(p=>'• '+p).join('\n')}` : '',
+      solution.title ? `Solution: ${solution.title}\n${solution.description||''}` : '',
+      solution.uxNotes ? `UX Notes: ${solution.uxNotes}` : '',
+      solution.engNotes ? `Eng Notes: ${solution.engNotes}` : '',
+    ].filter(Boolean).join('\n\n');
+    STATE.context = contextParts;
+
+    // Import agreed outcomes
+    const agreed = ctx.agreedOutcomes||[];
+    if(agreed.length){
+      STATE.outcomes = agreed.map((o,i)=>({
+        id: uid(),
+        title: o.title||('Outcome '+(i+1)),
+        statement: o.description||(o.metric?`Measured by: ${o.metric}`:''),
+        linkedStoryIds: [],
+        linkedTaskIds: [],
+        sliceSummary: o.metric||''
+      }));
+    }
+
+    // Mark as loaded from discovery — show banner after DOM ready
+    STATE._discoveryLoaded = {epicKey: ctx.epicKey, epicTitle: ctx.epicTitle, outcomeCount: agreed.length};
+  }catch(e){ console.error('loadDiscoveryContext failed:', e); }
+}
+
 // ── LOAD / SAVE ───────────────────────────────────────────
 function loadState(){
   try{
@@ -1571,13 +1610,13 @@ function renderAnalysis(){
 
 // ── STATUS TOAST ──────────────────────────────────────────
 let _toastTimer;
-function showToast(msg){
+function showToast(msg, duration){
   const t = document.getElementById('status-toast');
   if(!t) return;
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(()=>t.classList.remove('show'), 3000);
+  _toastTimer = setTimeout(()=>t.classList.remove('show'), duration||3000);
 }
 
 // ── UTILS ─────────────────────────────────────────────────
@@ -1794,6 +1833,7 @@ function importFromDiscovery(){
 
 // ── INIT ──────────────────────────────────────────────────
 loadState();
+loadDiscoveryContext();
 document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('ctx-text').value = STATE.context || DEFAULT_STATE.context;
   renderBoard();
@@ -1801,6 +1841,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
   renderAttachments();
   renderOutcomePanel();
   renderPortfolioEpics();
+  // Show handoff banner if loaded from Product Discovery Studio
+  if(STATE._discoveryLoaded){
+    const d = STATE._discoveryLoaded;
+    delete STATE._discoveryLoaded;
+    setTimeout(()=> showToast(`🔗 Loaded from Product Discovery${d.epicKey?' · '+d.epicKey:''} — ${d.outcomeCount} outcome${d.outcomeCount!==1?'s':''} imported`, 4000), 400);
+    setTimeout(()=>{ const op=document.getElementById('outcomes-panel'); if(op&&!op.classList.contains('open')) toggleOutcomes(); }, 800);
+  }
   // init release buttons
   [1,2,3].forEach(r=>{
     const btn=document.getElementById('rbtn'+r);
