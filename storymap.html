@@ -41,6 +41,30 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
 .hdr-dropdown button:hover{background:var(--bg);}
 .hdr-dropdown hr{border:none;border-top:1px solid var(--border);margin:2px 0;}
 
+/* ── HISTORY PANEL ── */
+#history-panel{position:fixed;top:52px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.16);width:560px;max-width:96vw;z-index:500;display:none;overflow:hidden;}
+#history-panel.open{display:block;}
+.history-header{background:#1a2e4a;color:#fff;padding:12px 18px;display:flex;align-items:center;gap:10px;}
+.history-header h3{font-size:14px;font-weight:700;flex:1;margin:0;}
+.history-close{background:none;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;padding:0;line-height:1;}
+.history-close:hover{color:#fff;}
+.history-list{max-height:360px;overflow-y:auto;padding:10px;}
+.history-empty{text-align:center;color:var(--muted);padding:32px 20px;font-size:13px;}
+.history-item{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:border-color .15s,box-shadow .15s;display:flex;gap:12px;align-items:flex-start;}
+.history-item:hover{border-color:var(--blue);box-shadow:0 2px 10px rgba(0,88,163,.1);}
+.history-item-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
+.history-item-body{flex:1;min-width:0;}
+.history-item-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.history-item-meta{font-size:11px;color:var(--muted);margin-bottom:4px;}
+.history-item-ctx{font-size:11px;color:#555;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.history-item-actions{display:flex;gap:6px;flex-shrink:0;align-items:center;}
+.hist-load-btn{background:var(--blue);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.hist-load-btn:hover{background:#1565c0;}
+.hist-del-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:5px 8px;font-size:12px;cursor:pointer;}
+.hist-del-btn:hover{border-color:#e53935;color:#e53935;}
+.history-footer{padding:10px 14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--bg);}
+.history-footer-note{font-size:11px;color:var(--muted);}
+
 /* ── CONTEXT PANEL ── */
 #ctx-panel{background:var(--white);border-bottom:2px solid var(--yellow);padding:12px 20px;flex-shrink:0;display:none;box-shadow:0 2px 8px rgba(0,0,0,.06);}
 #ctx-panel.open{display:block;}
@@ -299,6 +323,7 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
   <span class="header-divider"></span>
   <button class="hdr-btn success" onclick="addActivity()">＋ Activity</button>
   <button class="hdr-btn" onclick="rebuildFromContext()" title="Clear map and regenerate activities + stories from current context" style="background:#7c3aed;border-color:#7c3aed;">🔄 Rebuild</button>
+  <button class="hdr-btn" onclick="toggleHistory()" title="View and restore recent maps" id="hist-btn">🕐 History</button>
   <button class="hdr-btn primary" onclick="fullReview()" title="Instant offline health check — gaps, missing stories, release coverage">📊 Health Check</button>
   <button class="hdr-btn primary" onclick="aiReview()" title="AI-powered quality review via Copilot API (requires token server)">✨ AI Feedback</button>
   <span class="hdr-spacer"></span>
@@ -306,6 +331,7 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
   <div class="hdr-more" id="hdr-more">
     <button class="hdr-more-btn" onclick="toggleMoreMenu()" title="More options">⋯</button>
     <div class="hdr-dropdown" id="hdr-dropdown">
+      <button onclick="saveToHistory(true);toggleMoreMenu()">💾 Save to History</button>
       <button onclick="exportJSON();toggleMoreMenu()">⬇️ Export JSON</button>
       <button onclick="clusterActivities();toggleMoreMenu()">🔗 Cluster Activities</button>
       <hr/>
@@ -314,6 +340,19 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
     </div>
   </div>
 </header>
+
+<!-- HISTORY PANEL -->
+<div id="history-panel">
+  <div class="history-header">
+    <h3>🕐 Recent Story Maps</h3>
+    <button class="history-close" onclick="toggleHistory()">✕</button>
+  </div>
+  <div class="history-list" id="history-list"></div>
+  <div class="history-footer">
+    <span class="history-footer-note">Last 5 maps saved automatically before each rebuild</span>
+    <button onclick="clearHistory()" style="background:none;border:none;font-size:12px;color:#e53935;cursor:pointer;">🗑 Clear all</button>
+  </div>
+</div>
 
 <!-- CONTEXT PANEL -->
 <div id="ctx-panel">
@@ -1089,6 +1128,7 @@ function cycleRelease(sid){
 }
 function clearMap(){
   if(!confirm('Clear the entire map and start fresh?')) return;
+  saveToHistory(false); // auto-save before clearing
   localStorage.removeItem('uppa_storymap');
   STATE = JSON.parse(JSON.stringify(DEFAULT_STATE));
   document.getElementById('ctx-text').value = '';
@@ -1096,11 +1136,103 @@ function clearMap(){
   showToast('🗑️ Map cleared — add your context, then click + Activity');
 }
 
+// ── HISTORY ──────────────────────────────────────────────
+const HISTORY_KEY = 'uppa_storymap_history';
+const MAX_HISTORY = 5;
+
+function saveToHistory(showConfirm){
+  if(!STATE.activities.length) return; // nothing to save
+  const sessions = JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');
+  const allStories = STATE.activities.flatMap(a=>a.tasks.flatMap(t=>t.stories));
+  const entry = {
+    id: Date.now(),
+    date: new Date().toLocaleString('sv-SE',{dateStyle:'short',timeStyle:'short'}),
+    name: (STATE.context||'').substring(0,60) || 'Unnamed map',
+    activityCount: STATE.activities.length,
+    taskCount: STATE.activities.reduce((n,a)=>n+a.tasks.length,0),
+    storyCount: allStories.length,
+    snapshot: JSON.parse(JSON.stringify(STATE))
+  };
+  // Avoid exact duplicate (same context + activity count within 1 min)
+  const last = sessions[0];
+  if(last && last.name===entry.name && last.activityCount===entry.activityCount &&
+     (entry.id - last.id) < 60000) return;
+  sessions.unshift(entry);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(sessions.slice(0, MAX_HISTORY)));
+  if(showConfirm) showToast('💾 Map saved to history!');
+}
+
+function loadFromHistory(id){
+  const sessions = JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');
+  const entry = sessions.find(s=>s.id===id);
+  if(!entry) return;
+  if(STATE.activities.length && !confirm('Load this map? Your current map will be saved to history first.')) return;
+  saveToHistory(false);
+  STATE = entry.snapshot;
+  saveState();
+  document.getElementById('ctx-text').value = STATE.context||'';
+  renderBoard(); renderAnalysis(); renderAttachments(); renderOutcomePanel(); renderPortfolioEpics(); checkContextStaleness();
+  toggleHistory();
+  showToast(`✅ Loaded: ${entry.name.substring(0,40)}`);
+}
+
+function deleteFromHistory(id, e){
+  e.stopPropagation();
+  const sessions = JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(sessions.filter(s=>s.id!==id)));
+  renderHistoryPanel();
+}
+
+function clearHistory(){
+  if(!confirm('Delete all saved maps from history?')) return;
+  localStorage.removeItem(HISTORY_KEY);
+  renderHistoryPanel();
+  showToast('🗑 History cleared');
+}
+
+function toggleHistory(){
+  const panel = document.getElementById('history-panel');
+  if(!panel) return;
+  const isOpen = panel.classList.toggle('open');
+  if(isOpen) renderHistoryPanel();
+  // close other dropdowns
+  document.getElementById('hdr-dropdown')?.classList.remove('open');
+}
+
+function renderHistoryPanel(){
+  const list = document.getElementById('history-list');
+  if(!list) return;
+  const sessions = JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');
+  if(!sessions.length){
+    list.innerHTML = `<div class="history-empty">
+      <div style="font-size:32px;margin-bottom:10px">📭</div>
+      <div>No saved maps yet.</div>
+      <div style="margin-top:6px;font-size:12px">Maps are saved automatically before each rebuild.<br/>Or use <strong>⋯ → 💾 Save to History</strong>.</div>
+    </div>`;
+    return;
+  }
+  list.innerHTML = sessions.map(s=>`
+    <div class="history-item" onclick="loadFromHistory(${s.id})">
+      <div class="history-item-icon">🗺️</div>
+      <div class="history-item-body">
+        <div class="history-item-title">${esc(s.name)}</div>
+        <div class="history-item-meta">${s.date} &nbsp;·&nbsp; ${s.activityCount} activities &nbsp;·&nbsp; ${s.storyCount} stories</div>
+        <div class="history-item-ctx">${esc((s.snapshot?.context||'').substring(0,90))}</div>
+      </div>
+      <div class="history-item-actions">
+        <button class="hist-load-btn" onclick="loadFromHistory(${s.id});event.stopPropagation()">Load</button>
+        <button class="hist-del-btn" onclick="deleteFromHistory(${s.id},event)" title="Delete">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
 async function rebuildFromContext(){
   const ctx = (document.getElementById('ctx-text')?.value || STATE.context || '').trim();
   if(!ctx){ showToast('⚠️ Add a context first (📋 Context button)'); return; }
   const hasStories = STATE.activities.some(a=>a.tasks.some(t=>t.stories.length>0));
   if(hasStories && !confirm('This will clear all existing activities and stories, then generate a new map from your current context.\n\nContinue?')) return;
+
+  saveToHistory(false); // auto-save current map before clearing
 
   // Save context, clear activities, keep outcomes
   const savedCtx = ctx;
