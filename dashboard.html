@@ -6,33 +6,91 @@
 <title>Upptäcka Tertial Dashboard</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;background:#f1f5f9;color:#111;padding:20px;max-width:860px;margin:0 auto;line-height:1.5}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;background:#f1f5f9;color:#111;padding:20px;max-width:880px;margin:0 auto;line-height:1.5}
   a{color:#0058A3}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);border-radius:16px;padding:22px 26px;margin-bottom:24px;color:#fff">
-  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;margin-bottom:6px">Upptäcka · INTERACT Project</div>
-  <div style="font-size:26px;font-weight:900;margin-bottom:4px">Tertial Progress Dashboard</div>
-  <div style="font-size:13px;color:#94a3b8;margin-bottom:18px">T1-2027 · T3 · T2 · Updated 2026-06-22 11:30</div>
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
-    <div style="background:rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;text-align:center">
-      <div style="font-size:28px;font-weight:900;color:#fff">82</div>
-      <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em">Total Epics</div>
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;margin-bottom:4px">Upptäcka · INTERACT Project</div>
+  <div style="font-size:26px;font-weight:900;margin-bottom:2px">Tertial Progress Dashboard</div>
+  <div style="font-size:12px;color:#64748b;margin-bottom:18px">Updated 2026-06-22 11:30 · Invalid epics excluded</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+    
+    <div style="background:rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;border-top:3px solid #a78bfa">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#a78bfa;margin-bottom:10px">🟣 T1-2027</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+        <div>
+          <div style="font-size:22px;font-weight:900;color:#fff">13</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Epics</div>
+        </div>
+        <div>
+          <div style="font-size:22px;font-weight:900;color:#34d399">0</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Done</div>
+        </div>
+        <div>
+          <div style="font-size:22px;font-weight:900;color:#fbbf24">2</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Stories</div>
+        </div>
+        <div>
+          <div style="font-size:22px;font-weight:900;color:#60a5fa">0%</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Complete</div>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,.1);border-radius:4px;height:5px;overflow:hidden">
+        <div style="width:0%;background:#a78bfa;height:5px;border-radius:4px"></div>
+      </div>
     </div>
-    <div style="background:rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;text-align:center">
-      <div style="font-size:28px;font-weight:900;color:#34d399">25</div>
-      <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em">Epics Done</div>
+    
+    <div style="background:rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;border-top:3px solid #fb923c">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#fb923c;margin-bottom:10px">🟠 T3 Current</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+        <div>
+          <div style="font-size:22px;font-weight:900;color:#fff">33</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Epics</div>
+        </div>
+        <div>
+          <div style="font-size:22px;font-weight:900;color:#34d399">0</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Done</div>
+        </div>
+        <div>
+          <div style="font-size:22px;font-weight:900;color:#fbbf24">57</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Stories</div>
+        </div>
+        <div>
+          <div style="font-size:22px;font-weight:900;color:#60a5fa">44%</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Complete</div>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,.1);border-radius:4px;height:5px;overflow:hidden">
+        <div style="width:44%;background:#fb923c;height:5px;border-radius:4px"></div>
+      </div>
     </div>
-    <div style="background:rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;text-align:center">
-      <div style="font-size:28px;font-weight:900;color:#fbbf24">240</div>
-      <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em">Total Stories</div>
-    </div>
-    <div style="background:rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;text-align:center">
-      <div style="font-size:28px;font-weight:900;color:#60a5fa">70%</div>
-      <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em">Stories Done</div>
+    
+    <div style="background:rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;border-top:3px solid #60a5fa">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#60a5fa;margin-bottom:10px">🔵 T2 Previous</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+        <div>
+          <div style="font-size:22px;font-weight:900;color:#fff">36</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Epics</div>
+        </div>
+        <div>
+          <div style="font-size:22px;font-weight:900;color:#34d399">25</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Done</div>
+        </div>
+        <div>
+          <div style="font-size:22px;font-weight:900;color:#fbbf24">181</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Stories</div>
+        </div>
+        <div>
+          <div style="font-size:22px;font-weight:900;color:#60a5fa">78%</div>
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Complete</div>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,.1);border-radius:4px;height:5px;overflow:hidden">
+        <div style="width:78%;background:#60a5fa;height:5px;border-radius:4px"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -40,7 +98,7 @@
 
 <div style="border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:20px">
   <div style="background:linear-gradient(90deg,#4c1d95,#6d28d9);padding:16px 20px">
-    <div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:6px">🟣 T1-2027 · Upcoming Tertial <span style="font-size:12px;color:rgba(255,255,255,.55);margin-left:8px">FY27 · T1</span></div>
+    <div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:6px">🟣 T1-2027 · Upcoming Tertial<span style="font-size:12px;color:rgba(255,255,255,.55);margin-left:8px">FY27 · T1</span></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
       <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">📋 13 epics</span>
       
@@ -272,7 +330,7 @@
 
 <div style="border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:20px">
   <div style="background:linear-gradient(90deg,#9a3412,#c2410c);padding:16px 20px">
-    <div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:6px">🟠 T3 · Current Tertial <span style="font-size:12px;color:rgba(255,255,255,.55);margin-left:8px">Apr – Jun 2026</span></div>
+    <div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:6px">🟠 T3 · Current Tertial<span style="font-size:12px;color:rgba(255,255,255,.55);margin-left:8px">Apr – Jun 2026</span></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
       <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">📋 33 epics</span>
       <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">🔄 12 in progress</span>
@@ -904,11 +962,11 @@
 
 <div style="border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:20px">
   <div style="background:linear-gradient(90deg,#1e3a8a,#1d4ed8);padding:16px 20px">
-    <div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:6px">🔵 T2 · Previous Tertial <span style="font-size:12px;color:rgba(255,255,255,.55);margin-left:8px">Jan – Mar 2026</span></div>
+    <div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:6px">🔵 T2 · Previous Tertial<span style="font-size:12px;color:rgba(255,255,255,.55);margin-left:8px">Jan – Mar 2026</span></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
       <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">📋 36 epics</span>
       <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">🔄 3 in progress</span>
-      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px">✅ 25 done</span>
+      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">✅ 25 done</span>
       <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">📊 78% stories done (142/181)</span>
     </div>
   </div>
@@ -1638,7 +1696,7 @@
 </div>
 
 <div style="font-size:11px;color:#aaa;text-align:center;padding:16px 0 8px">
-  Data from Jira INTERACT · 2026-06-22 11:30 · Upptäcka team · Invalid epics excluded
+  Data from Jira INTERACT · 2026-06-22 11:30 · Upptäcka team
 </div>
 </body>
 </html>
