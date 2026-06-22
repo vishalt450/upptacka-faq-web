@@ -4,785 +4,281 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Upptäcka Tertial Dashboard</title>
-<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;background:#f1f5f9;color:#111;padding:20px;max-width:880px;margin:0 auto;line-height:1.5}a{color:#0058A3}</style>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;background:#f1f5f9;color:#111;padding:24px;max-width:920px;margin:0 auto;line-height:1.5}a{color:#0058A3}</style>
 </head>
 <body>
-<div style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);border-radius:16px;padding:22px 26px;margin-bottom:24px;color:#fff">
-  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;margin-bottom:4px">Upptäcka · INTERACT Project</div>
-  <div style="font-size:26px;font-weight:900;margin-bottom:2px">Tertial Progress Dashboard</div>
-  <div style="font-size:12px;color:#64748b;margin-bottom:18px">Updated 2026-06-22 11:38 · Grouped by Kiosk · SDF/Platform · Mobile · Invalid excluded</div>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+
+<div style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);border-radius:16px;padding:24px 28px;margin-bottom:28px;color:#fff">
+  <div style="margin-bottom:18px">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;margin-bottom:4px">Upptäcka · INTERACT Project</div>
+    <div style="font-size:28px;font-weight:900;margin-bottom:4px">Tertial Progress Dashboard</div>
+    <div style="font-size:12px;color:#64748b;margin-bottom:14px">Updated 2026-06-22 11:38 · Invalid epics excluded</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span style="background:rgba(67,139,255,.2);border:1px solid rgba(67,139,255,.4);color:#93c5fd;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:700">💻 Kiosk</span>
+      <span style="background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.3);color:#6ee7b7;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:700">⚙️ SDF / Platform / Product</span>
+      <span style="background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:#fcd34d;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:700">📱 Mobile</span>
+      <span style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:700">📦 Other</span>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
     <div style="background:rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;border-top:3px solid #a78bfa">
       <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#a78bfa;margin-bottom:10px">🟣 T1-2027</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
         <div><div style="font-size:22px;font-weight:900;color:#fff">13</div><div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Epics</div></div>
         <div><div style="font-size:22px;font-weight:900;color:#34d399">0</div><div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Done</div></div>
         <div><div style="font-size:22px;font-weight:900;color:#fbbf24">2</div><div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Stories</div></div>
         <div><div style="font-size:22px;font-weight:900;color:#60a5fa">0%</div><div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Complete</div></div>
       </div>
-      <div style="background:rgba(255,255,255,.1);border-radius:4px;height:5px;overflow:hidden">
-        <div style="width:0%;background:#a78bfa;height:5px;border-radius:4px"></div>
-      </div>
+      <div style="background:rgba(255,255,255,.1);border-radius:4px;height:5px;overflow:hidden"><div style="width:0%;background:#a78bfa;height:5px;border-radius:4px"></div></div>
     </div>
     <div style="background:rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;border-top:3px solid #fb923c">
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#fb923c;margin-bottom:10px">🟠 T3 Current</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#fb923c;margin-bottom:10px">🟠 T3 · Current</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
         <div><div style="font-size:22px;font-weight:900;color:#fff">33</div><div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Epics</div></div>
         <div><div style="font-size:22px;font-weight:900;color:#34d399">0</div><div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Done</div></div>
         <div><div style="font-size:22px;font-weight:900;color:#fbbf24">57</div><div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Stories</div></div>
         <div><div style="font-size:22px;font-weight:900;color:#60a5fa">44%</div><div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Complete</div></div>
       </div>
-      <div style="background:rgba(255,255,255,.1);border-radius:4px;height:5px;overflow:hidden">
-        <div style="width:44%;background:#fb923c;height:5px;border-radius:4px"></div>
-      </div>
+      <div style="background:rgba(255,255,255,.1);border-radius:4px;height:5px;overflow:hidden"><div style="width:44%;background:#fb923c;height:5px;border-radius:4px"></div></div>
     </div>
     <div style="background:rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;border-top:3px solid #60a5fa">
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#60a5fa;margin-bottom:10px">🔵 T2 Previous</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#60a5fa;margin-bottom:10px">🔵 T2 · Previous</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
         <div><div style="font-size:22px;font-weight:900;color:#fff">36</div><div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Epics</div></div>
         <div><div style="font-size:22px;font-weight:900;color:#34d399">25</div><div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Done</div></div>
         <div><div style="font-size:22px;font-weight:900;color:#fbbf24">181</div><div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Stories</div></div>
         <div><div style="font-size:22px;font-weight:900;color:#60a5fa">78%</div><div style="font-size:9px;color:#94a3b8;text-transform:uppercase">Complete</div></div>
       </div>
-      <div style="background:rgba(255,255,255,.1);border-radius:4px;height:5px;overflow:hidden">
-        <div style="width:78%;background:#60a5fa;height:5px;border-radius:4px"></div>
-      </div>
+      <div style="background:rgba(255,255,255,.1);border-radius:4px;height:5px;overflow:hidden"><div style="width:78%;background:#60a5fa;height:5px;border-radius:4px"></div></div>
     </div>
   </div>
 </div>
-<div style="border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:20px">
-  <div style="background:linear-gradient(90deg,#4c1d95,#6d28d9);padding:16px 20px">
-    <div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:6px">🟣 T1-2027 · Upcoming Tertial<span style="font-size:12px;color:rgba(255,255,255,.55);margin-left:8px">FY27 · T1</span></div>
+
+<div style="border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.1);margin-bottom:24px">
+  <div style="background:linear-gradient(90deg,#4c1d95,#6d28d9);padding:18px 22px">
+    <div style="font-size:20px;font-weight:900;color:#fff;margin-bottom:8px">🟣 T1-2027 · Upcoming Tertial<span style="font-size:13px;color:rgba(255,255,255,.5);margin-left:8px">FY27 · T1</span></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">📋 13 epics</span>
+      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:3px 12px;font-size:11px;color:#fff">📋 13 epics</span>
       
       
-      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">📊 0% stories done (0/2)</span>
+      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:3px 12px;font-size:11px;color:#fff">📊 0% complete (0/2)</span>
     </div>
   </div>
-  <div style="background:#f1f5f9;padding:14px 16px">
-    <div style="margin-bottom:12px">
-    <div style="background:#dbeafe;border:1px solid #0058a333;border-radius:8px 8px 0 0;padding:8px 14px;display:flex;align-items:center;gap:8px">
-      <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#0058a3">Kiosk</span>
-      <span style="font-size:10px;background:rgba(0,0,0,.08);color:#0058a3;padding:1px 8px;border-radius:8px;font-weight:700">11 epics</span>
-      
-      <span style="font-size:10px;color:#0058a3">📊 0% (0/2)</span>
-      <div style="background:#e5e7eb;border-radius:4px;height:4px;overflow:hidden;margin-top:4px"><div style="width:0%;background:#0058a3;height:4px;border-radius:4px"></div></div>
+  <div style="background:#f1f5f9;padding:16px"><div style="border-radius:12px;overflow:hidden;margin-bottom:14px;border:1.5px solid #0058a333;box-shadow:0 2px 6px rgba(0,0,0,.05)">
+  <div style="background:#dbeafe;padding:12px 16px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:20px">💻</span>
+      <span style="font-size:14px;font-weight:900;color:#1e40af">Kiosk</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:4px"><span style="background:#0058a322;color:#1e40af;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📋 11 epics</span>   <span style="background:#0058a322;color:#1e40af;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📊 0% (0/2)</span></div>
     </div>
-    <div style="background:#f8fafc;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:10px 12px">
-      <div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10661" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10661</a>&nbsp;Save for Later & Resume at Home (Cross channel continuity)
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  <span style="color:#888;font-size:10px">👤 Jerry Pedersen</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:0%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">0/1 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10660" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10660</a>&nbsp;Explore, compare and customise my solution
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10665" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10665</a>&nbsp;Shared Context Between Customer and Co‑worker
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10659" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10659</a>&nbsp;Follow‑up and Insights
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  <span style="color:#888;font-size:10px">👤 Vasiliki Karasi</span></div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10666" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10666</a>&nbsp;Operational Rules & Edge Cases
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10662" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10662</a>&nbsp;One‑to‑Many Support in the Planning Area (Waiting for help)
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10664" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10664</a>&nbsp;Let me choose how to start (scratch, inspiration, existing)
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10589" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10589</a>&nbsp;Home & Entry: Find the Right Planner
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10080" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10080</a>&nbsp;FY27 - T1: (Design) Landing/home pages  to help customers navigate the range (Upper-funnel)
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10089" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10089</a>&nbsp;Enable customers to leave the kiosk and continue the session when they are back
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:0%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">0/1 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10827" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10827</a>&nbsp;Customer-friendly continuation and actionable follow-up for unfinished kiosk journeys
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-    </div>
+    <div style="background:#0058a322;border-radius:4px;height:6px;overflow:hidden;margin-top:8px"><div style="width:0%;background:#0058a3;height:6px;border-radius:4px"></div></div>
   </div>
-<div style="margin-bottom:12px">
-    <div style="background:#fef3c7;border:1px solid #92400e33;border-radius:8px 8px 0 0;padding:8px 14px;display:flex;align-items:center;gap:8px">
-      <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#92400e">Mobile</span>
-      <span style="font-size:10px;background:rgba(0,0,0,.08);color:#92400e;padding:1px 8px;border-radius:8px;font-weight:700">1 epics</span>
-      
-      
-      
-    </div>
-    <div style="background:#f8fafc;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:10px 12px">
-      <div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10653" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10653</a>&nbsp;Omnichannel unified flow for order handover to phone
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-    </div>
-  </div>
-<div style="margin-bottom:12px">
-    <div style="background:#f3f4f6;border:1px solid #37415133;border-radius:8px 8px 0 0;padding:8px 14px;display:flex;align-items:center;gap:8px">
-      <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#374151">Other</span>
-      <span style="font-size:10px;background:rgba(0,0,0,.08);color:#374151;padding:1px 8px;border-radius:8px;font-weight:700">1 epics</span>
-      
-      
-      
-    </div>
-    <div style="background:#f8fafc;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:10px 12px">
-      <div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10696" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10696</a>&nbsp;BOKA on Upptäcka for living room and interior design
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-    </div>
-  </div>
-  </div>
+  <div style="background:#f8fafc;padding:10px 12px"><div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10661" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10661</a> Save for Later & Resume at Home (Cross channel continuity)</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  <span style="color:#888;font-size:10px">👤 Jerry Pedersen</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:0%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">0/1</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10660" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10660</a> Explore, compare and customise my solution</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10665" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10665</a> Shared Context Between Customer and Co‑worker</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10659" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10659</a> Follow‑up and Insights</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  <span style="color:#888;font-size:10px">👤 Vasiliki Karasi</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10666" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10666</a> Operational Rules & Edge Cases</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10662" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10662</a> One‑to‑Many Support in the Planning Area (Waiting for help)</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10664" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10664</a> Let me choose how to start (scratch, inspiration, existing)</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10589" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10589</a> Home & Entry: Find the Right Planner</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10080" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10080</a> FY27 - T1: (Design) Landing/home pages  to help customers navigate the range (Upper-funnel)</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10089" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10089</a> Enable customers to leave the kiosk and continue the session when they are back</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:0%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">0/1</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10827" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10827</a> Customer-friendly continuation and actionable follow-up for unfinished kiosk journeys</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div></div>
 </div>
-<div style="border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:20px">
-  <div style="background:linear-gradient(90deg,#9a3412,#c2410c);padding:16px 20px">
-    <div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:6px">🟠 T3 · Current Tertial<span style="font-size:12px;color:rgba(255,255,255,.55);margin-left:8px">Apr – Jun 2026</span></div>
+<div style="border-radius:12px;overflow:hidden;margin-bottom:14px;border:1.5px solid #92400e33;box-shadow:0 2px 6px rgba(0,0,0,.05)">
+  <div style="background:#fef3c7;padding:12px 16px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:20px">📱</span>
+      <span style="font-size:14px;font-weight:900;color:#78350f">Mobile</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:4px"><span style="background:#92400e22;color:#78350f;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📋 1 epics</span>   <span style="font-size:10px;color:#888">⏳ planning</span></div>
+    </div>
+    
+  </div>
+  <div style="background:#f8fafc;padding:10px 12px"><div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10653" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10653</a> Omnichannel unified flow for order handover to phone</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div></div>
+</div>
+<div style="border-radius:12px;overflow:hidden;margin-bottom:14px;border:1.5px solid #4b556333;box-shadow:0 2px 6px rgba(0,0,0,.05)">
+  <div style="background:#f3f4f6;padding:12px 16px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:20px">📦</span>
+      <span style="font-size:14px;font-weight:900;color:#374151">Other</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:4px"><span style="background:#4b556322;color:#374151;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📋 1 epics</span>   <span style="font-size:10px;color:#888">⏳ planning</span></div>
+    </div>
+    
+  </div>
+  <div style="background:#f8fafc;padding:10px 12px"><div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10696" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10696</a> BOKA on Upptäcka for living room and interior design</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div></div>
+</div></div>
+</div>
+<div style="border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.1);margin-bottom:24px">
+  <div style="background:linear-gradient(90deg,#9a3412,#c2410c);padding:18px 22px">
+    <div style="font-size:20px;font-weight:900;color:#fff;margin-bottom:8px">🟠 T3 · Current Tertial<span style="font-size:13px;color:rgba(255,255,255,.5);margin-left:8px">Apr – Jun 2026</span></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">📋 33 epics</span>
-      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">🔄 12 in progress</span>
+      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:3px 12px;font-size:11px;color:#fff">📋 33 epics</span>
+      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:3px 12px;font-size:11px;color:#fff">🔄 12 active</span>
       
-      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">📊 44% stories done (25/57)</span>
+      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:3px 12px;font-size:11px;color:#fff">📊 44% complete (25/57)</span>
     </div>
   </div>
-  <div style="background:#f1f5f9;padding:14px 16px">
-    <div style="margin-bottom:12px">
-    <div style="background:#dbeafe;border:1px solid #0058a333;border-radius:8px 8px 0 0;padding:8px 14px;display:flex;align-items:center;gap:8px">
-      <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#0058a3">Kiosk</span>
-      <span style="font-size:10px;background:rgba(0,0,0,.08);color:#0058a3;padding:1px 8px;border-radius:8px;font-weight:700">13 epics</span>
-      
-      <span style="font-size:10px;color:#0058a3">📊 66% (19/29)</span>
-      <div style="background:#e5e7eb;border-radius:4px;height:4px;overflow:hidden;margin-top:4px"><div style="width:66%;background:#0058a3;height:4px;border-radius:4px"></div></div>
+  <div style="background:#f1f5f9;padding:16px"><div style="border-radius:12px;overflow:hidden;margin-bottom:14px;border:1.5px solid #0058a333;box-shadow:0 2px 6px rgba(0,0,0,.05)">
+  <div style="background:#dbeafe;padding:12px 16px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:20px">💻</span>
+      <span style="font-size:14px;font-weight:900;color:#1e40af">Kiosk</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:4px"><span style="background:#0058a322;color:#1e40af;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📋 13 epics</span> <span style="background:#0058a322;color:#1e40af;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">🔄 8 active</span>  <span style="background:#0058a322;color:#1e40af;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📊 66% (19/29)</span></div>
     </div>
-    <div style="background:#f8fafc;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:10px 12px">
-      <div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10667" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10667</a>&nbsp;Customer “Ask for Help” Flow
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Lazar Trpeski</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">3/3 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9869" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9869</a>&nbsp;(March) PIP 'coming soon' message for collection launches
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:50%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">2/4 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9898" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9898</a>&nbsp;(Design) Multipurpose Focus tiles (LADA)
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:80%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">4/5 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10663" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10663</a>&nbsp;Leave & return to kiosk behaviour (in‑store) (One to many planning) and planing at other kiosk
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Sebastian Kellgren</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:62%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">5/8 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10658" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10658</a>&nbsp;Co‑worker Help Queue & customer Notifications
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">1/1 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10196" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10196</a>&nbsp;Define and build the data process for the Quick METOD planner pilot (Redskap, Light kitchen)
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:50%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">1/2 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9945" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9945</a>&nbsp;SDM offers on Upptäcka and Instore web- rollout globally
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:50%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">1/2 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10635" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10635</a>&nbsp;Enhanced Financial Transparency on Product Pages
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:50%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">1/2 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-8841" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-8841</a>&nbsp;Global rollout Visual messages on home screens to replace the regular category image
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">1/1 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9941" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9941</a>&nbsp;(Design) Range Depth & Width awareness (LADA)
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9899" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9899</a>&nbsp;(Design) Focus tile: What Upptäcka can help me with & how can I buy (LADA)
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:0%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">0/1 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9433" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9433</a>&nbsp;Seasonal offers on Upptäcka (Xmas calendar)
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9434" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9434</a>&nbsp;Show seasonal Sales on Upptäcka (REA)
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-    </div>
+    <div style="background:#0058a322;border-radius:4px;height:6px;overflow:hidden;margin-top:8px"><div style="width:66%;background:#0058a3;height:6px;border-radius:4px"></div></div>
   </div>
-<div style="margin-bottom:12px">
-    <div style="background:#dcfce7;border:1px solid #16653433;border-radius:8px 8px 0 0;padding:8px 14px;display:flex;align-items:center;gap:8px">
-      <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#166534">SDF / Platform</span>
-      <span style="font-size:10px;background:rgba(0,0,0,.08);color:#166534;padding:1px 8px;border-radius:8px;font-weight:700">10 epics</span>
-      
-      <span style="font-size:10px;color:#166534">📊 13% (2/15)</span>
-      <div style="background:#e5e7eb;border-radius:4px;height:4px;overflow:hidden;margin-top:4px"><div style="width:13%;background:#166534;height:4px;border-radius:4px"></div></div>
-    </div>
-    <div style="background:#f8fafc;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:10px 12px">
-      <div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10678" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10678</a>&nbsp;Migrate Landa with mouse and keyboard to Upptäcka
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Viktor Petterson</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:9%;background:#166534;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">1/11 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10037" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10037</a>&nbsp;Enable Väntar on SDF
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:50%;background:#166534;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">1/2 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9957" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9957</a>&nbsp;Define Planner Success in Upptäcka
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-7777" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-7777</a>&nbsp;FY26-Tx: Enable Upptäcka Console in XDK
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10043" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10043</a>&nbsp;Explore Enhanced Kiosk Contextualization Using Kompass Location
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:0%;background:#166534;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">0/1 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9287" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9287</a>&nbsp;Enable IKEA Food menu on SDF
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:0%;background:#166534;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">0/1 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10041" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10041</a>&nbsp;Enable Check-in on SDF
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10045" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10045</a>&nbsp;Enhance Control Over Stand-Alone Solutions via Console in SDF
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10833" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10833</a>&nbsp;Explore migration of Landa for NIF to Upptäcka
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10892" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10892</a>&nbsp;Data: Understand and measure the REX planner experience
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-    </div>
-  </div>
-<div style="margin-bottom:12px">
-    <div style="background:#fef3c7;border:1px solid #92400e33;border-radius:8px 8px 0 0;padding:8px 14px;display:flex;align-items:center;gap:8px">
-      <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#92400e">Mobile</span>
-      <span style="font-size:10px;background:rgba(0,0,0,.08);color:#92400e;padding:1px 8px;border-radius:8px;font-weight:700">7 epics</span>
-      
-      <span style="font-size:10px;color:#92400e">📊 25% (3/12)</span>
-      <div style="background:#e5e7eb;border-radius:4px;height:4px;overflow:hidden;margin-top:4px"><div style="width:25%;background:#92400e;height:4px;border-radius:4px"></div></div>
-    </div>
-    <div style="background:#f8fafc;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:10px 12px">
-      <div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10650" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10650</a>&nbsp;PoC – In‑store Basket Handover from Upptäcka to IKEA.com (2 Stores)
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Luis Rubio</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:33%;background:#92400e;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">1/3 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10649" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10649</a>&nbsp;MVP Launch – In‑Store to IKEA.com Basket Handover & Continuity
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:0%;background:#92400e;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">0/1 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-7904" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-7904</a>&nbsp;FS orders with services created in Sälja can be viewed in Upptäcka instore web
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Göran Trivic</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:25%;background:#92400e;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">2/8 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10420" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10420</a>&nbsp;Investigate Assembly Services logic and digital architecture
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10646" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10646</a>&nbsp;Instore web optimization - PDTAG Customer Journey with services
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10648" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10648</a>&nbsp;Finalize Digital Order Page for Paperless Handover
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10654" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10654</a>&nbsp;Explore Add-ons and Complements for Instore Web Entries from PTAG/DTAG
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-    </div>
-  </div>
-<div style="margin-bottom:12px">
-    <div style="background:#f3f4f6;border:1px solid #37415133;border-radius:8px 8px 0 0;padding:8px 14px;display:flex;align-items:center;gap:8px">
-      <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#374151">Other</span>
-      <span style="font-size:10px;background:rgba(0,0,0,.08);color:#374151;padding:1px 8px;border-radius:8px;font-weight:700">3 epics</span>
-      
-      <span style="font-size:10px;color:#374151">📊 100% (1/1)</span>
-      <div style="background:#e5e7eb;border-radius:4px;height:4px;overflow:hidden;margin-top:4px"><div style="width:100%;background:#374151;height:4px;border-radius:4px"></div></div>
-    </div>
-    <div style="background:#f8fafc;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:10px 12px">
-      <div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9265" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9265</a>&nbsp;(Integration) Enable customers to save progress and continue in the same/other kiosk (enhanced "save for later")
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#374151;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">1/1 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10694" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10694</a>&nbsp;BOKA on Upptäcka for REX planners
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10695" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10695</a>&nbsp;BOKA on Upptäcka for drop in
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-    </div>
-  </div>
-  </div>
+  <div style="background:#f8fafc;padding:10px 12px"><div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10667" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10667</a> Customer “Ask for Help” Flow</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Lazar Trpeski</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">3/3</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9869" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9869</a> (March) PIP 'coming soon' message for collection launches</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:50%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">2/4</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9898" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9898</a> (Design) Multipurpose Focus tiles (LADA)</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:80%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">4/5</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10663" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10663</a> Leave & return to kiosk behaviour (in‑store) (One to many planning) and planing at other kiosk</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Sebastian Kellgren</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:62%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">5/8</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10658" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10658</a> Co‑worker Help Queue & customer Notifications</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">1/1</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10196" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10196</a> Define and build the data process for the Quick METOD planner pilot (Redskap, Light kitchen)</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:50%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">1/2</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9945" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9945</a> SDM offers on Upptäcka and Instore web- rollout globally</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:50%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">1/2</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10635" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10635</a> Enhanced Financial Transparency on Product Pages</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:50%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">1/2</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-8841" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-8841</a> Global rollout Visual messages on home screens to replace the regular category image</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">1/1</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9941" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9941</a> (Design) Range Depth & Width awareness (LADA)</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9899" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9899</a> (Design) Focus tile: What Upptäcka can help me with & how can I buy (LADA)</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:0%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">0/1</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9433" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9433</a> Seasonal offers on Upptäcka (Xmas calendar)</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9434" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9434</a> Show seasonal Sales on Upptäcka (REA)</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div></div>
 </div>
-<div style="border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:20px">
-  <div style="background:linear-gradient(90deg,#1e3a8a,#1d4ed8);padding:16px 20px">
-    <div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:6px">🔵 T2 · Previous Tertial<span style="font-size:12px;color:rgba(255,255,255,.55);margin-left:8px">Jan – Mar 2026</span></div>
+<div style="border-radius:12px;overflow:hidden;margin-bottom:14px;border:1.5px solid #16653433;box-shadow:0 2px 6px rgba(0,0,0,.05)">
+  <div style="background:#dcfce7;padding:12px 16px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:20px">⚙️</span>
+      <span style="font-size:14px;font-weight:900;color:#14532d">SDF / Platform / Product</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:4px"><span style="background:#16653422;color:#14532d;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📋 11 epics</span> <span style="background:#16653422;color:#14532d;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">🔄 2 active</span>  <span style="background:#16653422;color:#14532d;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📊 19% (3/16)</span></div>
+    </div>
+    <div style="background:#16653422;border-radius:4px;height:6px;overflow:hidden;margin-top:8px"><div style="width:19%;background:#166534;height:6px;border-radius:4px"></div></div>
+  </div>
+  <div style="background:#f8fafc;padding:10px 12px"><div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10678" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10678</a> Migrate Landa with mouse and keyboard to Upptäcka</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Viktor Petterson</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:9%;background:#166534;height:5px"></div></div><span style="font-size:10px;color:#666">1/11</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10037" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10037</a> Enable Väntar on SDF</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:50%;background:#166534;height:5px"></div></div><span style="font-size:10px;color:#666">1/2</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9957" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9957</a> Define Planner Success in Upptäcka</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-7777" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-7777</a> FY26-Tx: Enable Upptäcka Console in XDK</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10043" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10043</a> Explore Enhanced Kiosk Contextualization Using Kompass Location</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:0%;background:#166534;height:5px"></div></div><span style="font-size:10px;color:#666">0/1</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9265" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9265</a> (Integration) Enable customers to save progress and continue in the same/other kiosk (enhanced "save for later")</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#166534;height:5px"></div></div><span style="font-size:10px;color:#666">1/1</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9287" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9287</a> Enable IKEA Food menu on SDF</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:0%;background:#166534;height:5px"></div></div><span style="font-size:10px;color:#666">0/1</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10041" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10041</a> Enable Check-in on SDF</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10045" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10045</a> Enhance Control Over Stand-Alone Solutions via Console in SDF</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10833" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10833</a> Explore migration of Landa for NIF to Upptäcka</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10892" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10892</a> Data: Understand and measure the REX planner experience</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div></div>
+</div>
+<div style="border-radius:12px;overflow:hidden;margin-bottom:14px;border:1.5px solid #92400e33;box-shadow:0 2px 6px rgba(0,0,0,.05)">
+  <div style="background:#fef3c7;padding:12px 16px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:20px">📱</span>
+      <span style="font-size:14px;font-weight:900;color:#78350f">Mobile</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:4px"><span style="background:#92400e22;color:#78350f;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📋 7 epics</span> <span style="background:#92400e22;color:#78350f;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">🔄 2 active</span>  <span style="background:#92400e22;color:#78350f;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📊 25% (3/12)</span></div>
+    </div>
+    <div style="background:#92400e22;border-radius:4px;height:6px;overflow:hidden;margin-top:8px"><div style="width:25%;background:#92400e;height:6px;border-radius:4px"></div></div>
+  </div>
+  <div style="background:#f8fafc;padding:10px 12px"><div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10650" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10650</a> PoC – In‑store Basket Handover from Upptäcka to IKEA.com (2 Stores)</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Luis Rubio</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:33%;background:#92400e;height:5px"></div></div><span style="font-size:10px;color:#666">1/3</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10649" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10649</a> MVP Launch – In‑Store to IKEA.com Basket Handover & Continuity</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:0%;background:#92400e;height:5px"></div></div><span style="font-size:10px;color:#666">0/1</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-7904" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-7904</a> FS orders with services created in Sälja can be viewed in Upptäcka instore web</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Göran Trivic</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:25%;background:#92400e;height:5px"></div></div><span style="font-size:10px;color:#666">2/8</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10420" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10420</a> Investigate Assembly Services logic and digital architecture</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10646" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10646</a> Instore web optimization - PDTAG Customer Journey with services</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10648" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10648</a> Finalize Digital Order Page for Paperless Handover</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10654" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10654</a> Explore Add-ons and Complements for Instore Web Entries from PTAG/DTAG</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div></div>
+</div>
+<div style="border-radius:12px;overflow:hidden;margin-bottom:14px;border:1.5px solid #4b556333;box-shadow:0 2px 6px rgba(0,0,0,.05)">
+  <div style="background:#f3f4f6;padding:12px 16px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:20px">📦</span>
+      <span style="font-size:14px;font-weight:900;color:#374151">Other</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:4px"><span style="background:#4b556322;color:#374151;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📋 2 epics</span>   <span style="font-size:10px;color:#888">⏳ planning</span></div>
+    </div>
+    
+  </div>
+  <div style="background:#f8fafc;padding:10px 12px"><div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10694" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10694</a> BOKA on Upptäcka for REX planners</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10695" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10695</a> BOKA on Upptäcka for drop in</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div></div>
+</div></div>
+</div>
+<div style="border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.1);margin-bottom:24px">
+  <div style="background:linear-gradient(90deg,#1e3a8a,#1d4ed8);padding:18px 22px">
+    <div style="font-size:20px;font-weight:900;color:#fff;margin-bottom:8px">🔵 T2 · Previous Tertial<span style="font-size:13px;color:rgba(255,255,255,.5);margin-left:8px">Jan – Mar 2026</span></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">📋 36 epics</span>
-      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">🔄 3 in progress</span>
-      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">✅ 25 done</span>
-      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:11px;color:#fff">📊 78% stories done (142/181)</span>
+      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:3px 12px;font-size:11px;color:#fff">📋 36 epics</span>
+      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:3px 12px;font-size:11px;color:#fff">🔄 3 active</span>
+      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:3px 12px;font-size:11px;color:#fff">✅ 25 done</span>
+      <span style="background:rgba(255,255,255,.15);border-radius:10px;padding:3px 12px;font-size:11px;color:#fff">📊 78% complete (142/181)</span>
     </div>
   </div>
-  <div style="background:#f1f5f9;padding:14px 16px">
-    <div style="margin-bottom:12px">
-    <div style="background:#dbeafe;border:1px solid #0058a333;border-radius:8px 8px 0 0;padding:8px 14px;display:flex;align-items:center;gap:8px">
-      <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#0058a3">Kiosk</span>
-      <span style="font-size:10px;background:rgba(0,0,0,.08);color:#0058a3;padding:1px 8px;border-radius:8px;font-weight:700">11 epics</span>
-      <span style="font-size:10px;color:#0058a3;font-weight:600">✅ 8 done</span>
-      <span style="font-size:10px;color:#0058a3">📊 76% (66/87)</span>
-      <div style="background:#e5e7eb;border-radius:4px;height:4px;overflow:hidden;margin-top:4px"><div style="width:76%;background:#0058a3;height:4px;border-radius:4px"></div></div>
+  <div style="background:#f1f5f9;padding:16px"><div style="border-radius:12px;overflow:hidden;margin-bottom:14px;border:1.5px solid #0058a333;box-shadow:0 2px 6px rgba(0,0,0,.05)">
+  <div style="background:#dbeafe;padding:12px 16px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:20px">💻</span>
+      <span style="font-size:14px;font-weight:900;color:#1e40af">Kiosk</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:4px"><span style="background:#0058a322;color:#1e40af;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📋 11 epics</span> <span style="background:#0058a322;color:#1e40af;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">🔄 2 active</span> <span style="background:#0058a322;color:#1e40af;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">✅ 8 done</span> <span style="background:#0058a322;color:#1e40af;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📊 76% (66/87)</span></div>
     </div>
-    <div style="background:#f8fafc;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:10px 12px">
-      <div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9752" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9752</a>&nbsp;Scale Ikea Foundation integration to global
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:56%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">5/9 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10466" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10466</a>&nbsp;Show Services Information on Upptäcka
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:17%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">1/6 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9441" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9441</a>&nbsp;US breakthrough - 3rd party PaOP requirements
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Philip Artinger</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">10/10 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9901" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9901</a>&nbsp;Implement Spare parts on Upptäcka
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">3/3 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9943" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9943</a>&nbsp;Default focus tile management - kiosk/admin/console
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">2/2 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9933" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9933</a>&nbsp;INGKA CMS Promotions on Upptäcka - improvements based on the learnings in T1
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Edina Sejdic</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:82%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">14/17 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9891" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9891</a>&nbsp;Make Upselling products more prominent on Upptäcka
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:92%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">11/12 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9754" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9754</a>&nbsp;Admin front end enhancements
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Edina Sejdic</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:80%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">8/10 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9895" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9895</a>&nbsp;Rebuild of the mini PIP so we can host all new Delivery information
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Edina Sejdic</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:78%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">7/9 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9730" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9730</a>&nbsp;Enhance available locations
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:56%;background:#0058a3;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">5/9 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-7342" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-7342</a>&nbsp;EPIC TEMPLATE
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-    </div>
+    <div style="background:#0058a322;border-radius:4px;height:6px;overflow:hidden;margin-top:8px"><div style="width:76%;background:#0058a3;height:6px;border-radius:4px"></div></div>
   </div>
-<div style="margin-bottom:12px">
-    <div style="background:#dcfce7;border:1px solid #16653433;border-radius:8px 8px 0 0;padding:8px 14px;display:flex;align-items:center;gap:8px">
-      <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#166534">SDF / Platform</span>
-      <span style="font-size:10px;background:rgba(0,0,0,.08);color:#166534;padding:1px 8px;border-radius:8px;font-weight:700">6 epics</span>
-      <span style="font-size:10px;color:#166534;font-weight:600">✅ 5 done</span>
-      <span style="font-size:10px;color:#166534">📊 86% (18/21)</span>
-      <div style="background:#e5e7eb;border-radius:4px;height:4px;overflow:hidden;margin-top:4px"><div style="width:86%;background:#166534;height:4px;border-radius:4px"></div></div>
-    </div>
-    <div style="background:#f8fafc;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:10px 12px">
-      <div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9249" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9249</a>&nbsp;Move Upptäcka to SDF (China)
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Oscar Andersson</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#166534;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">8/8 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10181" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10181</a>&nbsp;FY26- T2: Plan for move of Landa to Upptäcka
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#166534;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">2/2 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-8830" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-8830</a>&nbsp;Integrations & entry points overview and usage
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Vasiliki Karasi</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:62%;background:#166534;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">5/8 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9958" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9958</a>&nbsp;Decommissioning of LANDA touchscreens (T2 wave)
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#166534;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">1/1 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-8989" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-8989</a>&nbsp;Support Financial Services integration roll out
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#166534;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">2/2 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10044" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10044</a>&nbsp;Enhance Integration Control via Console in SDF
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-    </div>
-  </div>
-<div style="margin-bottom:12px">
-    <div style="background:#fef3c7;border:1px solid #92400e33;border-radius:8px 8px 0 0;padding:8px 14px;display:flex;align-items:center;gap:8px">
-      <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#92400e">Mobile</span>
-      <span style="font-size:10px;background:rgba(0,0,0,.08);color:#92400e;padding:1px 8px;border-radius:8px;font-weight:700">14 epics</span>
-      <span style="font-size:10px;color:#92400e;font-weight:600">✅ 9 done</span>
-      <span style="font-size:10px;color:#92400e">📊 79% (52/66)</span>
-      <div style="background:#e5e7eb;border-radius:4px;height:4px;overflow:hidden;margin-top:4px"><div style="width:79%;background:#92400e;height:4px;border-radius:4px"></div></div>
-    </div>
-    <div style="background:#f8fafc;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:10px 12px">
-      <div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9894" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9894</a>&nbsp;FS Simplification - reduce cancelled orders
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Henrik Ljunggren</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#92400e;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">5/5 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-8858" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-8858</a>&nbsp;Explore linking revenue from purchases with delivery services and click & collect in Small Format BU via Upptäcka to the BU
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Eva Romansoff</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:67%;background:#92400e;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">4/6 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-8866" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-8866</a>&nbsp;out of stock items - Click & Collect information on Upptäcka kiosks and Instore web
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Sara Berg</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:87%;background:#92400e;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">13/15 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9484" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9484</a>&nbsp;Explore simplify handover from Upptäcka Instore web to the IKEA App
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Luis Rubio</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:92%;background:#92400e;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">11/12 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9297" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9297</a>&nbsp;in stock items - Delivery services and Click & Collect information
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:71%;background:#92400e;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">5/7 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10047" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10047</a>&nbsp;Change System Trigger for Customer Pickup Orders from "PICKED" to "CHECKED" Status
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:67%;background:#92400e;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">2/3 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9756" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9756</a>&nbsp;Delivery services information for out of stock items on Instore web
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Sara Berg</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:78%;background:#92400e;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">7/9 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9303" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9303</a>&nbsp;Explore Hosted Payments (HPP) feasibility for FS in Upptäcka
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:50%;background:#92400e;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">2/4 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9309" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9309</a>&nbsp;Explore Väntar via Instore Web for customers waiting to speak with co-workers
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9325" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9325</a>&nbsp;Explore possibility for customers to create Express C&C through Upptäcka
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9346" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9346</a>&nbsp;Pilot Pick-up point location with KOMPASS in Instore web FS
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#92400e;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">1/1 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9308" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9308</a>&nbsp;Explore linking shopping list to IKEA.com if you leave without buying
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-7908" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-7908</a>&nbsp;FY26-Tx: (BLOCKED should not spend time on) Investigate TSM notification messages link back to upptäcka instore web
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:0%;background:#92400e;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">0/2 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10354" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10354</a>&nbsp;FS Simplification - make sure customers use the simple flow for single item orders
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Sara Berg</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#92400e;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">2/2 stories</span></div>
-    </div>
-    </div>
-  </div>
-<div style="margin-bottom:12px">
-    <div style="background:#f3f4f6;border:1px solid #37415133;border-radius:8px 8px 0 0;padding:8px 14px;display:flex;align-items:center;gap:8px">
-      <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#374151">Other</span>
-      <span style="font-size:10px;background:rgba(0,0,0,.08);color:#374151;padding:1px 8px;border-radius:8px;font-weight:700">5 epics</span>
-      <span style="font-size:10px;color:#374151;font-weight:600">✅ 3 done</span>
-      <span style="font-size:10px;color:#374151">📊 86% (6/7)</span>
-      <div style="background:#e5e7eb;border-radius:4px;height:4px;overflow:hidden;margin-top:4px"><div style="width:86%;background:#374151;height:4px;border-radius:4px"></div></div>
-    </div>
-    <div style="background:#f8fafc;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:10px 12px">
-      <div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10000" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10000</a>&nbsp;BOKA handover to BOKA team and global roll out
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:75%;background:#374151;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">3/4 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9250" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9250</a>&nbsp;(Integration) Upptäcka & REX Appliances guide integration
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9946" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9946</a>&nbsp;Implementation Guideline for Lada and default focus tiles for small store formats
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div>
-      
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-9956" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-9956</a>&nbsp;SDF Investigate local/global solutions/kiosks
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#374151;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">1/1 stories</span></div>
-    </div>
-<div style="background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:7px;padding:11px 15px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:5px;line-height:1.4">
-        <a href="https://jira.digital.ingka.com/browse/INTERACT-10399" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px;font-weight:600">INTERACT-10399</a>&nbsp;Space platform with Bathroom and Outdoor planner on Upptäcka
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#374151;height:5px;border-radius:4px"></div></div><span style="font-size:10px;color:#666;white-space:nowrap">2/2 stories</span></div>
-    </div>
-    </div>
-  </div>
-  </div>
+  <div style="background:#f8fafc;padding:10px 12px"><div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9752" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9752</a> Scale Ikea Foundation integration to global</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:56%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">5/9</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10466" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10466</a> Show Services Information on Upptäcka</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:17%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">1/6</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9441" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9441</a> US breakthrough - 3rd party PaOP requirements</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Philip Artinger</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">10/10</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9901" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9901</a> Implement Spare parts on Upptäcka</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">3/3</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9943" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9943</a> Default focus tile management - kiosk/admin/console</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">2/2</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9933" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9933</a> INGKA CMS Promotions on Upptäcka - improvements based on the learnings in T1</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Edina Sejdic</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:82%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">14/17</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9891" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9891</a> Make Upselling products more prominent on Upptäcka</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:92%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">11/12</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9754" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9754</a> Admin front end enhancements</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Edina Sejdic</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:80%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">8/10</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9895" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9895</a> Rebuild of the mini PIP so we can host all new Delivery information</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Edina Sejdic</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:78%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">7/9</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9730" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9730</a> Enhance available locations</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:56%;background:#0058a3;height:5px"></div></div><span style="font-size:10px;color:#666">5/9</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-7342" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-7342</a> EPIC TEMPLATE</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div></div>
 </div>
+<div style="border-radius:12px;overflow:hidden;margin-bottom:14px;border:1.5px solid #16653433;box-shadow:0 2px 6px rgba(0,0,0,.05)">
+  <div style="background:#dcfce7;padding:12px 16px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:20px">⚙️</span>
+      <span style="font-size:14px;font-weight:900;color:#14532d">SDF / Platform / Product</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:4px"><span style="background:#16653422;color:#14532d;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📋 8 epics</span>  <span style="background:#16653422;color:#14532d;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">✅ 6 done</span> <span style="background:#16653422;color:#14532d;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📊 87% (20/23)</span></div>
+    </div>
+    <div style="background:#16653422;border-radius:4px;height:6px;overflow:hidden;margin-top:8px"><div style="width:87%;background:#166534;height:6px;border-radius:4px"></div></div>
+  </div>
+  <div style="background:#f8fafc;padding:10px 12px"><div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9249" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9249</a> Move Upptäcka to SDF (China)</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Oscar Andersson</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#166534;height:5px"></div></div><span style="font-size:10px;color:#666">8/8</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10181" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10181</a> FY26- T2: Plan for move of Landa to Upptäcka</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#166534;height:5px"></div></div><span style="font-size:10px;color:#666">2/2</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-8830" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-8830</a> Integrations & entry points overview and usage</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Vasiliki Karasi</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:62%;background:#166534;height:5px"></div></div><span style="font-size:10px;color:#666">5/8</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9958" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9958</a> Decommissioning of LANDA touchscreens (T2 wave)</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#166534;height:5px"></div></div><span style="font-size:10px;color:#666">1/1</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9250" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9250</a> (Integration) Upptäcka & REX Appliances guide integration</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-8989" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-8989</a> Support Financial Services integration roll out</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#166534;height:5px"></div></div><span style="font-size:10px;color:#666">2/2</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10044" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10044</a> Enhance Integration Control via Console in SDF</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10399" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10399</a> Space platform with Bathroom and Outdoor planner on Upptäcka</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#166534;height:5px"></div></div><span style="font-size:10px;color:#666">2/2</span></div></div></div>
+</div>
+<div style="border-radius:12px;overflow:hidden;margin-bottom:14px;border:1.5px solid #92400e33;box-shadow:0 2px 6px rgba(0,0,0,.05)">
+  <div style="background:#fef3c7;padding:12px 16px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:20px">📱</span>
+      <span style="font-size:14px;font-weight:900;color:#78350f">Mobile</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:4px"><span style="background:#92400e22;color:#78350f;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📋 14 epics</span> <span style="background:#92400e22;color:#78350f;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">🔄 1 active</span> <span style="background:#92400e22;color:#78350f;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">✅ 9 done</span> <span style="background:#92400e22;color:#78350f;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📊 79% (52/66)</span></div>
+    </div>
+    <div style="background:#92400e22;border-radius:4px;height:6px;overflow:hidden;margin-top:8px"><div style="width:79%;background:#92400e;height:6px;border-radius:4px"></div></div>
+  </div>
+  <div style="background:#f8fafc;padding:10px 12px"><div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9894" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9894</a> FS Simplification - reduce cancelled orders</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Henrik Ljunggren</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#92400e;height:5px"></div></div><span style="font-size:10px;color:#666">5/5</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-8858" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-8858</a> Explore linking revenue from purchases with delivery services and click & collect in Small Format BU via Upptäcka to the BU</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Eva Romansoff</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:67%;background:#92400e;height:5px"></div></div><span style="font-size:10px;color:#666">4/6</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-8866" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-8866</a> out of stock items - Click & Collect information on Upptäcka kiosks and Instore web</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Sara Berg</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:87%;background:#92400e;height:5px"></div></div><span style="font-size:10px;color:#666">13/15</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9484" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9484</a> Explore simplify handover from Upptäcka Instore web to the IKEA App</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Luis Rubio</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:92%;background:#92400e;height:5px"></div></div><span style="font-size:10px;color:#666">11/12</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9297" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9297</a> in stock items - Delivery services and Click & Collect information</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:71%;background:#92400e;height:5px"></div></div><span style="font-size:10px;color:#666">5/7</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10047" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10047</a> Change System Trigger for Customer Pickup Orders from "PICKED" to "CHECKED" Status</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:67%;background:#92400e;height:5px"></div></div><span style="font-size:10px;color:#666">2/3</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9756" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9756</a> Delivery services information for out of stock items on Instore web</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Sara Berg</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:78%;background:#92400e;height:5px"></div></div><span style="font-size:10px;color:#666">7/9</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9303" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9303</a> Explore Hosted Payments (HPP) feasibility for FS in Upptäcka</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:50%;background:#92400e;height:5px"></div></div><span style="font-size:10px;color:#666">2/4</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9309" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9309</a> Explore Väntar via Instore Web for customers waiting to speak with co-workers</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9325" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9325</a> Explore possibility for customers to create Express C&C through Upptäcka</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9346" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9346</a> Pilot Pick-up point location with KOMPASS in Instore web FS</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dbeafe;color:#1e40af">🔄 In Progress</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#92400e;height:5px"></div></div><span style="font-size:10px;color:#666">1/1</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9308" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9308</a> Explore linking shopping list to IKEA.com if you leave without buying</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-7908" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-7908</a> FY26-Tx: (BLOCKED should not spend time on) Investigate TSM notification messages link back to upptäcka instore web</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:0%;background:#92400e;height:5px"></div></div><span style="font-size:10px;color:#666">0/2</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10354" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10354</a> FS Simplification - make sure customers use the simple flow for single item orders</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Sara Berg</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#92400e;height:5px"></div></div><span style="font-size:10px;color:#666">2/2</span></div></div></div>
+</div>
+<div style="border-radius:12px;overflow:hidden;margin-bottom:14px;border:1.5px solid #4b556333;box-shadow:0 2px 6px rgba(0,0,0,.05)">
+  <div style="background:#f3f4f6;padding:12px 16px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:20px">📦</span>
+      <span style="font-size:14px;font-weight:900;color:#374151">Other</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:4px"><span style="background:#4b556322;color:#374151;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📋 3 epics</span>  <span style="background:#4b556322;color:#374151;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">✅ 2 done</span> <span style="background:#4b556322;color:#374151;padding:2px 9px;border-radius:8px;font-size:10px;font-weight:700">📊 80% (4/5)</span></div>
+    </div>
+    <div style="background:#4b556322;border-radius:4px;height:6px;overflow:hidden;margin-top:8px"><div style="width:80%;background:#4b5563;height:6px;border-radius:4px"></div></div>
+  </div>
+  <div style="background:#f8fafc;padding:10px 12px"><div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-10000" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-10000</a> BOKA handover to BOKA team and global roll out</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:75%;background:#4b5563;height:5px"></div></div><span style="font-size:10px;color:#666">3/4</span></div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9946" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9946</a> Implementation Guideline for Lada and default focus tiles for small store formats</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#374151">📋 Backlog</span>  </div></div>
+<div style="background:#fff;border-radius:9px;border:1px solid #e5e7eb;margin-bottom:7px;padding:10px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><div style="font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.4"><a href="https://jira.digital.ingka.com/browse/INTERACT-9956" target="_blank" style="color:#0058A3;text-decoration:none;font-size:10px">INTERACT-9956</a> SDF Investigate local/global solutions/kiosks</div><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center"><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534">✅ Done</span>  <span style="color:#888;font-size:10px">👤 Hans-Peter Domell</span></div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><div style="flex:1;background:#e5e7eb;border-radius:4px;height:5px;overflow:hidden"><div style="width:100%;background:#4b5563;height:5px"></div></div><span style="font-size:10px;color:#666">1/1</span></div></div></div>
+</div></div>
+</div>
+
 <div style="font-size:11px;color:#aaa;text-align:center;padding:16px 0 8px">Data from Jira INTERACT · 2026-06-22 11:38 · Upptäcka team</div>
 </body></html>
