@@ -298,6 +298,7 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
   <button class="hdr-btn" onclick="toggleRelease(3)" id="rbtn3">R3</button>
   <span class="header-divider"></span>
   <button class="hdr-btn success" onclick="addActivity()">＋ Activity</button>
+  <button class="hdr-btn" onclick="rebuildFromContext()" title="Clear map and regenerate activities + stories from current context" style="background:#7c3aed;border-color:#7c3aed;">🔄 Rebuild</button>
   <button class="hdr-btn primary" onclick="fullReview()" title="Instant offline health check — gaps, missing stories, release coverage">📊 Health Check</button>
   <button class="hdr-btn primary" onclick="aiReview()" title="AI-powered quality review via Copilot API (requires token server)">✨ AI Feedback</button>
   <span class="hdr-spacer"></span>
@@ -317,8 +318,13 @@ header h1{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-right:4px;}
 <!-- CONTEXT PANEL -->
 <div id="ctx-panel">
   <div class="ctx-label">Problem Statement &amp; Context (read by the AI)</div>
+  <div id="ctx-stale-banner" style="display:none;background:#fff3e0;border:1px solid #ffb74d;border-radius:7px;padding:7px 14px;margin-bottom:8px;font-size:12px;color:#e65100;display:flex;align-items:center;gap:10px;">
+    ⚠️ <strong>Context has changed</strong> — your map may show stories from a previous context.
+    <button onclick="rebuildFromContext()" style="margin-left:auto;background:#e65100;color:#fff;border:none;border-radius:5px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;">🔄 Rebuild Map</button>
+    <button onclick="document.getElementById('ctx-stale-banner').style.display='none'" style="background:none;border:none;cursor:pointer;font-size:16px;color:#e65100;padding:0 4px;">✕</button>
+  </div>
   <div class="ctx-row">
-    <textarea id="ctx-text" placeholder="Describe the product, user, and problem you are mapping..." oninput="saveState()"></textarea>
+    <textarea id="ctx-text" placeholder="Describe the product, user, and problem you are mapping..." oninput="saveState();checkContextStaleness()"></textarea>
     <div class="attach-zone" id="attach-zone"
          onclick="document.getElementById('file-input').click()"
          ondragover="event.preventDefault();this.classList.add('drag')"
@@ -1021,6 +1027,8 @@ function acceptAllActivitySuggs(){
     STATE.activities.push({id:uid(), title:s.title, desc:s.desc||'', tasks});
   });
   STATE.aiSuggestions = STATE.aiSuggestions.filter(s=>s.type!=='activity');
+  STATE._builtContext = STATE.context; // mark context as "built"
+  hideStaleBanner();
   saveState(); renderBoard(); renderAnalysis();
   const wrap = document.getElementById('board-wrap');
   if(wrap) setTimeout(()=>{ wrap.scrollLeft = wrap.scrollWidth; }, 50);
@@ -1087,6 +1095,47 @@ function clearMap(){
   renderBoard(); renderAnalysis();
   showToast('🗑️ Map cleared — add your context, then click + Activity');
 }
+
+async function rebuildFromContext(){
+  const ctx = (document.getElementById('ctx-text')?.value || STATE.context || '').trim();
+  if(!ctx){ showToast('⚠️ Add a context first (📋 Context button)'); return; }
+  const hasStories = STATE.activities.some(a=>a.tasks.some(t=>t.stories.length>0));
+  if(hasStories && !confirm('This will clear all existing activities and stories, then generate a new map from your current context.\n\nContinue?')) return;
+
+  // Save context, clear activities, keep outcomes
+  const savedCtx = ctx;
+  const savedOutcomes = STATE.outcomes||[];
+  const savedAttachments = STATE.attachments||[];
+  STATE.activities = [];
+  STATE.aiSuggestions = [];
+  STATE.portfolioEpics = [];
+  STATE.context = savedCtx;
+  STATE.outcomes = savedOutcomes;
+  STATE.attachments = savedAttachments;
+  STATE._builtContext = savedCtx; // mark as built
+  saveState(); renderBoard();
+  hideStaleBanner();
+  showToast('🔄 Clearing map and generating from new context…');
+  await aiSuggestActivities();
+}
+
+function checkContextStaleness(){
+  const currentCtx = (document.getElementById('ctx-text')?.value || '').trim();
+  const builtCtx = STATE._builtContext || '';
+  const banner = document.getElementById('ctx-stale-banner');
+  if(!banner) return;
+  // Show banner if: map has activities AND context differs meaningfully from when map was built
+  const hasActivities = STATE.activities.length > 0;
+  const contextChanged = builtCtx && currentCtx && currentCtx !== builtCtx;
+  banner.style.display = (hasActivities && contextChanged) ? 'flex' : 'none';
+}
+
+function hideStaleBanner(){
+  const b = document.getElementById('ctx-stale-banner');
+  if(b) b.style.display = 'none';
+}
+
+
 function loadExample(){
   if(!confirm('Load the \uD83C\uDF82 Cake Ordering demo? This will replace the current map.')) return;
   STATE = {
@@ -1841,6 +1890,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   renderAttachments();
   renderOutcomePanel();
   renderPortfolioEpics();
+  checkContextStaleness();
   // Show handoff banner if loaded from Product Discovery Studio
   if(STATE._discoveryLoaded){
     const d = STATE._discoveryLoaded;
